@@ -1,158 +1,156 @@
+<!doctype html>
 <html lang="en" dir="ltr">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome Screen | Register</title>
+    <title>welcome screen | register</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=inter:wght@100..900&display=swap" rel="stylesheet">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        /* Apply a modern font and dark theme */
+        /* apply a modern font */
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'inter', sans-serif;
             background-color: #000000;
         }
-        /* Ensure the screen fits the viewport exactly (100vh) without scrolling. */
+        /* ensure the screen fits the viewport exactly (100vh) without scrolling. */
         .mobile-container {
+            /* استخدام 100vh بشكل عام */
             height: 100vh; 
             box-sizing: border-box; 
         }
-        /* Video styling for 1:1 aspect ratio */
+        /* video styling for 1:1 aspect ratio */
         video {
             aspect-ratio: 1 / 1;
             width: 100%;
             max-width: 300px;
             object-fit: cover;
+            border-radius: 1rem;
         }
     </style>
 </head>
 <body class="bg-black text-white antialiased">
     
+    <audio id="bipsound">
+        <source src="bip.mp3" type="audio/mpeg">
+        your browser does not support the audio element.
+    </audio>
+
     <div class="mobile-container flex flex-col items-center justify-between p-6 md:p-12 max-w-sm mx-auto">
         
         <div class="flex flex-col items-center w-full my-auto">
             
-            <div class="w-full max-w-xs mb-8">
-                <video id="spaceVideo" autoplay loop muted playsinline poster="https://placehold.co/300x300/18181b/ffffff?text=Video+Loading+..." class="w-full h-auto rounded-xl">
+            <div class="w-full max-w-xs mb-8 overflow-hidden rounded-2xl shadow-xl shadow-fuchsia-900/10">
+                <video id="spacevideo" autoplay loop muted playsinline poster="https://placehold.co/300x300/18181b/ffffff?text=video+loading+..." class="w-full h-auto">
                     <source src="space.mp4" type="video/mp4">
-                    Your browser does not support the video tag.
+                    your browser does not support the video tag.
                 </video>
             </div>
 
             <h1 class="text-5xl font-extrabold mb-2 text-center">
-                Welcome
+                welcome
             </h1>
             <p class="text-lg text-white/60 text-center">
-                Your journey starts here
+                your journey starts here
             </p>
+        </div>
 
-            <div class="w-full mt-8">
-                <p id="error-message" class="text-red-400 text-sm mb-3 hidden text-center"></p>
+        <div class="w-full mt-8">
+            <p id="error-message" class="text-red-400 text-sm mb-3 hidden text-center"></p>
 
-                <input type="text" id="username" placeholder="Username (Alphanumeric only)"
-                       class="w-full bg-neutral-900 text-white placeholder-neutral-500 border border-neutral-700 p-4 rounded-xl mb-4 text-left focus:outline-none focus:ring-2 focus:ring-fuchsia-500 transition duration-150"
-                       maxlength="20">
+            <input type="text" id="username" placeholder="username (alphanumeric only)"
+                   class="w-full bg-neutral-900 text-white placeholder-neutral-500 border border-neutral-700 p-4 rounded-xl mb-4 text-left focus:outline-none focus:ring-2 focus:ring-fuchsia-500 transition duration-150"
+                   maxlength="20">
 
-                <button id="registerButton"
-                        class="w-full bg-lime-400 text-neutral-900 font-semibold py-4 rounded-xl hover:bg-lime-500 transition duration-150 shadow-xl shadow-lime-500/30">
-                    Register
-                </button>
-                
-                <div class="mt-8 text-xs text-white/50 text-center leading-relaxed">
-                    By clicking "Register," you agree to our
-                    <a href="#" class="text-white/80 underline font-medium hover:text-white transition duration-150">Terms of Service</a>
-                    and
-                    <a href="#" class="text-white/80 underline font-medium hover:text-white transition duration-150">Privacy Policy</a>.
-                </div>
+            <button id="registerButton"
+                    class="w-full bg-[#6EEB36] text-black font-semibold py-4 rounded-xl hover:bg-[#5ACC2F] transition duration-150 shadow-lg shadow-[#6EEB36]/20">
+                register
+            </button>
+            
+            <div class="mt-8 text-xs text-white/50 text-center leading-relaxed">
+                by clicking "register," you agree to our
+                <a href="#" class="text-white/80 underline font-medium hover:text-white transition duration-150">terms of service</a>
+                and
+                <a href="#" class="text-white/80 underline font-medium hover:text-white transition duration-150">privacy policy</a>.
             </div>
         </div>
-        
     </div>
 
     <script type="text/javascript">
-        // --- DOM Element References ---
-        const usernameInput = document.getElementById('username');
-        const errorMsg = document.getElementById('error-message');
-        const registerButton = document.getElementById('registerButton');
-        
-        // --- Telegram Mini App Initialization and Fullscreen ---
-        if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
-            Telegram.WebApp.ready();
+        // 🟢 كود خاص بـ telegram mini app
+        if (typeof telegram !== 'undefined' && telegram.webapp) {
+            // 1. التأكد من جاهزية الـ web app
+            telegram.webapp.ready();
             
-            // 1. إجبار التطبيق المصغر على التوسع لملء الشاشة
-            if (!Telegram.WebApp.isExpanded) {
-                Telegram.WebApp.expand(); 
+            // 2. طلب وضع ملء الشاشة لإخفاء الأشرطة
+            if (telegram.webapp.isExpanded) {
+                telegram.webapp.expand(); 
             }
-            
-            // 2. إخفاء جميع عناصر التحكم العلوية والسفلية
-            try {
-                // إخفاء الشريط العلوي عبر مطابقة الألوان
-                Telegram.WebApp.setHeaderColor('secondary_bg_color'); 
-                Telegram.WebApp.setBackgroundColor('secondary_bg_color');
-                
-                // إخفاء زر الرجوع (وهو العنصر الأساسي في الشريط العلوي)
-                Telegram.WebApp.BackButton.hide();
-                
-                // إخفاء زر الإجراء الرئيسي (السفلي)
-                Telegram.WebApp.MainButton.hide();
-
-                // إعدادات إضافية لسلاسة تجربة المستخدم
-                Telegram.WebApp.isClosingConfirmationEnabled = false; 
-                Telegram.WebApp.isZoomEnabled = false;
-
-            } catch (e) {
-                console.warn("Could not set all Telegram WebApp properties.", e);
+            if (telegram.webapp.requestFullscreen) {
+                 telegram.webapp.requestFullscreen();
+            } else {
+                 console.warn("requestFullscreen is not available in this telegram webapp version.");
             }
         } else {
-            console.log("Not running inside Telegram WebApp or SDK not loaded.");
+            console.log("not running inside telegram webapp or sdk not loaded.");
         }
-        
-        // --- Event Listeners ---
-        registerButton.addEventListener('click', handleRegister);
+        // ------------------------------------
 
+        // get the audio element once
+        const bipSound = document.getElementById('bipsound');
+        // ✅ تم تصحيح ID الزر هنا ليصبح 'registerButton'
+        document.getElementById('registerButton').addEventListener('click', handleRegister);
 
-        /**
-         * Handles the registration process (validation, saving, and redirection).
-         */
         function handleRegister() {
+            try {
+                bipSound.currentTime = 0;
+                bipSound.play();
+            } catch (e) {
+                console.error("could not play sound:", e);
+            }
+            
+            const usernameInput = document.getElementById('username');
             const username = usernameInput.value.trim();
+            const errorMsg = document.getElementById('error-message');
+            // ✅ تم تصحيح ID الزر هنا ليصبح 'registerButton'
+            const registerButton = document.getElementById('registerButton');
 
-            // 1. Input Validation (English letters and numbers only)
+            // 1. input validation (english letters and numbers only)
             const regex = /^[a-zA-Z0-9]+$/; 
 
             if (username.length === 0) {
-                errorMsg.textContent = 'Please enter a username.';
+                errorMsg.textContent = 'please enter a username.';
                 errorMsg.classList.remove('hidden');
                 return;
             }
             
             if (!regex.test(username)) {
-                errorMsg.textContent = 'Username must contain English letters and numbers only.';
+                errorMsg.textContent = 'username must contain english letters and numbers only.';
                 errorMsg.classList.remove('hidden');
                 return;
             }
 
-            // Clear previous error message
+            // clear previous error message
             errorMsg.classList.add('hidden');
             
-            // Disable button during storage/redirect
+            // disable button during storage/redirect
             registerButton.disabled = true; 
-            registerButton.textContent = 'Processing...';
+            registerButton.textContent = 'processing...';
 
-            // 2. Save Username to localStorage
+            // 2. save username to localstorage (as explicitly requested)
             try {
                 localStorage.setItem('registeredUsername', username);
-                console.log("Username saved to localStorage:", username);
+                console.log("username saved to localStorage:", username);
 
-                // 3. Redirect to dash.html as requested
+                // 3. redirect to main.html
                 window.location.href = 'dash.html';
                 
             } catch (error) {
-                console.error("Error saving username to localStorage:", error);
-                errorMsg.textContent = 'Registration failed: Could not save username locally.';
+                console.error("error saving username to localStorage:", error);
+                errorMsg.textContent = `registration failed: could not save username locally.`;
                 errorMsg.classList.remove('hidden');
-                registerButton.disabled = false; // Re-enable button on failure
-                registerButton.textContent = 'Register';
+                registerButton.disabled = false; // re-enable button on failure
+                registerButton.textContent = 'register';
             }
         }
     </script>
