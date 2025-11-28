@@ -43,7 +43,7 @@
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            min-height: 100vh;
+            min-height: 10vh;
             padding-top: 1.5rem; 
             overflow-x: hidden; 
             position: relative; 
@@ -305,7 +305,7 @@
                     <button id="gift-button" 
                             class="ml-2 text-2xl text-red-500 hover:text-red-400 shake-gift" 
                             title="Referral Link"
-                            onclick="window.location.href='ref.html'">
+                            onclick="showGiftModal()"> <!-- UPDATED: showGiftModal() is now called -->
                         <i class="fas fa-gift"></i>
                     </button>
                 </div>
@@ -496,6 +496,22 @@
             </div>
         </div>
     </div>
+    
+    <!-- Gift Information Modal (NEW MODAL) -->
+    <div id="gift-info-modal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50 hidden">
+        <div class="modal-card p-6 w-11/12 max-w-sm text-center">
+            <!-- Icon to symbolize restriction/warning -->
+            <i class="fas fa-ban text-red-500 text-4xl mb-4"></i>
+            <h3 class="text-xl font-bold mb-2 text-white">Feature Restriction</h3>
+            <p class="text-base text-gray-300 mb-6">
+                This feature is only available in China.
+            </p>
+            <button type="button" onclick="closeModal('gift-info-modal')" 
+                    class="w-full py-2 px-4 bg-red-600 hover:bg-red-700 rounded-lg text-white font-semibold transition">
+                OK
+            </button>
+        </div>
+    </div>
 
 
     <script>
@@ -552,6 +568,28 @@
         const newNetworkLabel = document.getElementById('new-network-label');
         const currentNetworkLabel = document.getElementById('current-network-label');
         const confirmNetworkButton = document.getElementById('confirm-network-button');
+
+        
+        /**
+         * Generic function to close a modal by its ID.
+         * @param {string} modalId The ID of the modal element.
+         */
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('hidden');
+            }
+        }
+        
+        /**
+         * Shows the gift feature restriction modal.
+         */
+        function showGiftModal() {
+            const giftModal = document.getElementById('gift-info-modal');
+            if (giftModal) {
+                giftModal.classList.remove('hidden');
+            }
+        }
 
 
         function toggleDropdownMenu() {
@@ -702,7 +740,7 @@
                 networkToSelect = 'TRC20';
             } else if (address.startsWith('0x') && address.length === 42) {
                 // ERC20 and BEP20 both start with 0x and have 42 chars. 
-                // We default to ERC20 for 0x addresses, but the user must manually confirm if needed.
+                // We default to BEP20 for 0x addresses, but the user must manually confirm if needed.
                  networkToSelect = 'BEP20';
             }
 
