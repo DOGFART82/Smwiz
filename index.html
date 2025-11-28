@@ -15,7 +15,6 @@
         }
         /* ensure the screen fits the viewport exactly (100vh) without scrolling. */
         .mobile-container {
-            /* استخدام 100vh بشكل عام */
             height: 100vh; 
             box-sizing: border-box; 
         }
@@ -82,6 +81,11 @@
             // 1. التأكد من جاهزية الـ web app
             telegram.webapp.ready();
             
+            // ✅ إضافة: إخفاء زر الرجوع الافتراضي
+            telegram.webapp.BackButton.hide();
+            // ✅ إضافة: إخفاء زر Main Button الافتراضي
+            telegram.webapp.MainButton.hide(); 
+
             // 2. طلب وضع ملء الشاشة لإخفاء الأشرطة
             if (telegram.webapp.isExpanded) {
                 telegram.webapp.expand(); 
@@ -98,7 +102,6 @@
 
         // get the audio element once
         const bipSound = document.getElementById('bipsound');
-        // ✅ تم تصحيح ID الزر هنا ليصبح 'registerButton'
         document.getElementById('registerButton').addEventListener('click', handleRegister);
 
         function handleRegister() {
@@ -112,7 +115,6 @@
             const usernameInput = document.getElementById('username');
             const username = usernameInput.value.trim();
             const errorMsg = document.getElementById('error-message');
-            // ✅ تم تصحيح ID الزر هنا ليصبح 'registerButton'
             const registerButton = document.getElementById('registerButton');
 
             // 1. input validation (english letters and numbers only)
@@ -142,7 +144,7 @@
                 localStorage.setItem('registeredUsername', username);
                 console.log("username saved to localStorage:", username);
 
-                // 3. redirect to main.html
+                // 3. redirect to dash.html
                 window.location.href = 'dash.html';
                 
             } catch (error) {
