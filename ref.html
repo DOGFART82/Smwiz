@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Referral System - Dark Theme</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Using Inter font which is suitable for global/crypto UIs -->
+    <style>
+        /* Using Inter for a modern look */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121212; /* Very dark background */
+            color: #ffffff; /* Default text color is white */
+        }
+        /* Glow effect for the main button */
+        .glow-button {
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.6), 0 0 20px rgba(0, 255, 65, 0.4);
+            transition: all 0.3s ease-in-out;
+        }
+        .glow-button:hover {
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.8), 0 0 30px rgba(0, 255, 65, 0.6);
+        }
+        /* Inner copy button design */
+        .copy-button {
+            transition: all 0.2s;
+            position: relative;
+        }
+        /* Show loading overlay by default, hide app container initially */
+        #loading-overlay {
+            display: flex;
+        }
+    </style>
+    <script>
+        // Define new colors to suit the dark theme
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'dark-bg': '#121212',
+                        'dark-card': '#1e1e1e',
+                        'input-bg': '#333333',
+                        'primary-green': '#00ff41', // Luminous neon green
+                        'text-light': '#ffffff',
+                        'text-secondary': '#a0a0a0',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <!-- Initial Loading Screen -->
+    <div id="loading-overlay" class="fixed inset-0 bg-dark-bg/90 backdrop-blur-sm z-50 flex items-center justify-center">
+        <div class="text-center">
+            <svg class="animate-spin h-8 w-8 text-primary-green mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <p class="mt-2 text-text-light">Initializing System...</p>
+        </div>
+    </div>
+    
+    <!-- Main User Interface -->
+    <div id="app-container" class="w-full max-w-lg bg-dark-card shadow-2xl shadow-black/50 rounded-xl p-6 md:p-8 space-y-8 hidden">
+        <header class="text-center">
+            <h1 class="text-3xl font-bold text-text-light">Referral System (GROK 3.7)</h1>
+            <p class="text-text-secondary mt-2">Share your code and earn rewards!</p>
+        </header>
+
+        <!-- Referral Code and Progress Section -->
+        <div class="bg-input-bg p-5 rounded-lg border border-gray-700 shadow-inner shadow-black/30">
+            <h2 class="text-lg font-semibold text-text-light mb-3">My Referral Code</h2>
+            
+            <div id="user-info" class="space-y-4">
+                <!-- Code Display Screen -->
+                <div class="flex items-center justify-between bg-dark-card p-3 border border-primary-green rounded-lg shadow-md shadow-primary-green/20">
+                    <span id="referral-code-display" class="font-mono text-xl text-primary-green font-bold tracking-wider select-all">Loading...</span>
+                    <!-- Copy Button -->
+                    <button id="copy-button" class="copy-button bg-primary-green/10 text-primary-green text-sm px-3 py-1.5 rounded-md hover:bg-primary-green/20 transition duration-150 border border-primary-green/50">
+                        Copy Code
+                    </button>
+                </div>
+
+                <div class="flex items-center justify-between pt-2">
+                    <span class="text-text-secondary font-medium">Current Referrals Count:</span>
+                    <span id="referral-count-display" class="text-2xl font-extrabold text-primary-green">0</span>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="w-full bg-input-bg rounded-full h-2.5">
+                    <div id="progress-bar" class="bg-primary-green h-2.5 rounded-full transition-all duration-500 shadow-md shadow-primary-green/30" style="width: 0%"></div>
+                </div>
+                <p class="text-sm text-text-secondary text-center mt-1">Remaining for Gift: <span id="remaining-count">20</span> users</p>
+            </div>
+        </div>
+
+        <!-- Reward Section (Appears at 20 Referrals) -->
+        <div id="reward-banner" class="hidden p-4 bg-yellow-900/40 border-l-4 border-yellow-400 text-yellow-400 rounded-lg shadow-xl" role="alert">
+            <div class="flex items-center">
+                <svg class="h-6 w-6 text-yellow-400 flex-shrink-0 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.45-.76 1.54-.76 1.99 0l2.36 4.072 4.47.649c.81.118 1.14 1.157.549 1.76l-3.235 3.16.764 4.455c.138.802-.705 1.41-1.424 1.002l-3.99-2.094-3.99 2.094c-.719.408-1.562-.2-1.424-1.002l.764-4.455-3.235-3.16c-.59-.603-.26-1.642.549-1.76l4.47-.649 2.36-4.072z"/>
+                </svg>
+                <p class="font-bold text-lg">Congratulations! You received a 10 USDT flash gift!</p>
+            </div>
+            <p class="mt-2 text-sm">Your reward has been successfully deposited. Keep referring for more!</p>
+        </div>
+
+        <!-- Enter Referral Code Section -->
+        <div class="p-5 bg-dark-card rounded-lg border border-gray-700 shadow-lg shadow-black/30">
+            <h2 class="text-lg font-semibold text-text-light mb-4">Enter Another User's Code</h2>
+            <form id="referral-form" class="space-y-4">
+                <input type="text" id="referrer-code-input" placeholder="Your Referrer Code" required 
+                       class="w-full px-4 py-3 border border-gray-600 bg-input-bg text-text-light rounded-lg focus:ring-primary-green focus:border-primary-green transition duration-150 text-center font-mono uppercase tracking-wider text-lg placeholder-text-secondary">
+                
+                <!-- Luminous Green Confirmation Button -->
+                <button type="submit" id="submit-referral-button" class="w-full bg-primary-green text-black font-extrabold py-3 rounded-xl hover:bg-green-300 transition duration-150 shadow-md glow-button disabled:opacity-50 flex items-center justify-center">
+                    Confirm Code
+                    <svg class="w-5 h-5 ml-2 rotate-90" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M11.9997 10.8284L7.04996 15.7782L5.63574 14.364L11.9997 8L18.3637 14.364L16.9495 15.7782L11.9997 10.8284Z" />
+                    </svg>
+                </button>
+                <div id="form-message" class="text-center font-medium pt-2"></div>
+            </form>
+        </div>
+
+        <p class="text-xs text-gray-600 text-center">Current User ID (for tracking): <span id="current-user-id"></span></p>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, onSnapshot, setDoc, runTransaction, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        // Setting Firestore log level
+        setLogLevel('debug');
+
+        // 1. Accessing Environment Variables (Mandatory Global Variables)
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : { /* mock config if missing */ };
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        
+        // Global Variables
+        let app, db, auth;
+        let userId = null;
+        let userReferralCode = null;
+        const TARGET_REFERRALS = 20;
+
+        // Essential UI Elements
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const appContainer = document.getElementById('app-container');
+        const referralCodeDisplay = document.getElementById('referral-code-display');
+        const referralCountDisplay = document.getElementById('referral-count-display');
+        const progressBar = document.getElementById('progress-bar');
+        const remainingCountSpan = document.getElementById('remaining-count');
+        const rewardBanner = document.getElementById('reward-banner');
+        const referralForm = document.getElementById('referral-form');
+        const referrerCodeInput = document.getElementById('referrer-code-input');
+        const submitReferralButton = document.getElementById('submit-referral-button');
+        const formMessage = document.getElementById('form-message');
+        const copyButton = document.getElementById('copy-button');
+        const currentUserIdSpan = document.getElementById('current-user-id');
+        
+        /**
+         * Initialize Firebase services.
+         * @returns {boolean} True if initialized successfully.
+         */
+        function initializeFirebase() {
+            try {
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                return true;
+            } catch (error) {
+                console.error("Error initializing Firebase:", error);
+                loadingOverlay.innerHTML = `<p class="text-red-400">Firebase initialization failed. Check settings.</p>`;
+                return false;
+            }
+        }
+        
+        /**
+         * Public Referrals Collection Path.
+         * @returns {string} Collection Path
+         */
+        const getReferralsCollectionPath = () => 
+            `/artifacts/${appId}/public/data/referrals`;
+
+        /**
+         * Handler for copying code to clipboard.
+         */
+        function handleCopy() {
+            const codeToCopy = referralCodeDisplay.textContent;
+            if (codeToCopy && codeToCopy !== 'Loading...') {
+                // Use execCommand('copy') as a fallback that works in an iframe environment
+                const tempInput = document.createElement('textarea');
+                tempInput.value = codeToCopy;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                try {
+                    document.execCommand('copy');
+                    copyButton.textContent = 'Copied!';
+                    // Flash success style
+                    copyButton.classList.remove('bg-primary-green/10', 'text-primary-green');
+                    copyButton.classList.add('bg-primary-green', 'text-black', 'font-bold');
+                    setTimeout(() => {
+                        copyButton.textContent = 'Copy Code';
+                        // Restore initial style
+                        copyButton.classList.add('bg-primary-green/10', 'text-primary-green');
+                        copyButton.classList.remove('bg-primary-green', 'text-black', 'font-bold');
+                    }, 2000);
+                } catch (err) {
+                    console.error('Copy failed:', err);
+                }
+                document.body.removeChild(tempInput);
+            }
+        }
+
+        /**
+         * Update the UI based on referral data.
+         * @param {number} count Referrals Count
+         */
+        function updateUI(count) {
+            const percentage = Math.min((count / TARGET_REFERRALS) * 100, 100);
+            const remaining = Math.max(0, TARGET_REFERRALS - count);
+
+            referralCountDisplay.textContent = count;
+            progressBar.style.width = `${percentage}%`;
+            remainingCountSpan.textContent = remaining;
+
+            // Show reward banner
+            if (count >= TARGET_REFERRALS) {
+                rewardBanner.classList.remove('hidden');
+                progressBar.classList.add('shadow-none'); // Remove shadow after completion
+            } else {
+                rewardBanner.classList.add('hidden');
+            }
+        }
+
+        /**
+         * Listen for current user's real-time referral data.
+         */
+        function setupReferralListener() {
+            if (!db || !userId) return;
+
+            // Use referral code (first 8 characters of UID) as the Firestore document ID
+            const userDocRef = doc(db, getReferralsCollectionPath(), userReferralCode.toLowerCase());
+
+            // Listen for changes in the user's document
+            onSnapshot(userDocRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    const count = data.referralCount || 0;
+                    console.log(`Referral data updated: Count=${count}, ReferredBy=${data.referredBy}`);
+                    updateUI(count);
+                    
+                    // If the user has already been referred, disable the referral form
+                    if (data.referredBy) {
+                        referrerCodeInput.disabled = true;
+                        submitReferralButton.disabled = true;
+                        formMessage.textContent = 'You have already entered a referral code.';
+                        formMessage.classList.remove('text-red-400', 'text-primary-green');
+                        formMessage.classList.add('text-text-secondary');
+                    }
+                } else {
+                    console.log("User document not found in Firestore. Creating new document...");
+                    // If the document does not exist, create it with default values
+                    setDoc(userDocRef, {
+                        referralCode: userReferralCode,
+                        referralCount: 0,
+                        referredBy: null,
+                        createdAt: new Date().toISOString()
+                    }, { merge: true }).catch(err => {
+                        console.error("Failed to create user document:", err);
+                    });
+                    updateUI(0);
+                }
+            }, (error) => {
+                console.error("Error in onSnapshot:", error);
+                formMessage.textContent = "An error occurred while loading data.";
+                formMessage.classList.add('text-red-400');
+            });
+        }
+        
+        /**
+         * Handler for submitting the referral code.
+         * @param {Event} e Submission event
+         */
+        async function handleSubmitReferral(e) {
+            e.preventDefault();
+            submitReferralButton.disabled = true;
+            formMessage.textContent = 'Verifying...';
+            formMessage.classList.remove('text-red-400', 'text-primary-green', 'text-text-secondary');
+            formMessage.classList.add('text-yellow-400'); // Temporary color for verification
+
+            const referrerCode = referrerCodeInput.value.trim().toUpperCase();
+
+            if (!referrerCode) {
+                formMessage.textContent = 'Please enter a valid referral code.';
+                formMessage.classList.remove('text-yellow-400');
+                formMessage.classList.add('text-red-400');
+                submitReferralButton.disabled = false;
+                return;
+            }
+
+            if (referrerCode === userReferralCode) {
+                formMessage.textContent = 'You cannot refer yourself!';
+                formMessage.classList.remove('text-yellow-400');
+                formMessage.classList.add('text-red-400');
+                submitReferralButton.disabled = false;
+                return;
+            }
+
+            try {
+                // 1. Search for the referrer based on the code
+                const referrerRef = doc(db, getReferralsCollectionPath(), referrerCode.toLowerCase());
+                const referrerSnap = await getDoc(referrerRef);
+
+                if (!referrerSnap.exists() || referrerSnap.data().referralCode !== referrerCode) {
+                    // If the code is not the same as the stored unique code, or if it doesn't exist
+                    formMessage.textContent = 'This referral code does not exist or is invalid.';
+                    formMessage.classList.remove('text-yellow-400');
+                    formMessage.classList.add('text-red-400');
+                    submitReferralButton.disabled = false;
+                    return;
+                }
+                
+                // 2. Update referrer's count and log the referral in a Transaction for security
+                const currentUserRef = doc(db, getReferralsCollectionPath(), userReferralCode.toLowerCase());
+
+                await runTransaction(db, async (transaction) => {
+                    const currentUserSnap = await transaction.get(currentUserRef);
+                    
+                    if (!currentUserSnap.exists()) {
+                         // The document must exist because of setupReferralListener
+                         throw "Current user not initialized correctly.";
+                    }
+                    
+                    // Check again: referral is not possible if the user has already been referred
+                    if (currentUserSnap.data().referredBy) {
+                        throw "You have already entered a referral code.";
+                    }
+
+                    // Update referrer document: increment referral count
+                    const currentReferralCount = referrerSnap.data().referralCount || 0;
+                    transaction.update(referrerRef, { referralCount: currentReferralCount + 1 });
+
+                    // Update current user document: log referrer's code
+                    transaction.update(currentUserRef, {
+                        referredBy: referrerCode,
+                        referredAt: new Date().toISOString()
+                    });
+                });
+                
+                // Success
+                formMessage.textContent = 'Referral confirmed successfully! Thank you.';
+                formMessage.classList.remove('text-red-400', 'text-yellow-400');
+                formMessage.classList.add('text-primary-green');
+                referrerCodeInput.disabled = true;
+                referrerCodeInput.value = '';
+
+            } catch (error) {
+                console.error("Failed to submit referral code:", error);
+                
+                let errorMessage = 'An unexpected error occurred. Please try again.';
+                if (typeof error === 'string') {
+                     errorMessage = error; // Custom error messages from the transaction
+                }
+
+                formMessage.textContent = errorMessage;
+                formMessage.classList.remove('text-yellow-400');
+                formMessage.classList.add('text-red-400');
+                submitReferralButton.disabled = false;
+            }
+        }
+
+        /**
+         * Setup Authentication and start Listeners.
+         */
+        async function setupAuthAndListeners() {
+            // Sign in with a custom token if available, otherwise sign in anonymously
+            try {
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (error) {
+                console.error("Authentication failed:", error);
+                // Continue to activate onAuthStateChanged
+            }
+
+            // Listen for authentication state change
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    userId = user.uid;
+                    // Use the first 8 characters of UID as the referral code
+                    userReferralCode = userId.substring(0, 8).toUpperCase();
+                    
+                    // Update UI with user information
+                    referralCodeDisplay.textContent = userReferralCode;
+                    currentUserIdSpan.textContent = userId;
+                    
+                    // Hide loading and show the application
+                    loadingOverlay.classList.add('hidden');
+                    appContainer.classList.remove('hidden');
+
+                    // Start listening for referral data
+                    setupReferralListener();
+
+                    // Setup copy handler
+                    copyButton.addEventListener('click', handleCopy);
+                    
+                    // Setup referral form handler
+                    referralForm.addEventListener('submit', handleSubmitReferral);
+                    
+                } else {
+                    // No user logged in, this usually only happens if the initial authentication fails
+                    loadingOverlay.classList.add('hidden');
+                    appContainer.classList.remove('hidden');
+                    console.warn("User is not logged in. There might be an authentication issue.");
+                }
+            });
+        }
+
+        // Start application initialization
+        if (initializeFirebase()) {
+            setupAuthAndListeners();
+        }
+    </script>
+</body>
+</html>
+

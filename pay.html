@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Payment Selection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        /* Custom styles for the font and focused state */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        :root {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Dark Theme Background */
+        .dark-theme-bg {
+            background-color: #0d0d0d; /* نفس لون الخلفية في main.html تقريباً */
+        }
+        /* Glassmorphism Effect for Card and Modal */
+        .glass-card {
+            background-color: rgba(13, 13, 13, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 2px solid rgba(204, 255, 0, 0.3);
+            border-radius: 12px;
+        }
+        /* Inner Glass Effect for amount display and buttons */
+        .glass-card-inner {
+            background-color: rgba(25, 25, 25, 0.7);
+            transition: all 0.3s ease-in-out;
+            border-radius: 8px;
+        }
+        /* Custom Neon Green Color */
+        .neon-green {
+            color: #ccff00;
+        }
+        .bg-neon-green {
+            background-color: #ccff00;
+        }
+        .border-neon-green {
+            border-color: #ccff00;
+        }
+        .shadow-neon {
+            box-shadow: 0 0 10px #ccff00, 0 0 20px #ccff0080;
+        }
+        /* Style for the selected button state */
+        .payment-method-button.selected {
+            @apply border-neon-green shadow-neon;
+            background-color: rgba(13, 13, 13, 0.8);
+        }
+        .payment-method-button, .submit-btn, .copy-button {
+            transition: all 0.3s ease-in-out;
+        }
+        /* Modal Styles - Ensure it is fixed and on top */
+        #payment-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 50;
+            overflow-y: auto;
+            padding: 0.5rem 0.5rem;
+            display: none; /* مخفي افتراضياً */
+        }
+        .modal-content-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100%;
+            width: 100%;
+        }
+        .modal-content {
+            margin: auto; /* لضمان التوسيط الرأسي */
+            max-width: 95%;
+        }
+        /* Ensure address fields are LTR */
+        #txid-input, #payment-address, .ltr-text {
+            direction: ltr;
+            text-align: left;
+        }
+    </style>
+</head>
+<body class="dark-theme-bg p-2 sm:p-4 text-white h-screen flex items-center justify-center">
+
+    <div class="payment-container max-w-xl w-full mx-auto glass-card p-3 sm:p-4 rounded-xl shadow-2xl shadow-black/50 transition-all">
+        <h2 class="text-xl sm:text-3xl font-extrabold text-white mb-3 text-center border-b-4 border-neon-green pb-1">
+            <i class="fas fa-wallet mr-2"></i> Select Cryptocurrency Payment Method
+        </h2>
+
+        <div id="payment-amount-display" class="text-center mb-4 p-3 rounded-lg glass-card-inner border border-neon-green/50">
+            <span class="text-gray-400 font-semibold text-sm sm:text-base">Total Amount Due:</span>
+            <span id="display-amount" class="text-xl sm:text-2xl font-extrabold neon-green ml-2 ltr-text">$0.00</span>
+            <p id="amount-note" class="text-xs text-gray-500 mt-1">Please pay the amount above in your chosen currency.</p>
+        </div>
+
+        <div id="payment-methods" class="flex flex-col gap-3 mb-4">
+            
+            <div 
+                class="payment-method-button flex items-stretch glass-card-inner border-2 border-gray-700 rounded-lg cursor-pointer transition duration-300 ease-in-out hover:bg-gray-700 hover:border-neon-green focus:outline-none focus:ring-4 focus:ring-neon-green/50 overflow-hidden"
+                data-currency="USDT TRC20" 
+                onclick="selectMethod(this)"
+                tabindex="0"
+            >
+                <!-- Placeholder Image Fallback -->
+                <img src="trc20.png" onerror="this.onerror=null; this.src='https://placehold.co/56x56/0d0d0d/ccff00?text=TRC20';" alt="USDT TRC20" class="h-auto w-12 sm:w-14 object-cover shadow-md border-r-2 border-neon-green/50 flex-shrink-0">
+                <div class="method-text font-semibold text-sm sm:text-lg text-white flex-grow py-2 pl-4">USDT (TRON/TRC20)</div>
+            </div>
+
+            <div 
+                class="payment-method-button flex items-stretch glass-card-inner border-2 border-gray-700 rounded-lg cursor-pointer transition duration-300 ease-in-out hover:bg-gray-700 hover:border-neon-green focus:outline-none focus:ring-4 focus:ring-neon-green/50 overflow-hidden"
+                data-currency="USDT BEP20" 
+                onclick="selectMethod(this)"
+                tabindex="0"
+            >
+                <!-- Placeholder Image Fallback -->
+                <img src="bep20.png" onerror="this.onerror=null; this.src='https://placehold.co/56x56/0d0d0d/ccff00?text=BEP20';" alt="USDT BEP20" class="h-auto w-12 sm:w-14 object-cover shadow-md border-r-2 border-neon-green/50 flex-shrink-0">
+                <div class="method-text font-semibold text-sm sm:text-lg text-white flex-grow py-2 pl-4">USDT (BSC/BEP20)</div>
+            </div>
+
+            <div 
+                class="payment-method-button flex items-stretch glass-card-inner border-2 border-gray-700 rounded-lg cursor-pointer transition duration-300 ease-in-out hover:bg-gray-700 hover:border-neon-green focus:outline-none focus:ring-4 focus:ring-neon-green/50 overflow-hidden"
+                data-currency="Litecoin" 
+                onclick="selectMethod(this)"
+                tabindex="0"
+            >
+                <!-- Placeholder Image Fallback -->
+                <img src="litecoin.png" onerror="this.onerror=null; this.src='https://placehold.co/56x56/0d0d0d/ccff00?text=LTC';" alt="Litecoin" class="h-auto w-12 sm:w-14 object-cover shadow-md border-r-2 border-neon-green/50 flex-shrink-0">
+                <div class="method-text font-semibold text-sm sm:text-lg text-white flex-grow py-2 pl-4">Litecoin (LTC)</div>
+            </div>
+
+            <div 
+                class="payment-method-button flex items-stretch glass-card-inner border-2 border-gray-700 rounded-lg cursor-pointer transition duration-300 ease-in-out hover:bg-gray-700 hover:border-neon-green focus:outline-none focus:ring-4 focus:ring-neon-green/50 overflow-hidden"
+                data-currency="Solana" 
+                onclick="selectMethod(this)"
+                tabindex="0"
+            >
+                <!-- Placeholder Image Fallback -->
+                <img src="solana.png" onerror="this.onerror=null; this.src='https://placehold.co/56x56/0d0d0d/ccff00?text=SOL';" alt="Solana" class="h-auto w-12 sm:w-14 object-cover shadow-md border-r-2 border-neon-green/50 flex-shrink-0">
+                <div class="method-text font-semibold text-sm sm:text-lg text-white flex-grow py-2 pl-4">Solana (SOL)</div>
+            </div>
+
+            <div 
+                class="payment-method-button flex items-stretch glass-card-inner border-2 border-gray-700 rounded-lg cursor-pointer transition duration-300 ease-in-out hover:bg-gray-700 hover:border-neon-green focus:outline-none focus:ring-4 focus:ring-neon-green/50 overflow-hidden"
+                data-currency="BNB" 
+                onclick="selectMethod(this)"
+                tabindex="0"
+            >
+                <!-- Placeholder Image Fallback -->
+                <img src="bnb.png" onerror="this.onerror=null; this.src='https://placehold.co/56x56/0d0d0d/ccff00?text=BNB';" alt="BNB" class="h-auto w-12 sm:w-14 object-cover shadow-md border-r-2 border-neon-green/50 flex-shrink-0">
+                <div class="method-text font-semibold text-sm sm:text-lg text-white flex-grow py-2 pl-4">Binance Coin (BNB)</div>
+            </div>
+
+            <div 
+                class="payment-method-button flex items-stretch glass-card-inner border-2 border-gray-700 rounded-lg cursor-pointer transition duration-300 ease-in-out hover:bg-gray-700 hover:border-neon-green focus:outline-none focus:ring-4 focus:ring-neon-green/50 overflow-hidden"
+                data-currency="TRX" 
+                onclick="selectMethod(this)"
+                tabindex="0"
+            >
+                <!-- Placeholder Image Fallback -->
+                <img src="tr.png" onerror="this.onerror=null; this.src='https://placehold.co/56x56/0d0d0d/ccff00?text=TRX';" alt="TRX" class="h-auto w-12 sm:w-14 object-cover shadow-md border-r-2 border-neon-green/50 flex-shrink-0">
+                <div class="method-text font-semibold text-sm sm:text-lg text-white flex-grow py-2 pl-4">Tron (TRX)</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="payment-modal">
+        <div class="modal-content-wrapper">
+            <div id="modal-content-card" class="modal-content w-full max-w-lg mx-auto glass-card p-4 sm:p-6 rounded-xl shadow-neon transform transition-all duration-300 scale-100">
+                <div id="modal-invoice-details" class="space-y-3">
+                    <!-- Invoice details will be inserted here -->
+                </div>
+                <div id="verification-progress" class="hidden text-center p-4">
+                     <!-- Verification progress will be inserted here -->
+                </div>
+                <button 
+                    id="cancel-button"
+                    onclick="closePaymentModal()" 
+                    class="w-full bg-gray-700 text-white font-bold py-3 px-6 rounded-lg mt-6 text-base sm:text-lg hover:bg-gray-600 transition duration-300 border-2 border-gray-600"
+                >
+                    <i class="fas fa-chevron-left mr-2"></i> Cancel and Choose Another Method
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="notification-box" class="fixed inset-0 bg-gray-900 bg-opacity-70 hidden items-center justify-center p-4 z-50" onclick="closeNotification()">
+        <div class="bg-gray-800 p-6 rounded-lg shadow-2xl shadow-neon/30 max-w-sm w-full transform transition-all duration-300 scale-95 border border-neon-green/50" onclick="event.stopPropagation()">
+            <h4 id="notification-title" class="text-xl font-bold neon-green mb-3">Notification</h4>
+            <p id="notification-message" class="text-gray-200 mb-4"></p>
+            <button onclick="closeNotification()" class="w-full bg-neon-green text-gray-900 py-2 rounded-lg font-bold hover:bg-green-300 transition shadow-md">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. LOCAL STORAGE & BASE AMOUNT SETUP ---
+        const LOCAL_STORAGE_KEY = 'orderCost'; 
+        const DEFAULT_USD_AMOUNT = 12.00; // قيمة افتراضية في حالة عدم العثور على القيمة
+
+        let baseAmountString = localStorage.getItem(LOCAL_STORAGE_KEY);
+        let baseAmount = DEFAULT_USD_AMOUNT;
+        let originalInvoiceHTML = ''; // لتخزين محتوى الفاتورة الأصلي
+
+        // استخراج وتنظيف القيمة من localStorage
+        if (baseAmountString) {
+            // إزالة رمز الدولار وأي مسافات، ثم التحويل إلى رقم عشري
+            let cleanedAmount = baseAmountString.replace('$', '').trim();
+            let parsedAmount = parseFloat(cleanedAmount);
+            
+            if (!isNaN(parsedAmount) && parsedAmount > 0) {
+                baseAmount = parsedAmount;
+                console.log(`[Init] Success: Amount found and set to $${baseAmount.toFixed(2)}.`);
+            } else {
+                console.warn(`[Init] Warning: Invalid amount found in localStorage. Using default $${DEFAULT_USD_AMOUNT.toFixed(2)}.`);
+            }
+        } else {
+            console.warn(`[Init] Warning: Key '${LOCAL_STORAGE_KEY}' not found. Using default $${DEFAULT_USD_AMOUNT.toFixed(2)}.`);
+        }
+        
+        // عرض القيمة في الواجهة
+        document.getElementById('display-amount').textContent = `$${baseAmount.toFixed(2)}`;
+
+        // --- 2. PAYMENT DETAILS (FIXED CONVERSION RATES PER $1 USD) ---
+        // يتم ضرب baseAmount في conversionRate للحصول على المبلغ المطلوب بالعملة المشفرة
+        const PAYMENT_DETAILS = {
+            "USDT TRC20": { address: "TLLQXZgSWsA6XUbfnBXMQf2Uxi8CpfJN54", conversionRate: 1.00, currencySymbol: "USDT" },
+            "USDT BEP20": { address: "0x9e41239ef54a5bfdec23f8fb060f40e52d58b86a", conversionRate: 1.00, currencySymbol: "USDT" },
+            "Litecoin": { address: "ltc1qt89gcms2uwmtljljxl803ufcl7ka22yl2mflty", conversionRate: 0.012, currencySymbol: "LTC" },
+            "Solana": { address: "J5Y8aS8SrW7TQGdiThbrX89YxXnUHK4iLYCwEHVHWBmt", conversionRate: 0.0071, currencySymbol: "SOL" },
+            "BNB": { address: "0x9e41239ef54a5bfdec23f8fb060f40e52d58b86a", conversionRate: 0.0011, currencySymbol: "BNB" },
+            "TRX": { address: "TLLQXZgSWsA6XUbfnBXMQf2Uxi8CpfJN54", conversionRate: 3.57, currencySymbol: "TRX" }
+        };
+
+        // --- 3. UTILITY FUNCTIONS ---
+
+        function showNotification(title, message) {
+            document.getElementById('notification-title').textContent = title;
+            document.getElementById('notification-message').innerHTML = message; // Use innerHTML for potential lists/formatting
+            document.getElementById('notification-box').classList.remove('hidden');
+            document.getElementById('notification-box').classList.add('flex');
+        }
+
+        function closeNotification() {
+            document.getElementById('notification-box').classList.add('hidden');
+            document.getElementById('notification-box').classList.remove('flex');
+        }
+
+        function closePaymentModal() {
+            const paymentModal = document.getElementById('payment-modal');
+            paymentModal.style.display = 'none';
+
+            const selectedButton = document.querySelector('.payment-method-button.selected');
+            if (selectedButton) {
+                selectedButton.classList.remove('selected');
+            }
+            
+            // إعادة ضبط المحتوى إلى وضع الفاتورة الأصلي
+            document.getElementById('modal-invoice-details').innerHTML = originalInvoiceHTML;
+            document.getElementById('modal-invoice-details').classList.remove('hidden');
+            document.getElementById('verification-progress').classList.add('hidden');
+            document.getElementById('cancel-button').classList.remove('hidden');
+        }
+
+        function copyToClipboard(text, buttonElement) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.opacity = "0"; 
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            let success = false;
+            try {
+                success = document.execCommand('copy');
+            } catch (err) {
+                console.error('Copy failed: ', err);
+            }
+            document.body.removeChild(textArea);
+
+            if (success) {
+                // Update button text locally
+                const originalText = buttonElement.innerHTML;
+                buttonElement.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                showNotification("Success!", "Payment address has been successfully copied to the clipboard.");
+                setTimeout(() => {
+                    buttonElement.innerHTML = originalText;
+                }, 1500);
+            } else {
+                buttonElement.innerHTML = 'Failed';
+                showNotification("Error", "Could not copy the address. Please copy it manually.");
+            }
+        }
+
+        /**
+         * Changes the modal content to a loading/countdown state.
+         */
+        function startVerificationCountdown(txid) {
+            const progressDiv = document.getElementById('verification-progress');
+            const invoiceDiv = document.getElementById('modal-invoice-details');
+            const cancelButton = document.getElementById('cancel-button');
+            
+            invoiceDiv.classList.add('hidden');
+            cancelButton.classList.add('hidden'); // إخفاء زر الإلغاء أثناء التحقق
+            progressDiv.classList.remove('hidden');
+
+            const countdownDuration = 30; // 30 ثانية
+            let timeLeft = countdownDuration;
+            
+            progressDiv.innerHTML = `
+                <div class="space-y-4">
+                    <h3 class="text-xl sm:text-2xl font-bold neon-green text-center">
+                        <i class="fas fa-spinner fa-spin mr-2"></i> Verifying Transaction Proof...
+                    </h3>
+                    <p class="text-gray-300 text-sm sm:text-base">
+                        Transaction ID submitted: <span class="font-mono text-neon-green break-all ltr-text">${txid}</span>
+                    </p>
+                    <div class="p-3 glass-card-inner rounded-lg border border-neon-green/50">
+                        <p class="text-lg font-semibold text-white">
+                            Time Remaining: <span id="countdown-timer" class="neon-green text-2xl font-extrabold">${timeLeft}</span> seconds
+                        </p>
+                    </div>
+                    <p class="text-xs text-gray-500">
+                        This process is an automated simulation of blockchain confirmation and manual system checks.
+                    </p>
+                </div>
+            `;
+
+            const timerElement = document.getElementById('countdown-timer');
+            
+            const countdownInterval = setInterval(() => {
+                timeLeft -= 1;
+                if (timerElement) {
+                    timerElement.textContent = timeLeft;
+                }
+
+                if (timeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    
+                    // 1. إعادة عرض الفاتورة الأصلية (للسماح بالاختيار مجدداً)
+                    invoiceDiv.innerHTML = originalInvoiceHTML;
+                    invoiceDiv.classList.remove('hidden');
+                    progressDiv.classList.add('hidden');
+                    cancelButton.classList.remove('hidden');
+
+                    // 2. إظهار رسالة الفشل الجديدة
+                    const failureMessage = `
+                        <p class="text-red-400 font-bold mb-3">This TxID does not meet the standards for confirmation. Possible reasons include:</p>
+                        <ul class="list-disc ml-5 text-left space-y-1">
+                            <li>1. Fake or Invalid Transaction ID (TxID).</li>
+                            <li>2. Not the sufficient payment amount.</li>
+                            <li>3. Not the correct network or our destination wallet address.</li>
+                        </ul>
+                        <p class="mt-3">Please try again with the correct details or contact support.</p>
+                    `;
+                    showNotification("Verification Failed", failureMessage);
+                }
+            }, 1000);
+        }
+        
+        /**
+         * Handles selecting a payment method, calculating amount, populating the modal, and displaying it.
+         */
+        function selectMethod(element) {
+            console.log(`[Action] Method selected: ${element.dataset.currency}`);
+
+            // إزالة التحديد من جميع الأزرار وتحديد الزر الحالي
+            document.querySelectorAll('.payment-method-button').forEach(btn => btn.classList.remove('selected'));
+            element.classList.add('selected');
+
+            const currencyName = element.dataset.currency;
+            const details = PAYMENT_DETAILS[currencyName];
+            const invoiceDetailsDiv = document.getElementById('modal-invoice-details');
+            const paymentModal = document.getElementById('payment-modal');
+
+            if (!details) {
+                closePaymentModal();
+                showNotification("Error", "Invalid payment method selected.");
+                return;
+            }
+
+            // حساب المبلغ المطلوب
+            const requiredCryptoAmount = (baseAmount * details.conversionRate).toFixed(
+                // دقة عشري (2 لـ USDT/TRX، 4 للبقية)
+                details.currencySymbol === 'USDT' || details.currencySymbol === 'TRX' ? 2 : 4
+            );
+            
+            let networkDisplayName = currencyName;
+            if (currencyName.includes('TRC20')) {
+                networkDisplayName = 'TRON Network (TRC20)';
+            } else if (currencyName.includes('BEP20')) {
+                networkDisplayName = 'Binance Smart Chain Network (BEP20)';
+            }
+            
+            let currencyDisplayName = currencyName;
+            // أسماء عرض مبسطة
+            if (currencyName === 'Litecoin') { currencyDisplayName = 'Litecoin (LTC)'; } 
+            else if (currencyName === 'Solana') { currencyDisplayName = 'Solana (SOL)'; } 
+            else if (currencyName === 'BNB') { currencyDisplayName = 'Binance Coin (BNB)'; } 
+            else if (currencyName === 'TRX') { currencyDisplayName = 'Tron (TRX)'; }
+
+            // 3. توليد محتوى الفاتورة
+            const newInvoiceHTML = `
+                <h3 class="text-lg sm:text-xl font-bold neon-green text-center border-b-2 border-neon-green pb-2 mb-4">
+                    Manual Payment Instructions: ${currencyDisplayName}
+                </h3>
+                <p class="text-center font-medium text-red-400 text-xs sm:text-sm mb-4">
+                    Important: You must send the **EXACT AMOUNT** specified below to the correct address. Verification is manual.
+                </p>
+                
+                <div class="flex justify-between items-center py-2 border-b border-gray-700">
+                    <span class="font-medium text-gray-400 text-sm sm:text-base">Required Crypto Amount:</span>
+                    <span class="font-bold text-white text-sm sm:text-base ltr-text">${requiredCryptoAmount} ${details.currencySymbol}</span>
+                </div>
+                
+                <div class="flex justify-between items-center py-2 border-b border-gray-700">
+                    <span class="font-medium text-gray-400 text-sm sm:text-base">Payment Network:</span>
+                    <span class="font-bold text-white text-sm sm:text-base">${networkDisplayName}</span>
+                </div>
+                
+                <div class="flex flex-col justify-between items-start py-2 border-b border-gray-700">
+                    <span class="font-medium text-gray-400 mb-2 text-sm sm:text-base">Deposit Address:</span>
+                    <div class="flex items-center space-x-2 bg-gray-900 p-2 rounded-lg border border-gray-700 w-full">
+                        <span id="payment-address" class="font-mono text-xs sm:text-sm text-neon-green truncate w-full" dir="ltr">${details.address}</span>
+                        <button class="copy-button text-neon-green font-medium hover:text-green-300 transition duration-150 flex-shrink-0 text-sm sm:text-base" onclick="copyToClipboard('${details.address}', this)">
+                            <i class="far fa-copy"></i> Copy
+                        </button>
+                    </div>
+                </div>
+                
+                <form class="submission-form mt-6 pt-4 border-t border-gray-700" onsubmit="submitPaymentProof(event)">
+                    <label for="txid-input" class="block mb-2 font-semibold text-gray-300 text-sm sm:text-base">
+                        Step 2: Submit Transaction ID (TxID/Hash)
+                    </label>
+                    <input 
+                        type="text" 
+                        id="txid-input" 
+                        class="w-full p-3 border border-gray-700 rounded-lg focus:ring-neon-green focus:border-neon-green bg-gray-900 text-white box-border text-xs sm:text-sm shadow-inner shadow-black/30"
+                        placeholder="Enter the transaction Hash (e.g., 0x... or 18b...)" 
+                        required
+                        dir="ltr"
+                    >
+                    
+                    <button type="submit" class="submit-btn bg-neon-green text-gray-900 font-bold py-3 px-6 rounded-xl mt-4 w-full text-base sm:text-lg shadow-neon hover:bg-green-300 transition duration-300">
+                        Submit Payment Proof for Verification
+                    </button>
+                </form>
+            `;
+            
+            // تخزين HTML الأصلي للفاتورة لإعادة استخدامه بعد الإلغاء/التحقق
+            originalInvoiceHTML = newInvoiceHTML;
+
+            // 4. عرض المحتوى وإظهار النافذة المنبثقة
+            invoiceDetailsDiv.innerHTML = originalInvoiceHTML;
+            document.getElementById('verification-progress').classList.add('hidden'); // إخفاء التحميل إن كان ظاهراً
+            document.getElementById('cancel-button').classList.remove('hidden'); // إظهار زر الإلغاء
+            paymentModal.style.display = 'flex'; 
+            paymentModal.scrollTop = 0;
+            console.log(`[Action] Modal generated and shown for ${currencyName}.`);
+        }
+
+        /**
+         * Handles the submission of the payment proof (TxID) and initiates the 30-second verification countdown.
+         */
+        function submitPaymentProof(event) {
+            event.preventDefault();
+            const txidInput = document.getElementById('txid-input');
+            const txid = txidInput.value.trim();
+
+            if (!txid) {
+                showNotification("Error", "Please enter a valid Transaction ID (TxID) to submit proof.");
+                return;
+            }
+
+            // محاكاة عملية الإرسال والتحقق (30 ثانية)
+            startVerificationCountdown(txid);
+            console.log(`[Action] Payment proof submitted. Starting 30-second verification for TxID: ${txid}`);
+        }
+    </script>
+
+</body>
+</html>
+
