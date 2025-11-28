@@ -84,16 +84,18 @@
                 Telegram.WebApp.expand(); 
             }
             
-            // 2. إخفاء شريط التنقل العلوي (Navigation Header) عبر مطابقة الألوان
+            // 2. إخفاء جميع عناصر التحكم العلوية والسفلية
             try {
-                // ضبط لون شريط الحالة ليتناسب مع لون خلفية Telegram الثانوي (Secondary Background Color)
-                // وهذا يضمن الإخفاء في كل من الوضعين الداكن والفاتح
+                // إخفاء الشريط العلوي عبر مطابقة الألوان
                 Telegram.WebApp.setHeaderColor('secondary_bg_color'); 
                 Telegram.WebApp.setBackgroundColor('secondary_bg_color');
                 
-                // إخفاء زر الرجوع لتقليل عناصر التحكم في الشريط العلوي
+                // إخفاء زر الرجوع (وهو العنصر الأساسي في الشريط العلوي)
                 Telegram.WebApp.BackButton.hide();
                 
+                // إخفاء زر الإجراء الرئيسي (السفلي)
+                Telegram.WebApp.MainButton.hide();
+
                 // إعدادات إضافية لسلاسة تجربة المستخدم
                 Telegram.WebApp.isClosingConfirmationEnabled = false; 
                 Telegram.WebApp.isZoomEnabled = false;
