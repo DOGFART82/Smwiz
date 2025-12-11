@@ -1,163 +1,126 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome Screen | Register</title>
+    <title>GROK 4.1 - Server Maintenance</title>
+    <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        /* Apply a modern font */
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #000000;
-        }
-        /* Ensure the screen fits the viewport exactly (100vh) without scrolling. */
-        .mobile-container {
-            /* استخدام 100vh بشكل عام */
-            height: 100vh; 
-            box-sizing: border-box; 
-        }
-        /* Video styling for 1:1 aspect ratio */
-        video {
-            aspect-ratio: 1 / 1;
-            width: 100%;
-            max-width: 300px;
-            object-fit: cover;
-            border-radius: 1rem;
-        }
-    </style>
-</head>
-<body class="bg-black text-white antialiased">
-    
-    <audio id="bipSound">
-        <source src="bip.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
-
-    <div class="mobile-container flex flex-col items-center justify-between p-6 md:p-12 max-w-sm mx-auto">
-        
-        <div class="flex flex-col items-center w-full my-auto">
-            
-            <div class="w-full max-w-xs mb-8 overflow-hidden rounded-2xl shadow-xl shadow-fuchsia-900/10">
-                <video id="spaceVideo" autoplay loop muted playsinline poster="https://placehold.co/300x300/18181b/ffffff?text=Video+Loading+..." class="w-full h-auto">
-                    <source src="space.mp4" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-            </div>
-
-            <h1 class="text-5xl font-extrabold mb-2 text-center">
-                Welcome
-            </h1>
-            <p class="text-lg text-white/60 text-center">
-                Your journey starts here
-            </p>
-        </div>
-
-        <div class="w-full mt-8">
-            <p id="error-message" class="text-red-400 text-sm mb-3 hidden text-center"></p>
-
-            <input type="text" id="username" placeholder="Username (Alphanumeric only)"
-                   class="w-full bg-neutral-900 text-white placeholder-neutral-500 border border-neutral-700 p-4 rounded-xl mb-4 text-left focus:outline-none focus:ring-2 focus:ring-fuchsia-500 transition duration-150"
-                   maxlength="20">
-
-            <!-- تم تغيير اللون هنا إلى الأخضر (bg-green-500) مع نص أبيض (text-white) -->
-            <button id="registerButton"
-                    class="w-full bg-green-500 text-white font-semibold py-4 rounded-xl hover:bg-green-600 transition duration-150 shadow-lg shadow-green-500/30">
-                Register
-            </button>
-            
-            <div class="mt-8 text-xs text-white/50 text-center leading-relaxed">
-                By clicking "Register," you agree to our
-                <a href="#" class="text-white/80 underline font-medium hover:text-white transition duration-150">Terms of Service</a>
-                and
-                <a href="#" class="text-white/80 underline font-medium hover:text-white transition duration-150">Privacy Policy</a>.
-            </div>
-        </div>
-    </div>
-
-    <script type="text/javascript">
-        // 🟢 كود خاص بـ Telegram Mini App
-        if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
-            // 1. التأكد من جاهزية الـ Web App
-            Telegram.WebApp.ready();
-            
-            // 2. طلب وضع ملء الشاشة لإخفاء الأشرطة
-            // لاحظ: قد لا يكون هذا الإجراء متاحًا/فعالاً في كل ظروف متصفح تيليجرام، ولكنه هو الطريقة الرسمية.
-            if (Telegram.WebApp.isExpanded) {
-                // إذا كان قابلاً للتوسيع، اطلب التوسيع أولاً (وهذا يتم تلقائيًا في بعض الحالات)
-                Telegram.WebApp.expand(); 
-            }
-            if (Telegram.WebApp.requestFullscreen) {
-                 Telegram.WebApp.requestFullscreen();
-            } else {
-                 console.warn("requestFullscreen is not available in this Telegram WebApp version.");
-            }
-        } else {
-            console.log("Not running inside Telegram WebApp or SDK not loaded.");
-        }
-        // ------------------------------------
-
-        // Get the audio element once
-        const bipSound = document.getElementById('bipSound');
-        document.getElementById('registerButton').addEventListener('click', handleRegister);
-
-        function handleRegister() {
-            // تشغيل صوت الـ bip قبل أي معالجة
-            // يجب إعادة تحميل/إعادة تعيين الوقت لجعل الصوت يعمل في كل مرة يتم النقر فيها.
-            try {
-                bipSound.currentTime = 0; // إعادة تعيين الصوت للبداية
-                bipSound.play();
-            } catch (e) {
-                console.error("Could not play sound:", e);
-                // الاستمرار في العملية حتى لو فشل تشغيل الصوت
-            }
-            
-            const usernameInput = document.getElementById('username');
-            const username = usernameInput.value.trim();
-            const errorMsg = document.getElementById('error-message');
-            const registerButton = document.getElementById('registerButton');
-
-            // 1. Input Validation (English letters and numbers only)
-            const regex = /^[a-zA-Z0-9]+$/; 
-
-            if (username.length === 0) {
-                errorMsg.textContent = 'Please enter a username.';
-                errorMsg.classList.remove('hidden');
-                return;
-            }
-            
-            if (!regex.test(username)) {
-                errorMsg.textContent = 'Username must contain English letters and numbers only.';
-                errorMsg.classList.remove('hidden');
-                return;
-            }
-
-            // Clear previous error message
-            errorMsg.classList.add('hidden');
-            
-            // Disable button during storage/redirect
-            registerButton.disabled = true; 
-            registerButton.textContent = 'Processing...';
-
-            // 2. Save Username to localStorage (as explicitly requested)
-            try {
-                localStorage.setItem('registeredUsername', username);
-                console.log("Username saved to localStorage:", username);
-
-                // 3. Redirect to main.html
-                window.location.href = 'dash.html';
-                
-            } catch (error) {
-                console.error("Error saving username to localStorage:", error);
-                errorMsg.textContent = `Registration failed: Could not save username locally.`;
-                errorMsg.classList.remove('hidden');
-                registerButton.disabled = false; // Re-enable button on failure
-                registerButton.textContent = 'Register';
+    <!-- Configuration for Inter font and custom colors -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'grok-dark': '#0f172a', // Slate-900 equivalent
+                        'grok-blue': '#3b82f6', // Blue-500
+                        'grok-yellow': '#facc15', // Amber-400 for highlights
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
             }
         }
     </script>
+    <style>
+        /* Import Inter font (optimized for modern web) */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+    </style>
+</head>
+<body class="bg-grok-dark text-gray-100 min-h-screen flex items-center justify-center p-4 font-sans">
+
+    <div class="w-full max-w-lg bg-slate-800 p-8 md:p-10 rounded-3xl shadow-2xl border border-slate-700/50 transform transition duration-500 hover:shadow-grok-blue/30">
+        
+        <!-- Header & Main Announcement -->
+        <header class="text-center mb-10">
+            <h1 class="text-6xl font-extrabold text-grok-yellow mb-2 tracking-tighter">
+                GROK <span class="text-grok-blue">4.1</span>
+            </h1>
+            <p class="text-2xl font-light text-gray-300">IS HERE</p>
+        </header>
+
+        <!-- Maintenance Status Block -->
+        <div class="bg-red-700/70 border-l-4 border-red-500 rounded-xl p-4 mb-10 shadow-lg flex items-center justify-center space-x-3 animate-pulse">
+            <!-- SVG Icon: Server Off (using Lucide icons) -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white h-7 w-7">
+                <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                <line x1="18" y1="6" x2="18.01" y2="6"></line>
+            </svg>
+            <h2 class="text-xl md:text-2xl font-bold text-white uppercase tracking-wider">
+                SERVER UNDER MAINTENANCE
+            </h2>
+        </div>
+
+        <!-- New Features Section -->
+        <section class="mb-8">
+            <h3 class="text-lg font-semibold text-grok-yellow border-b border-slate-700 pb-2 mb-6 uppercase tracking-wider">
+                New Features & Updates
+            </h3>
+            
+            <ul class="space-y-6">
+                
+                <!-- Feature 1: Nigeria Bug Fixes -->
+                <li class="flex items-start space-x-4">
+                    <!-- SVG Icon: Map Pin (Location/Specifics) -->
+                    <div class="flex-shrink-0 p-2 bg-grok-blue rounded-full text-white shadow-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10c0-4.4-3.6-8-8-8s-8 3.6-8 8c0 6 8 10 8 10z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-lg font-medium text-gray-50">Fix bugs specific to the state of Nigeria</p>
+                        <p class="text-sm text-gray-400">Targeted stability enhancements for local users.</p>
+                    </div>
+                </li>
+
+                <!-- Feature 2: Speed and Accuracy -->
+                <li class="flex items-start space-x-4">
+                    <!-- SVG Icon: Zap (Speed/Efficiency) -->
+                    <div class="flex-shrink-0 p-2 bg-green-500 rounded-full text-white shadow-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-lg font-medium text-gray-50">Improving the speed and accuracy of operations</p>
+                        <p class="text-sm text-gray-400">Core engine optimization for faster and more precise results.</p>
+                    </div>
+                </li>
+
+                <!-- Feature 3: Price Update -->
+                <li class="flex items-start space-x-4">
+                    <!-- SVG Icon: Trending Up (Price Increase) -->
+                    <div class="flex-shrink-0 p-2 bg-red-500 rounded-full text-white shadow-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+                            <polyline points="16 7 22 7 22 13"></polyline>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-lg font-medium text-gray-50">
+                            Price update: Prices will be increased by <span class="text-red-400 font-bold">120%</span>
+                        </p>
+                        <p class="text-base text-gray-300 bg-slate-700 inline-block px-3 py-1 rounded-lg mt-1 font-mono">
+                            300 flash = <span class="text-grok-yellow">$26.4</span>
+                        </p>
+                    </div>
+                </li>
+
+            </ul>
+        </section>
+
+        <!-- Footer / Contact -->
+        <footer class="text-center pt-6 mt-6 border-t border-slate-700">
+            <p class="text-sm text-gray-500">
+                We apologize for the inconvenience. Service will resume shortly.
+            </p>
+        </footer>
+    </div>
+
 </body>
 </html>
 
