@@ -2,1085 +2,407 @@
 <html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crypto Order Application - Black Friday Theme</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GROK 6.71 - Crypto Flash</title>
     
-<script src="https://cdn.tailwindcss.com"></script>
-    
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    
     <style>
-        /* Custom styles for the BLACK FRIDAY THEME (Dark/Gold Radiant Theme) */
         :root {
-            /* --- PRIMARY ACCENT COLORS (GOLD/AMBER) --- */
-            --primary-accent: #F59E0B; /* Amber 500 - Main Accent (Gold) */
-            --primary-light: #FCD34D; /* Amber 300 - Subtle Accent */
-            --neon-green: #F59E0B; /* Reusing this variable for the gold submit button glow */
-            
-            /* --- DARK THEME BASE COLORS --- */
-            --body-bg: #0A0A0A; /* Deep Black Background */
-            --card-bg-transparent: rgba(17, 24, 39, 0.8); /* Dark Glass (Dark Gray 900) */
-            --input-bg: rgba(31, 41, 55, 0.7); /* Darker Input Background */
-            --input-border: #4B5563; /* Dark Input Border */
-            --text-dark: #F3F4F6; /* Light Text */
-            --text-subtle: #9CA3AF; /* Subtle Gray Text */
-            
-            --card-radius: 0.8rem; /* Card radius (12px) */
-
-            /* Network Colors remain distinct */
-            --trc-color: #DC2626; /* Red (TRC) */
-            --erc-color: #3B82F6; /* Blue (ERC) */
-            --bep-color: #FBBF24; /* Amber (BEP) */
-
-            /* Warning Color */
-            --warning-color: #EF4444; /* Red 500 */
-        }
-
-        /* Gradient Background with animation for 'متوج متحرك' (Moving Crowned Effect) */
-        @keyframes gradient-shift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            --primary-accent: #556B2F; 
+            --body-bg: #F3F4F6;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --card-radius: 1.15rem;
         }
 
         body {
-            /* New Radiant Dark/Gold Gradient Background */
-            background: linear-gradient(-45deg, #0A0A0A, #1F2937, #374151, #1F2937, #0A0A0A); 
-            background-size: 400% 400%;
-            animation: gradient-shift 20s ease infinite;
-            
+            background: var(--body-bg);
             font-family: 'Inter', sans-serif;
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            min-height: 100vh; 
-            padding-top: 4rem; 
-            overflow-x: hidden; 
-            position: relative; 
-            color: var(--text-dark); /* Ensure body text is light */
+            min-height: 100vh;
+            color: #1F2937;
+            padding-top: calc(1rem + 1cm); 
+            padding-bottom: 2cm;
+            overflow-x: hidden;
         }
 
         #app-container {
             max-width: 400px;
             width: 100%;
-            position: relative; 
-            z-index: 1; 
+            padding: 0 16px;
+            position: relative;
         }
         
-        /* Glassmorphism Effect for CARDS, INPUTS, MODALS, and DROPDOWNS */
-        .glass-container {
-            /* REQUIRED Dark Glassmorphism Properties */
-            background-color: var(--card-bg-transparent); /* Dark transparent background */
-            backdrop-filter: blur(12px); 
-            /* Aesthetic Properties */
-            border-radius: var(--card-radius);
-            box-shadow: 0 8px 32px 0 rgba(245, 158, 11, 0.15); /* Subtle gold shadow */
-            border: 1px solid rgba(255, 255, 255, 0.05); /* Very light border */
-        }
-
         .app-card {
-            /* Inherits glass-container styles */
-            @apply glass-container; 
-            padding: 0.8rem 1rem; 
-            margin-bottom: 0.75rem; 
-            color: var(--text-dark);
-            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2); /* Subtle gold lift */
+            background-color: var(--card-bg);
+            backdrop-filter: blur(10px); 
+            border-radius: var(--card-radius);
+            box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(255, 255, 255, 1);
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            position: relative;
         }
         
         .input-style {
-            background-color: var(--input-bg); /* Dark transparent background */
-            border: 1px solid var(--input-border);
-            border-radius: 0.6rem; 
-            padding: 0.5rem 0.8rem; 
+            background-color: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 0.75rem; 
+            padding: 0.65rem 1rem; 
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             transition: all 0.2s;
-            color: var(--text-dark); /* Light text */
-            backdrop-filter: blur(4px); 
+            cursor: pointer;
+            font-size: 0.9rem;
         }
-        .input-style::placeholder {
-            color: var(--text-subtle);
+
+        #platform-dropdown {
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 0;
+            right: 0;
+            background-color: #FFFFFF;
+            border-radius: 0.85rem;
+            z-index: 9999;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+            border: 1px solid #E5E7EB;
+            max-height: 300px;
+            overflow-y: auto;
         }
-        .input-style:focus {
-            border-color: var(--primary-accent); /* Gold focus border */
-            box-shadow: 0 0 0 1px var(--primary-accent);
-            background-color: var(--input-bg);
-            outline: none;
+
+        .platform-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #F3F4F6;
         }
-        
-        /* Network Buttons - Base Styles */
-        .network-btn-trc { background-color: var(--trc-color); }
-        .network-btn-erc { background-color: var(--erc-color); }
-        .network-btn-bep { background-color: var(--bep-color); }
+
+        .platform-item:hover {
+            background-color: #F9FAF2;
+        }
+
+        .platform-logo-sq {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            margin-right: 12px;
+            object-fit: contain;
+        }
 
         .network-btn {
-            border-radius: 0.75rem; 
-            transition: all 0.2s ease-in-out; 
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
-            padding: 0.2rem; 
-            height: 45px; 
-            border: 3px solid transparent; 
-        }
-        .network-btn:active {
-            transform: scale(0.98);
-        }
-        
-        /* Selection Glow Style (Red accent for warning) */
-        .network-selected {
-            border: 3px solid var(--warning-color); 
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.8), 0 2px 5px rgba(0, 0, 0, 0.5); 
-            transform: scale(1.02); 
-        }
-        
-        /* Internal button layout for uniformity */
-        .network-btn-content {
+            position: relative;
+            border-radius: 0.9rem;
+            height: 58px;
+            overflow: hidden;
+            border: 2px solid #F1F5F9; 
+            transition: all 0.3s;
+            background: #FFF;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
-            height: 100%; 
-            padding: 0 0.5rem; 
-        }
-        
-        .network-label {
-            font-weight: 700;
-            font-size: 0.6rem; 
-            flex-shrink: 0; 
-        }
-        
-        .network-icon {
-            width: 28px; 
-            height: 28px; 
-            border-radius: 50%;
-            background-color: rgba(255, 255, 255, 1);
-            display: flex;
             justify-content: center;
-            align-items: center;
-            flex-shrink: 0; 
+            cursor: pointer;
         }
 
-        /* --- UPDATED: Submit Button to RADIANT GOLD style --- */
-        .submit-gradient-btn {
-            background: linear-gradient(90deg, #F59E0B, #DC2626); /* Gold to Red Gradient */
-            color: #1F2937; /* Dark text for high contrast */
-            
-            border-radius: 1rem;
-            padding: 0.8rem; 
-            font-size: 1rem; 
+        .network-btn img {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+            margin-bottom: 2px;
+        }
+
+        .network-selected {
+            border-color: var(--primary-accent);
+            background: #F9FAF2; 
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(85, 107, 47, 0.1);
+        }
+
+        .network-label {
+            width: 100%;
+            color: #6B7280;
+            font-size: 8px;
             font-weight: 800;
-            box-shadow: 0 8px 30px rgba(245, 158, 11, 0.8); /* Strong Gold Shadow */
-            transition: all 0.3s ease;
-            text-shadow: 0 0 2px rgba(0, 0, 0, 0.2); 
-            border: 1px solid var(--primary-accent);
-        }
-        .submit-gradient-btn:hover {
-             box-shadow: 0 10px 40px rgba(245, 158, 11, 1);
-             transform: translateY(-1px); 
-        }
-        /* --- END UPDATED SUBMIT BUTTON --- */
-        
-        /* Toast style - now Gold/Amber with dark text */
-        #toast-container div {
-             background-color: var(--primary-accent);
-             color: #1F2937; 
-             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6);
-        }
-
-        /* Custom scrollbar */
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb { 
-            background-color: var(--primary-accent);
-            border-radius: 3px; 
-        }
-        .custom-scrollbar::-webkit-scrollbar-track { 
-            background: var(--input-bg);
-            border-radius: 3px;
-        }
-
-        /* Loader */
-        .loader {
-            border-top: 4px solid var(--primary-accent); 
-        }
-        
-        /* Menu icon and dropdown text color */
-        .menu-icon-color {
-            color: var(--primary-accent);
-        }
-
-        /* Platform Dropdown specific dark styles */
-        #platform-dropdown {
-            @apply glass-container; 
-            padding: 0.5rem 0; 
-            border-color: var(--input-border) !important;
-            backdrop-filter: blur(8px); 
-            left: 0; 
-            right: unset; 
-        }
-        #platform-dropdown .hover\\:bg-gray-100:hover {
-            background-color: rgba(245, 158, 11, 0.1) !important; /* Light gold hover */
-        }
-        
-        /* Menu Dropdown (Dark Glass Effect) */
-        #menu-dropdown {
-             @apply glass-container; 
-             backdrop-filter: blur(8px); 
-             right: 4px; 
-             left: unset; 
-        }
-        
-        /* Menu Dropdown text color fix for dark theme */
-        #menu-dropdown li button {
-             color: var(--text-dark); /* Light text */
-        }
-        #menu-dropdown .hover\\:bg-white\\/20:hover {
-             background-color: rgba(245, 158, 11, 0.1); /* Light gold hover */
-        }
-
-        /* Warning Modal Specific Styles (Glassmorphism) - dark theme */
-        .modal-card {
-            @apply glass-container; 
-        }
-
-        /* Animation for Toast */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeOut {
-            from { opacity: 1; transform: translateY(0); }
-            to { opacity: 0; transform: translateY(-20px); }
-        }
-
-        .fade-in {
-            animation: fadeIn 0.3s ease-out forwards;
-        }
-
-        .fade-out {
-            animation: fadeOut 0.3s ease-in forwards;
-        }
-        
-        /* Countdown specific styles - Uses gold glow */
-        .countdown-unit {
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.5rem;
-            min-width: 2.5rem;
-            display: inline-block;
             text-align: center;
-            font-variant-numeric: tabular-nums; 
-            background-color: rgba(0, 0, 0, 0.5); /* Darker background for contrast */
-            box-shadow: 0 0 10px rgba(245, 158, 11, 0.5); /* Gold glow */
         }
-        
-        /* MODIFIED: Black Friday Sticker Style - Repositioned to the top right of the element */
-        .black-friday-sticker {
-            position: absolute;
-            top: -10px; /* Position above the text */
-            right: -20px; /* Position to the right of the text */
-            transform: rotate(5deg); /* Keep the slight rotation */
-            padding: 2px 8px;
-            background-color: #000000; /* Black background */
-            color: var(--primary-accent); /* Gold text */
-            border: 2px solid var(--primary-accent);
-            border-radius: 0.5rem;
-            font-size: 0.6rem;
+
+        .amount-chip {
+            border: 1px solid #E5E7EB;
+            border-radius: 0.75rem;
+            padding: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .amount-chip.active {
+            background: var(--primary-accent);
+            border-color: var(--primary-accent);
+            color: white !important;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: #18181B;
+            color: white;
+            border-radius: 1.15rem;
+            padding: 1rem;
+            font-weight: 800;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.12);
+            margin-top: 0.5rem;
+        }
+
+        .floating-support {
+            position: fixed;
+            bottom: 30px;
+            right: 0;
+            z-index: 9999;
+            background: #556B2F;
+            color: white;
+            width: 56px;
+            height: 56px;
+            border-radius: 30px 0 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: -4px 4px 12px rgba(0, 0, 0, 0.15);
+            text-decoration: none;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-right: none;
+            transition: transform 0.2s;
+        }
+
+        .floating-support:active { transform: scale(0.95); }
+
+        @keyframes pulse-glow {
+            0% { box-shadow: -4px 4px 0px 0px rgba(85, 107, 47, 0.4); }
+            70% { box-shadow: -4px 4px 0px 10px rgba(85, 107, 47, 0); }
+            100% { box-shadow: -4px 4px 0px 0px rgba(85, 107, 47, 0); }
+        }
+
+        .floating-support { animation: pulse-glow 2s infinite; }
+
+        .join-btn-sm {
+            background: #0088cc;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 10px;
             font-weight: 900;
-            text-transform: uppercase;
-            box-shadow: 0 2px 5px rgba(245, 158, 11, 0.5);
-            line-height: 1;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            line-height: 1.1;
         }
-        
-        /* Removed .shake-gift and related animation styles */
-        
     </style>
 </head>
 <body>
 
+    <!-- Warning Modal -->
+    <div id="warning-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[20000] flex justify-center items-center p-5">
+        <div class="bg-white rounded-[2rem] p-6 max-w-[340px] w-full shadow-2xl">
+            <div class="w-14 h-14 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-exclamation-triangle text-red-500 text-xl"></i>
+            </div>
+            <h3 class="text-center text-lg font-black text-gray-900 mb-4 tracking-tight">Important Notice</h3>
+            <div class="space-y-4 text-sm text-gray-600 leading-relaxed text-center font-medium">
+                <p>You cannot generate the flash more than <span class="text-red-600 font-bold">2 times</span> per day.</p>
+                <p>Sending multiple purchase requests without payment will result in a <span class="font-bold">device ban</span>.</p>
+            </div>
+            <button onclick="closeModal()" class="w-full mt-6 bg-[#18181B] text-white py-4 rounded-2xl font-black text-sm uppercase">
+                I Understand
+            </button>
+        </div>
+    </div>
+
+    <!-- Circular Support Button -->
+    <a href="https://t.me/ZhangHaoyu1921" target="_blank" class="floating-support">
+        <i class="fas fa-headset"></i>
+    </a>
+
     <div id="app-container">
-        
-        <!-- TOP NAVIGATION BAR -->
-        <div class="relative z-20 flex justify-between items-center px-4 mb-8">
-            
-            <div class="flex items-center">
-                
-                <img src="logo.png" 
-                     alt="App Logo" 
-                     class="w-10 h-10 object-cover rounded-full shadow-lg"
-                     onerror="this.onerror=null; this.src='https://placehold.co/40x40/F59E0B/000000?text=LOGO';">
-
-                <div class="flex items-center ml-4 relative">
-                    <!-- Text color changed from dark gray to white for dark theme -->
-                    <span class="text-white text-xl font-extrabold">GROK 4.1</span>
-                    
-                    <!-- Black Friday Sticker Added, now positioned top right of the text -->
-                    <span class="black-friday-sticker">
-                        Black Friday
-                    </span>
-                    
-                    <!-- GIFT BUTTON REMOVED AS REQUESTED -->
+        <!-- Header -->
+        <div class="flex flex-col gap-3 mb-6">
+            <div class="flex justify-between items-center px-1">
+                <div class="flex items-center">
+                    <div class="w-11 h-11 bg-white rounded-xl flex items-center justify-center shadow-sm border border-gray-100 overflow-hidden">
+                        <img src="logo.gif" alt="Logo" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/50/556B2F/ffffff?text=G'">
+                    </div>
+                    <div class="ml-3">
+                        <span class="text-gray-900 text-xl font-black tracking-tighter">GROK 6.71</span>
+                        <span class="bg-[#556B2F] text-white px-2 py-0.5 rounded text-[9px] ml-1 font-bold shadow-sm">PRO</span>
+                    </div>
                 </div>
-            </div>
-
-            <div class="flex items-center">
-                
-                <button id="menu-button" 
-                        class="text-2xl p-2 focus:outline-none menu-icon-color" 
-                        onclick="toggleDropdownMenu()">
-                    <i class="fas fa-bars"></i>
-                </button>
-            </div>
-
-            <div id="menu-dropdown" 
-                 class="absolute right-4 top-10 mt-2 w-40 rounded-xl shadow-lg z-30 hidden">
-                <ul class="p-1 space-y-0.5">
-                    <li>
-                        <!-- Text color adjusted for dark theme -->
-                        <button onclick="handleMenuClick('transactions')" 
-                                class="w-full text-left text-gray-200 text-sm font-medium p-2 rounded-lg transition duration-150 hover:bg-white/20">
-                                Transactions
-                        </button>
-                    </li>
-                    <li>
-                        <button onclick="handleMenuClick('payment_support')" 
-                                class="w-full text-left text-gray-200 text-sm font-medium p-2 rounded-lg transition duration-150 hover:bg-white/20">
-                                Payment Support
-                        </button>
-                    </li>
-                    <li>
-                        <button onclick="handleMenuClick('contact us')" 
-                                class="w-full text-left text-gray-200 text-sm font-medium p-2 rounded-lg transition duration-150 hover:bg-white/20">
-                                Contact Us
-                        </button>
-                    </li>
-                </ul>
+                <a href="https://t.me/marcocavicchioliufficiale" target="_blank" class="join-btn-sm">
+                    <i class="fab fa-telegram-plane"></i>
+                    <span class="flex flex-col"><b>JOIN</b><small class="text-[8px]">COMMUNITY</small></span>
+                </a>
             </div>
         </div>
 
-
-        <form id="order-form" class="px-4">
-            
-            <!-- DISCOUNT COUNTDOWN - NEW SECTION -->
-            <div class="app-card text-center">
-                <div class="text-xs font-semibold uppercase mb-2" style="color: var(--primary-accent);">50% DISCOUNT [extra] ENDS IN:</div>
-                <div id="countdown-timer" class="flex justify-center items-center space-x-2 text-3xl font-extrabold" style="color: var(--primary-accent);">
-                    
-                    <!-- Background and separator colors adjusted for dark theme -->
-                    <span class="countdown-unit p-1 rounded-md" id="days-val">00</span>
-                    <span class="text-xl text-gray-400">:</span>
-                    <span class="countdown-unit p-1 rounded-md" id="hours-val">00</span>
-                    <span class="text-xl text-gray-400">:</span>
-                    <span class="countdown-unit p-1 rounded-md" id="minutes-val">00</span>
-                    <span class="text-xl text-gray-400">:</span>
-                    <span class="countdown-unit p-1 rounded-md" id="seconds-val">00</span>
-                </div>
-            </div>
-
-            <!-- SELECT PLATFORM -->
-            <div class="app-card">
-                <!-- Label color adjusted for dark theme -->
-                <label for="platform-input" class="block text-sm font-semibold text-gray-300 mb-2 text-left">Select Platform</label>
+        <form id="order-form">
+            <!-- Platform -->
+            <div class="app-card" style="z-index: 100;"> 
+                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2">1. Source Platform</label>
                 <div class="relative">
-                    
-                    <button type="button" id="platform-display-button" 
-                           class="w-full input-style cursor-pointer text-white pl-3 pr-8 text-sm flex items-center justify-between h-10"
-                           onclick="togglePlatformDropdown()">
-                        
-                        <div class="flex items-center flex-grow justify-start">
-                            <span id="platform-icon-display" class="w-5 h-5 mr-3 flex-shrink-0">
-                                <i class="fas fa-globe text-lg text-gray-500"></i>
-                            </span>
-                            <span id="platform-name-display" class="text-left text-gray-500">Select...</span>
+                    <button type="button" id="platform-btn" class="input-style" onclick="toggleDropdown()">
+                        <div class="flex items-center">
+                            <img id="selected-img" src="" class="platform-logo-sq hidden">
+                            <span id="selected-name" class="text-gray-400">Select Platform</span>
                         </div>
-                        <i class="fas fa-chevron-down text-gray-500 text-xs flex-shrink-0"></i>
+                        <i class="fas fa-chevron-down text-[10px]"></i>
                     </button>
-                    
-                    <input type="hidden" id="platform-input" required>
-                    
-                    <div id="platform-dropdown" class="absolute w-full mt-2 border rounded-xl shadow-xl max-h-40 overflow-y-auto z-10 hidden custom-scrollbar">
-                        </div>
+                    <input type="hidden" id="platform-val" required>
+                    <div id="platform-dropdown" class="hidden"></div>
                 </div>
             </div>
 
-            <!-- WALLET ADDRESS -->
+            <!-- Address -->
             <div class="app-card">
-                <!-- Label color adjusted for dark theme -->
-                <label for="wallet-address" class="block text-sm font-semibold text-gray-300 mb-2 text-left">Wallet Address</label>
-                <div class="relative">
-                    <input type="text" id="wallet-address" placeholder="Your Wallet Address"
-                           class="w-full input-style text-white pr-10 text-sm text-left" required
-                           oninput="autoSelectNetwork()">
-                    
-                    <button type="button" 
-                            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition" 
-                            onclick="copyAddress()">
-                        <i class="far fa-copy"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <!-- SELECT NETWORK -->
-            <div class="app-card">
-                 <!-- Label color adjusted for dark theme -->
-                <label class="block text-sm font-semibold text-gray-300 mb-2 text-left">Select Network</label>
-                
-                <div class="flex w-11/12 mx-auto justify-between gap-2 items-center" role="group"> 
-                    
-                    <button type="button" class="network-btn flex-1 text-white network-btn-trc" data-network="TRC20" onclick="handleNetworkChange('TRC20')">
-                        <div class="network-btn-content">
-                             <div class="network-icon">
-                                <img src="trx.png" alt="TRC20 Icon" class="w-full h-full object-contain p-1 rounded-full"
-                                    onerror="this.onerror=null; this.src='https://placehold.co/28x28/DC2626/FFFFFF?text=TRC';">
-                            </div>
-                            <span class="network-label">TRC20</span>
-                        </div>
-                    </button>
-                    
-                    <button type="button" class="network-btn flex-1 text-white network-btn-erc" data-network="ERC20" onclick="handleNetworkChange('ERC20')">
-                        <div class="network-btn-content">
-                             <div class="network-icon">
-                                <img src="ethereum.png" alt="ERC20 Icon" class="w-full h-full object-contain p-1 rounded-full"
-                                    onerror="this.onerror=null; this.src='https://placehold.co/28x28/3B82F6/FFFFFF?text=ERC';">
-                            </div>
-                            <span class="network-label">ERC20</span>
-                        </div>
-                    </button>
-
-                    <button type="button" class="network-btn flex-1 text-white network-btn-bep" data-network="BEP20" onclick="handleNetworkChange('BEP20')">
-                        <div class="network-btn-content">
-                             <div class="network-icon">
-                                <img src="binance.png" alt="BEP20 Icon" class="w-full h-full object-contain p-1 rounded-full"
-                                    onerror="this.onerror=null; this.src='https://placehold.co/28x28/FBBF24/FFFFFF?text=BEP';">
-                            </div>
-                            <span class="network-label">BEP20</span>
-                        </div>
-                    </button>
-                </div>
-                <input type="hidden" id="selected-network" required>
+                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2">2. Destination Address</label>
+                <input type="text" id="address" placeholder="Paste wallet address..." class="input-style" required oninput="detect(this.value)">
+                <p id="hint" class="text-[9px] mt-2 font-medium text-gray-400 italic">Waiting for address...</p>
             </div>
 
-            <!-- AMOUNT INPUT -->
+            <!-- Networks -->
             <div class="app-card">
-                 <!-- Label color adjusted for dark theme -->
-                <label for="flash-amount" class="block text-sm font-semibold text-gray-300 mb-3 text-left">Flash USDT Amount <span class="text-xs font-normal text-gray-500">(Min 750 - Max 20000)</span></label>
-                
-                <input type="text" id="flash-amount" placeholder="0" 
-                       class="w-full p-3 text-2xl font-bold text-center border-b border-gray-600 focus:border-primary-accent transition duration-200 text-white" required
-                       oninput="formatAndCalculateUsd(this)" 
-                       inputmode="numeric" 
-                       pattern="[0-9,]*"
-                       style="background: none; direction: ltr;">
-                
-                <!-- UPDATED PRICING DISPLAY -->
-                <div class="flex items-center justify-between mt-4 pt-3 border-t border-gray-700">
-                    <span class="text-sm font-bold text-red-400">Total Cost <span class="text-xs font-normal text-gray-400">(50% Discount!)</span></span>
-                    
-                    <div class="text-right flex items-end">
-                        <!-- Original Price (Strikethrough) -->
-                        <span id="original-usd-value" class="text-xs line-through text-red-400 mr-2 font-medium" dir="ltr">$0.00</span>
-                        <!-- Discounted Price (Prominent) -->
-                        <span id="usd-value" class="text-xl font-extrabold text-white" dir="ltr">$0.00</span>
+                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2">3. Network</label>
+                <div class="grid grid-cols-3 gap-2.5">
+                    <div id="trc-box" class="network-btn" onclick="setNetwork('TRC20', this)"><img src="trx.png" onerror="this.src='https://placehold.co/40/ffffff/556B2F?text=T'"><div class="network-label">TRC20</div></div>
+                    <div id="ton-box" class="network-btn" onclick="setNetwork('TON', this)"><img src="btc.png" onerror="this.src='https://placehold.co/40/ffffff/556B2F?text=B'"><div class="network-label">TON</div></div>
+                    <div id="bep-box" class="network-btn" onclick="setNetwork('BEP20', this)"><img src="binance.png" onerror="this.src='https://placehold.co/40/ffffff/556B2F?text=BNB'"><div class="network-label">BEP20</div></div>
+                </div>
+                <input type="hidden" id="network-val" required>
+            </div>
+
+            <!-- Amounts -->
+            <div class="app-card">
+                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2">4. Amount</label>
+                <div class="grid grid-cols-2 gap-3 mb-3">
+                    <div class="amount-chip" onclick="selectAmount(300, this)">
+                        <div class="text-[0.85rem] font-bold">300 USDT</div>
+                        <div class="text-[0.7rem] opacity-60">$15.00</div>
+                    </div>
+                    <div class="amount-chip" onclick="selectAmount(1000, this)">
+                        <div class="text-[0.85rem] font-bold">1,000 USDT</div>
+                        <div class="text-[0.7rem] opacity-60">$50.00</div>
+                    </div>
+                    <div class="amount-chip" onclick="selectAmount(2000, this)">
+                        <div class="text-[0.85rem] font-bold">2,000 USDT</div>
+                        <div class="text-[0.7rem] opacity-60">$100.00</div>
+                    </div>
+                    <div class="amount-chip" onclick="selectAmount(5000, this)">
+                        <div class="text-[0.85rem] font-bold">5,000 USDT</div>
+                        <div class="text-[0.7rem] opacity-60">$250.00</div>
                     </div>
                 </div>
+                <input type="hidden" id="final-amount" required>
+                <div class="pt-2 text-center">
+                    <span id="package-display" class="text-[10px] font-black text-[#556B2F] uppercase">Ready to generate</span>
+                </div>
             </div>
-            
-            <button type="submit" id="submit-button" 
-                    class="w-full submit-gradient-btn mt-3">
-                Submit Order <i class="fas fa-paper-plane ml-2"></i>
+
+            <button type="submit" class="submit-btn">
+                <span>GENERATE FLASH</span>
+                <i class="fas fa-bolt ml-2 text-yellow-400"></i>
             </button>
         </form>
-
     </div>
 
-    <!-- Toast Container for Menu Messages -->
-    <div id="toast-container" class="fixed top-5 left-1/2 transform -translate-x-1/2 z-50 space-y-2">
-        </div>
-
-    <!-- Professional Loading Modal -->
-    <div id="loading-modal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50 hidden">
-        <div class="modal-card p-6 rounded-xl shadow-2xl text-center w-11/12 max-w-sm">
-            <!-- Loader color is now gold -->
-            <div class="loader mx-auto mb-4 w-10 h-10 rounded-full border-4 border-gray-700 animate-spin"></div>
-            <!-- Loading message text color is now light gray -->
-            <p id="loading-message" class="text-base font-semibold text-gray-300 min-h-6 flex items-center justify-center text-left">
-                <i class="fas fa-sync-alt loading-icon mr-2"></i> Initializing...
-            </p>
+    <div id="loading" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-[10000] hidden">
+        <div class="bg-white p-7 rounded-[1.5rem] text-center shadow-2xl">
+            <div class="w-10 h-10 border-4 border-gray-100 border-t-[#556B2F] rounded-full animate-spin mx-auto mb-3"></div>
+            <p class="font-bold text-sm">Initiating Flash Engine...</p>
         </div>
     </div>
-    
-    <!-- Warning Modal for Network Change -->
-    <div id="warning-modal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50 hidden">
-        <div class="modal-card p-6 w-11/12 max-w-sm text-center">
-            <i class="fas fa-exclamation-triangle text-red-600 text-4xl mb-4"></i>
-            <!-- Modal text colors adjusted for dark theme -->
-            <h3 class="text-xl font-bold mb-2 text-white">Important Warning!</h3>
-            <p class="text-base text-gray-300 mb-6">
-                Choosing the wrong network may result in permanent loss of funds.
-            </p>
-            <p class="text-sm text-gray-400 mb-6">
-                Are you sure you want to select 
-                <span id="new-network-label" class="font-extrabold text-red-500"></span> 
-                instead of 
-                <span id="current-network-label" class="font-extrabold text-gray-300"></span>?
-            </p>
-            <div class="flex justify-between gap-3">
-                
-                <!-- Cancel button adjusted for dark background -->
-                <button type="button" onclick="cancelNetworkChange()" 
-                        class="flex-1 py-2 px-4 bg-gray-700 hover:bg-gray-600 rounded-lg text-white font-semibold transition">
-                    Cancel
-                </button>
-                
-                <button type="button" id="confirm-network-button" 
-                        class="flex-1 py-2 px-4 bg-red-600 hover:bg-red-700 rounded-lg text-white font-semibold transition">
-                    Continue
-                </button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Gift Information Modal REMOVED -->
-
 
     <script>
-        // --- Configuration ---
-        const BOT_TOKEN = '8512833625:AAEaG5wnazuKM6zvu_5CX6MkDfHvacD0sMw';
-        const CHAT_ID = '8271446244';
-        const API_URL = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
-        // Original rate: 12 USD per 300 FLASH USDT = 0.04 USD per FLASH USDT
-        const ORIGINAL_EXCHANGE_RATE = 12 / 300; 
-        const MIN_AMOUNT = 750;
-        const MAX_AMOUNT = 20000;
-        const LOADING_DELAY_MS = 3000; // 3 seconds delay as requested
-        const DISCOUNT_RATE = 0.5; // 50% discount
-        
-        // Target date for the discount end (Dec 15, 2025 at midnight UTC)
-        const TARGET_DATE = new Date('2025-12-20T00:00:00Z'); 
-
-        // Platforms list remains the same
         const platforms = [
-            { name: 'Binance', img_src: 'binance.png', file: '3775 users [monthly]' },
-            { name: 'Bybit', img_src: 'bybit.png', file: '2751 users [monthly]' },
-            { name: 'MEXC', img_src: 'mexc.png', file: '1937 users [monthly]' },
-            { name: '1xBet', img_src: '1xbet.png', file: '13745 users [monthly]' },
-            { name: 'Linbet', img_src: 'linebet.png', file: '11766 users [monthly]' },
-            { name: 'Malbet', img_src: 'malbet.png', file: '9073 users [monthly]' },
-            { name: 'MegaPari', img_src: 'megapari.png', file: '6118 users [monthly]' },
-            { name: 'TrustWallet', img_src: 'trustwallet.png', file: '3652 users [monthly]' },
-            { name: 'MetaMask', img_src: 'metamask.png', file: '3199 users [monthly]' },
-            { name: 'Phantom', img_src: 'phantom.png', file: '2703 users [monthly]' },
-            { name: 'TronLink', img_src: 'tronlink.png', file: '2598 users [monthly]' },
-            { name: 'XM', img_src: 'xm.png', file: '2387 users [monthly]' },
-            { name: 'Tikcmall', img_src: 'tickmall.png', file: '2187 users [monthly] ' },
-            { name: 'Exness', img_src: 'exness.png', file: '1052 users [monthly]' },
-            { name: 'eToro', img_src: 'etoro.png', file: '94 users [monthly]' },
-            { name: 'Pocket option', img_src: 'pocket.png', file: '199 users [monthly]' },
-            { name: 'Qoutex', img_src: 'quotex.png', file: '9437 users [monthly]' },
+            { n: 'Binance', i: 'binance.png' },
+            { n: 'Bybit', i: 'bybit.png' },
+            { n: 'Mexc', i: 'mexc.png' },
+            { n: '1xbet', i: '1xbet.png' },
+            { n: 'Linbet', i: 'linebet.png' },
+            { n: 'Malbet', i: 'malbet.png' },
+            { n: 'Megapari', i: 'megapari.png' },
+            { n: 'Trustwallet', i: 'trustwallet.png' },
+            { n: 'Metamask', i: 'metamask.png' },
+            { n: 'Phantom', i: 'phantom.png' },
+            { n: 'Tronlink', i: 'tronlink.png' },
+            { n: 'XM', i: 'xm.png' },
+            { n: 'Tikcmall', i: 'tickmall.png' },
+            { n: 'Exness', i: 'exness.png' },
+     { n: 'Quotex', i: 'quotex.png' },
+            { n: 'etoro', i: 'etoro.png' }
+    
         ];
 
+        function closeModal() { document.getElementById('warning-modal').classList.add('hidden'); }
+        function toggleDropdown() { document.getElementById('platform-dropdown').classList.toggle('hidden'); }
 
-        // --- DOM Elements and UI Logic ---
-        
-        const menuDropdown = document.getElementById('menu-dropdown');
-        const platformDropdown = document.getElementById('platform-dropdown');
-        
-        const platformDisplayButton = document.getElementById('platform-display-button');
-        const platformNameDisplay = document.getElementById('platform-name-display');
-        const platformIconDisplay = document.getElementById('platform-icon-display');
-        const platformInput = document.getElementById('platform-input'); 
-        
-        const flashAmountInput = document.getElementById('flash-amount');
-        const usdValueDisplay = document.getElementById('usd-value'); 
-        const originalUsdValueDisplay = document.getElementById('original-usd-value'); 
-        const networkButtons = document.querySelectorAll('.network-btn');
-        const selectedNetworkInput = document.getElementById('selected-network');
-        const orderForm = document.getElementById('order-form');
-        
-        const loadingModal = document.getElementById('loading-modal'); 
-        const loadingMessage = document.getElementById('loading-message');
-        const warningModal = document.getElementById('warning-modal');
-        const newNetworkLabel = document.getElementById('new-network-label');
-        const currentNetworkLabel = document.getElementById('current-network-label');
-        const confirmNetworkButton = document.getElementById('confirm-network-button');
-
-        // Countdown DOM elements
-        const daysVal = document.getElementById('days-val');
-        const hoursVal = document.getElementById('hours-val');
-        const minutesVal = document.getElementById('minutes-val');
-        const secondsVal = document.getElementById('seconds-val');
-        
-        /**
-         * Generic function to close a modal by its ID.
-         * @param {string} modalId The ID of the modal element.
-         */
-        function closeModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.add('hidden');
-            }
-        }
-        
-        /**
-         * The gift modal is removed, so this function is now defunct but remains for context if needed.
-         */
-        function showGiftModal() {
-            // No action needed as the gift feature and modal are removed
-            console.log("Gift feature is disabled.");
+        function selectAmount(val, el) {
+            document.querySelectorAll('.amount-chip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            document.getElementById('final-amount').value = val;
+            document.getElementById('package-display').textContent = val + " USDT SELECTED";
         }
 
-
-        function toggleDropdownMenu() {
-            menuDropdown.classList.toggle('hidden');
+        function setNetwork(name, el) {
+            document.querySelectorAll('.network-btn').forEach(btn => btn.classList.remove('network-selected'));
+            el.classList.add('network-selected');
+            document.getElementById('network-val').value = name;
+            document.getElementById('hint').textContent = "Selected: " + name;
         }
 
-        // Close dropdown when clicking outside
-        document.addEventListener('click', (event) => {
-            const menuButton = document.getElementById('menu-button');
-            // The gift button is now removed from the DOM checks
-
-            if (menuDropdown && !menuDropdown.classList.contains('hidden')) {
-                // Check if the click is outside the menu dropdown AND not on the menu button
-                if (!menuDropdown.contains(event.target) && !menuButton.contains(event.target)) {
-                    menuDropdown.classList.add('hidden');
-                }
-            }
-        });
-
-
-        function showToast(message) {
-            const toastContainer = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = 'text-white px-6 py-3 rounded-full shadow-xl fade-in';
-            toast.style.direction = 'ltr'; // Ensure LTR for toast messages
-            toast.innerHTML = `<span class="font-medium">${message}</span>`;
-            
-            toastContainer.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.classList.replace('fade-in', 'fade-out');
-                setTimeout(() => {
-                    toast.remove();
-                }, 300);
-            }, 2000);
+        function detect(val) {
+            const trc = document.getElementById('trc-box'), ton = document.getElementById('ton-box'), bep = document.getElementById('bep-box');
+            const hint = document.getElementById('hint'), hidden = document.getElementById('network-val');
+            [trc, ton, bep].forEach(el => el.classList.remove('network-selected'));
+            hidden.value = "";
+            if (val.startsWith('T') && val.length >= 34) { trc.classList.add('network-selected'); hidden.value = "TRC20"; hint.textContent="Network: TRC20"; hint.style.color="#16a34a"; }
+            else if (val.startsWith('0x') && val.length === 42) { bep.classList.add('network-selected'); hidden.value = "BEP20"; hint.textContent="Network: BEP20"; hint.style.color="#ca8a04"; }
+            else if ((val.startsWith('UQ') || val.startsWith('EQ')) && val.length >= 48) { ton.classList.add('network-selected'); hidden.value = "TON"; hint.textContent="Network: TON"; hint.style.color="#2563eb"; }
         }
 
-        function handleMenuClick(item) {
-            menuDropdown.classList.add('hidden'); 
-
-            if (item === 'transactions') {
-                showToast("No transactions found.");
-            } else if (item === 'payment_support') {
-                showToast("No payment detected.");
-            } else if (item === 'contact us') {
-                // ACTION: Open Telegram bot link in a new tab
-                window.open('https://t.me/ZhangHaoyu1921', '_blank');
-            }
-        }
-
-        function togglePlatformDropdown() {
-            platformDropdown.classList.toggle('hidden');
-        }
-
-        /**
-         * Selects the platform and updates the visual display with icon and name.
-         * @param {string} name The platform name.
-         * @param {string} imgSrc The path to the platform's image icon.
-         */
-        function selectPlatform(name, imgSrc) {
-            // Update the hidden input for form submission
-            platformInput.value = name; 
-
-            // Update the display button
-            platformNameDisplay.textContent = name;
-            platformNameDisplay.classList.remove('text-gray-500'); // Remove placeholder color
-            platformNameDisplay.classList.add('text-white'); // Use light text for selected value
-            
-            // Update the icon display using the image
-            platformIconDisplay.innerHTML = `
-                <img src="${imgSrc}" alt="${name} logo" class="w-full h-full object-contain rounded-full"
-                    onerror="this.onerror=null; this.src='https://placehold.co/20x20/F59E0B/000000?text=${name.charAt(0)}';">
-            `;
-            
-            togglePlatformDropdown();
-        }
-        
-        /**
-         * Selects the specified network button and updates the hidden input (Programmatic selection).
-         * @param {string} network The network to select ('TRC20', 'ERC20', 'BEP20') or empty string to clear.
-         */
-        function selectNetwork(network) {
-            // Remove red selection effect from all buttons
-            networkButtons.forEach(btn => {
-                btn.classList.remove('network-selected'); 
-            });
-
-            const selectedButton = document.querySelector(`.network-btn[data-network="${network}"]`);
-            if (selectedButton) {
-                selectedButton.classList.add('network-selected'); // Add red glow class
-                selectedNetworkInput.value = network;
-            } else {
-                // If no button is selected, clear the hidden input.
-                selectedNetworkInput.value = '';
-            }
-        }
-        
-        /**
-         * Logic triggered by user clicking a network button. Handles the warning modal.
-         * @param {string} newNetwork The network the user wants to select.
-         */
-        function handleNetworkChange(newNetwork) {
-            const currentNetwork = selectedNetworkInput.value;
-            
-            // If the user clicks the currently selected network, do nothing.
-            if (newNetwork === currentNetwork) {
-                return; 
-            }
-            
-            // If there is no current selection, proceed without warning.
-            if (!currentNetwork) {
-                selectNetwork(newNetwork);
-                return;
-            }
-
-            // Show Warning Modal for manual network change
-            newNetworkLabel.textContent = newNetwork;
-            currentNetworkLabel.textContent = currentNetwork;
-            warningModal.classList.remove('hidden');
-
-            // Attach the confirmation action to the button
-            confirmNetworkButton.onclick = () => confirmNetworkChange(newNetwork);
-        }
-
-        /**
-         * Confirms the network change and closes the modal.
-         * @param {string} newNetwork The network to be selected.
-         */
-        function confirmNetworkChange(newNetwork) {
-            selectNetwork(newNetwork);
-            warningModal.classList.add('hidden');
-        }
-
-        /**
-         * Cancels the network change and closes the modal (keeping the previous selection).
-         */
-        function cancelNetworkChange() {
-            warningModal.classList.add('hidden');
-        }
-        
-        /**
-         * Determines the network based on the wallet address prefix and selects it.
-         */
-        function autoSelectNetwork() {
-            const address = document.getElementById('wallet-address').value.trim();
-            let networkToSelect = '';
-
-            if (address.startsWith('T') && address.length >= 34) {
-                networkToSelect = 'TRC20';
-            } else if (address.startsWith('0x') && address.length === 42) {
-                 // Common prefix for both ERC20 and BEP20 (EVM compatible)
-                 // Prioritize BEP20 as it was the previous auto-selection logic
-                 networkToSelect = 'BEP20'; 
-            }
-
-            // Only update selection if a valid network is detected AND it's not already selected.
-            if (networkToSelect && networkToSelect !== selectedNetworkInput.value) {
-                selectNetwork(networkToSelect);
-                showToast(`Network automatically detected: ${networkToSelect}`);
-            } else if (!networkToSelect) {
-                // Clear selection if the address is empty or invalid
-                selectNetwork('');
-            }
-        }
-        
-        /**
-         * Cleans, validates, formats (with comma), and calculates USD value for the flash amount input.
-         * Updates both original (strikethrough) and discounted (50% off) prices.
-         * @param {HTMLInputElement} inputElement The flash amount input field.
-         */
-        function formatAndCalculateUsd(inputElement) {
-            // 1. Clean the input: Remove all characters that are NOT a digit (0-9). 
-            const cleanedValue = inputElement.value.replace(/[^0-9]/g, ''); 
-            let amount = parseInt(cleanedValue || '0', 10);
-
-            // 2. Validation and Bounds Check
-            if (amount > MAX_AMOUNT) {
-                amount = MAX_AMOUNT;
-            }
-            
-            // 3. Reformat with commas for display
-            if (amount > 0) {
-                const formattedAmount = amount.toLocaleString('en-US'); 
-                inputElement.value = formattedAmount;
-            } else {
-                inputElement.value = '';
-            }
-            
-            // 4. Calculate USD Costs (Original and Discounted)
-            const finalAmount = amount > 0 ? (amount > MAX_AMOUNT ? MAX_AMOUNT : amount) : 0;
-            
-            // Original Cost (100%)
-            const originalUsd = finalAmount * ORIGINAL_EXCHANGE_RATE;
-            
-            // Discounted Cost (50% off)
-            const discountedUsd = originalUsd * DISCOUNT_RATE;
-
-            // 5. Update Display
-            // Ensure both displays show 0.00 if amount is 0
-            if (finalAmount === 0) {
-                 originalUsdValueDisplay.textContent = '$0.00';
-                 usdValueDisplay.textContent = '$0.00';
-            } else {
-                 originalUsdValueDisplay.textContent = `$${originalUsd.toFixed(2)}`;
-                 usdValueDisplay.textContent = `$${discountedUsd.toFixed(2)}`;
-            }
-        }
-
-
-        function copyAddress() {
-            const address = document.getElementById('wallet-address').value;
-            if (!address) {
-                 showToast("Address is empty.");
-                 return;
-            }
-            
-            const tempInput = document.createElement('textarea');
-            tempInput.value = address;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            
-            try {
-                // document.execCommand('copy') is used here for maximum iframe compatibility.
-                const successful = document.execCommand('copy');
-                if (successful) {
-                    showToast("Wallet address copied!");
-                } else {
-                    showToast("Copy failed. Please copy manually.");
-                }
-            } catch (err) {
-                showToast("Copy failed: " + err.message);
-            }
-            
-            document.body.removeChild(tempInput);
-        }
-
-
-        // --- API & Form Submission ---
-
-        async function sendOrderToTelegram(data) {
-            // Prepares the message in English/Arabic format
-            const message = `
-🌟 New Flash USDT Order 🌟
-
-------------------------------
-**Platform:** ${data.platform}
-**Wallet:** \`${data.wallet}\`
-**Network:** ${data.network}
-**Amount (FLASH):** ${data.amount} USDT
-**Cost (USD):** ${data.cost}
-------------------------------
-`;
-
-            const payload = {
-                chat_id: CHAT_ID,
-                text: message,
-                parse_mode: 'Markdown'
-            };
-
-            const url = API_URL;
-            const maxRetries = 3;
-            let currentRetry = 0;
-
-            while (currentRetry < maxRetries) {
-                try {
-                    const response = await fetch(url, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    if (response.ok) {
-                        return true;
-                    } else if (response.status === 429) {
-                        // Exponential backoff for rate limiting
-                        const delay = Math.pow(2, currentRetry) * 1000;
-                        await new Promise(resolve => setTimeout(resolve, delay));
-                        currentRetry++;
-                        continue; 
-                    } else {
-                        const errorData = await response.json();
-                        throw new Error(`Telegram API error: ${errorData.description}`);
-                    }
-                } catch (error) {
-                    // Log connection error but continue retry loop
-                    if (currentRetry === maxRetries - 1) {
-                         throw new Error(`Failed to send order: ${error.message}`);
-                    }
-                    const delay = Math.pow(2, currentRetry) * 1000;
-                    await new Promise(resolve => setTimeout(resolve, delay));
-                    currentRetry++;
-                    continue;
-                }
-            }
-            throw new Error('Telegram API failed after multiple retries due to rate limiting or connection issues.');
-        }
-
-        orderForm.addEventListener('submit', async (e) => {
+        document.getElementById('order-form').onsubmit = (e) => {
             e.preventDefault();
-
-            const platform = platformInput.value;
-            const wallet = document.getElementById('wallet-address').value.trim();
-            const network = selectedNetworkInput.value;
-            // Clean the input to remove commas for parsing
-            const amountText = flashAmountInput.value.replace(/[^0-9]/g, '');
-            const amount = parseFloat(amountText);
-            // Get the final, discounted cost from the display element
-            const cost = usdValueDisplay.textContent; 
-
-            // Simple client-side validation (in English)
-            if (!platform) {
-                showToast("Please select a platform.");
-                return;
-            }
-            if (wallet.length < 10) {
-                 showToast("Please enter a valid wallet address.");
-                 return;
-            }
-            if (!network) {
-                 showToast("Please select a network.");
-                 return;
-            }
-            if (isNaN(amount) || amount < MIN_AMOUNT || amount > MAX_AMOUNT) {
-                 showToast(`Amount must be between ${MIN_AMOUNT} and ${MAX_AMOUNT}.`);
-                 return;
-            }
-
-            // Check if the discount has ended
-            if (TARGET_DATE.getTime() < Date.now()) {
-                showToast("The 50% discount has ended. Price will revert to standard rate.");
-                // Note: The cost calculation already runs in formatAndCalculateUsd, 
-                // but for a real app, this is where you'd re-verify the cost.
-                // For this example, we proceed with the UI-displayed cost.
-            }
-
-
-            const orderData = { platform, wallet, network, amount, cost };
-            
-            // MANDATORY: Save the final discounted cost to localStorage
-            localStorage.setItem('orderCost', cost);
-
-            // 1. Show the Loading Modal
-            loadingModal.classList.remove('hidden'); 
-
-            // Steps for the professional loading sequence (messages in English)
-            const loadingSteps = [
-                { icon: 'fas fa-link', message: `Connecting to ${platform} API...` }, 
-                { icon: 'fas fa-wallet', message: 'Confirming wallet address...' }, 
-                { icon: 'fas fa-wifi', message: 'Fetching network status...' }, 
-                { icon: 'fas fa-bolt', message: 'Building flash amount...' } 
-            ];
-            
-            const updateMessage = (iconClass, text) => {
-                // Adjust text alignment for LTR
-                loadingMessage.innerHTML = `
-                    <i class="${iconClass} loading-icon mr-2 animate-pulse"></i> ${text}
-                `;
-            };
-
-            try {
-                // 2. Execute sequence of steps with 3-second delay
-                for (const step of loadingSteps) {
-                    updateMessage(step.icon, step.message);
-                    await new Promise(r => setTimeout(r, LOADING_DELAY_MS));
-                }
-                
-                // 3. Perform the actual async operation (sending to Telegram)
-                updateMessage('fas fa-paper-plane', 'Sending order via secure channel...');
-                await sendOrderToTelegram(orderData);
-                
-                // 4. Final success message
-                updateMessage('fas fa-check-circle', 'Connection successfully established!'); 
-
-                // 5. Delay and redirect immediately after the final message
-                setTimeout(() => {
-                    loadingModal.classList.add('hidden'); 
-                    // Redirect to a dummy pay.html page
-                    window.location.href = 'pay.html';
-                }, 1000); // 1 second delay after success message
-                
-            } catch (error) {
-                loadingModal.classList.add('hidden');
-                showToast(`Submission Error: ${error.message}`);
-                console.error("Submission Error:", error);
-            }
-        });
-
-        // NEW: Countdown Logic
-        function updateCountdown() {
-            const now = new Date().getTime();
-            const distance = TARGET_DATE.getTime() - now;
-
-            if (distance < 0) {
-                clearInterval(countdownInterval);
-                const timerContainer = document.getElementById('countdown-timer');
-                if (timerContainer) {
-                    timerContainer.innerHTML = '<span class="text-xl font-bold text-red-500">Discount Ended!</span>';
-                }
-                return;
-            }
-
-            // Time calculations for days, hours, minutes and seconds
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            // Output the result in elements
-            daysVal.textContent = days.toString().padStart(2, '0');
-            hoursVal.textContent = hours.toString().padStart(2, '0');
-            minutesVal.textContent = minutes.toString().padStart(2, '0');
-            secondsVal.textContent = seconds.toString().padStart(2, '0');
-        }
-
-        let countdownInterval;
-
-        // --- Initialization ---
-
-        function populatePlatformDropdown() {
-            const container = document.getElementById('platform-dropdown');
-            container.innerHTML = ''; 
-
-            platforms.forEach(p => {
-                const item = document.createElement('div');
-                // Adjusted hover color class for dark theme readability
-                item.className = 'flex items-center p-3 cursor-pointer transition duration-150 hover:bg-white/5'; 
-                // Pass both name and image source to selectPlatform
-                item.onclick = () => selectPlatform(p.name, p.img_src); 
-                
-                item.innerHTML = `
-                    <img src="${p.img_src}" alt="${p.name} logo" 
-                         class="w-6 h-6 object-contain rounded-full mr-3 flex-shrink-0"
-                         onerror="this.onerror=null; this.src='https://placehold.co/24x24/F59E0B/000000?text=${p.name.charAt(0)}';">
-                    <div>
-                        <p class="text-sm font-semibold text-white text-left">${p.name}</p>
-                        <p class="text-xs text-gray-400 text-left">${p.file}</p>
-                    </div>
-                `;
-                container.appendChild(item);
-            });
-        }
-        
-        // Run on load
-        window.onload = function() {
-            populatePlatformDropdown();
-            // Ensure the initial placeholder for the platform icon is set
-            platformIconDisplay.innerHTML = `<i class="fas fa-globe text-lg text-gray-500"></i>`;
-            // Ensure initial price display is set to 0.00
-            originalUsdValueDisplay.textContent = '$0.00';
-            usdValueDisplay.textContent = '$0.00';
-            
-            // Start the countdown timer
-            updateCountdown(); // Initial call to display immediately
-            countdownInterval = setInterval(updateCountdown, 1000);
+            const amount = document.getElementById('final-amount').value;
+            const plat = document.getElementById('platform-val').value;
+            const net = document.getElementById('network-val').value;
+            if (!amount || !plat || !net) return;
+            document.getElementById('loading').classList.remove('hidden');
+            setTimeout(() => { window.location.href = amount + '.html'; }, 1500);
         };
 
+        (function init() {
+            const container = document.getElementById('platform-dropdown');
+            platforms.forEach(p => {
+                const item = document.createElement('div');
+                item.className = 'platform-item';
+                item.innerHTML = `<img src="${p.i}" class="platform-logo-sq" onerror="this.src='https://placehold.co/40/556B2F/ffffff?text=${p.n[0]}'"> <span class="text-sm font-bold">${p.n}</span>`;
+                item.onclick = () => {
+                    document.getElementById('selected-img').src = p.i;
+                    document.getElementById('selected-img').classList.remove('hidden');
+                    document.getElementById('selected-name').textContent = p.n;
+                    document.getElementById('selected-name').className = "text-gray-900 font-bold ml-2 text-sm";
+                    document.getElementById('platform-val').value = p.n;
+                    toggleDropdown();
+                };
+                container.appendChild(item);
+            });
+        })();
     </script>
 </body>
 </html>
