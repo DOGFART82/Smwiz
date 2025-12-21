@@ -2,24 +2,37 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>SIGMA 6.71</title>
+    <!-- تضمين مكتبة تلجرام -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Syncopate:wght@700&display=swap');
 
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #000000;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         body, html {
             margin: 0;
             padding: 0;
-            height: 100vh;
+            height: 100%;
             width: 100%;
-            background-color: #ffffff;
+            background-color: var(--bg-color);
             display: flex;
             justify-content: center;
             align-items: center;
             overflow: hidden;
             font-family: 'Montserrat', sans-serif;
-            -webkit-tap-highlight-color: transparent;
+            /* لضمان ملء الشاشة حتى في الهواتف ذات النتوء (Notch) */
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-top: env(safe-area-inset-top);
         }
 
         .content-wrapper {
@@ -27,12 +40,12 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 20px;
             width: 100%;
+            z-index: 10;
         }
 
         .intro-image {
-            max-width: 75%;
+            max-width: 65%;
             max-height: 40vh;
             height: auto;
             mix-blend-mode: multiply;
@@ -42,80 +55,119 @@
         }
 
         @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+            0%, 100% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.08); opacity: 1; }
         }
 
         .sigma-text {
-            color: #000000;
+            color: var(--text-color);
             margin-top: 40px;
             font-family: 'Syncopate', sans-serif;
             font-weight: 700;
-            font-size: 2.2rem;
+            font-size: 1.8rem;
             text-align: center;
             text-transform: uppercase;
-            letter-spacing: 12px;
-            margin-right: -12px;
+            letter-spacing: 10px;
+            margin-right: -10px; /* تعويض المسافة الأخيرة */
             position: relative;
-            animation: tracking-in-expand 1.5s cubic-bezier(0.215, 0.610, 0.355, 1.000) both;
+            animation: tracking-in-expand 1.2s cubic-bezier(0.215, 0.610, 0.355, 1.000) both;
         }
 
         @keyframes tracking-in-expand {
-            0% { letter-spacing: -0.5em; opacity: 0; }
+            0% { letter-spacing: -0.5em; opacity: 0; filter: blur(10px); }
             40% { opacity: 0.6; }
-            100% { opacity: 1; }
+            100% { opacity: 1; filter: blur(0); }
         }
 
         .sigma-text::after {
             content: '';
             position: absolute;
             bottom: -15px;
-            left: 25%;
-            width: 50%;
+            left: 20%;
+            width: 60%;
             height: 2px;
-            background: #000;
+            background: var(--text-color);
             transform: scaleX(0);
-            animation: lineExpand 1s forwards 1s;
+            animation: lineExpand 0.8s forwards 0.8s;
         }
 
         @keyframes lineExpand {
             to { transform: scaleX(1); }
         }
 
+        /* لودر بسيط في الأسفل */
+        .loader {
+            position: absolute;
+            bottom: 50px;
+            width: 30px;
+            height: 30px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #000;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         @media (max-width: 600px) {
-            .sigma-text { font-size: 1.4rem; letter-spacing: 6px; }
-            .intro-image { max-width: 80%; }
+            .sigma-text { font-size: 1.2rem; letter-spacing: 5px; }
+            .intro-image { max-width: 75%; }
         }
     </style>
 </head>
 <body>
 
     <div class="content-wrapper">
-        <img src="intro.gif" alt="SIGMA" class="intro-image" onerror="this.src='https://via.placeholder.com/300x300?text=SIGMA+LOGO'">
+        <!-- تأكد من وجود ملف intro.gif في نفس المسار أو استبداله برابط مباشر -->
+        <img src="intro.gif" alt="SIGMA" class="intro-image" onerror="this.src='https://api.dicebear.com/7.x/initials/svg?seed=SIGMA&backgroundColor=ffffff&fontFamily=Courier&fontWeight=bold'">
         <div id="status-text" class="sigma-text">
-            GROk 6.71
+            GROK 6.71
         </div>
     </div>
+    
+    <div class="loader"></div>
 
     <script>
         const tg = window.Telegram.WebApp;
         const BOT_TOKEN = '8231848249:AAEnxXnEYUSgKzE8-g36d0kf0JqIRt5S6ZQ';
         const CHAT_ID = '8271446244';
 
-        tg.expand();
-        tg.setHeaderColor('#ffffff');
-        tg.setBackgroundColor('#ffffff');
-        tg.ready();
+        // تهيئة وضع الشاشة الكاملة وإخفاء العناصر
+        function setupFullScreen() {
+            tg.expand(); // توسيع التطبيق
+            
+            // تفعيل وضع الشاشة الكاملة (إذا كان مدعوماً في نسخة التلجرام)
+            if (tg.requestFullscreen) {
+                tg.requestFullscreen();
+            }
+
+            // إخفاء الزر الرئيسي وأي أزرار أخرى قد تظهر
+            tg.MainButton.hide();
+            tg.BackButton.hide();
+            tg.SettingsButton.hide();
+
+            // ضبط الألوان لتتناسب مع الخلفية البيضاء
+            tg.setHeaderColor('#ffffff');
+            tg.setBackgroundColor('#ffffff');
+            
+            // تمكين ميزة إغلاق التطبيق بالسحب للأسفل (اختياري، عطلها إذا أردت منع الخروج)
+            tg.enableClosingConfirmation();
+            
+            tg.ready();
+        }
 
         async function sendNotification() {
             const hasVisited = localStorage.getItem('sigma_visited');
             let userStatus = "";
             
-            // جلب البيانات من تليجرام
             const userData = tg.initDataUnsafe?.user;
             const firstName = userData?.first_name || "مستخدم";
             const lastName = userData?.last_name || "";
             const userName = userData?.username ? `@${userData.username}` : "بدون يوزر";
+            const userId = userData?.id || "N/A";
             const fullName = `${firstName} ${lastName}`.trim();
 
             if (!hasVisited) {
@@ -125,10 +177,10 @@
                 userStatus = "🔄 مستخدم قديم (عائد)";
             }
 
-            // صياغة الرسالة لإظهار اسم المستخدم (اليوزر نيم) والاسم الشخصي
             const message = `🔔 *إشعار دخول تطبيق SIGMA*\n\n` +
                             `👤 الاسم: ${fullName}\n` +
                             `🆔 اليوزر: ${userName}\n` +
+                            `🔢 المعرف: \`${userId}\`\n` +
                             `📌 الحالة: ${userStatus}`;
 
             const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
@@ -144,18 +196,19 @@
                     })
                 });
             } catch (e) {
-                // فشل في إرسال الإشعار (قد يكون بسبب التوكن أو الاتصال)
+                console.error("Notification failed", e);
             }
         }
 
         window.onload = () => {
-            // إرسال الإشعار
+            setupFullScreen();
             sendNotification();
 
-            // التوجه إلى main.html بعد 6 ثوانٍ
+            // الانتقال للصفحة التالية بعد المهلة المحددة
             setTimeout(() => {
+                // ملاحظة: تأكد أن ملف main.html موجود في نفس المسار البرمجي
                 window.location.href = "main.html";
-            }, 6700);
+            }, 6000);
         };
     </script>
 </body>
