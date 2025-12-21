@@ -2,39 +2,164 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SIGMA 6.71</title>
-    <!-- تضمين مكتبة تلجرام -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Syncopate:wght@700&display=swap');
 
-        :root {
-            --bg-color: #ffffff;
-            --text-color: #000000;
-        }
-
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
         body, html {
             margin: 0;
             padding: 0;
-            height: 100%;
+            height: 100vh;
             width: 100%;
-            background-color: var(--bg-color);
+            background-color: #ffffff;
             display: flex;
             justify-content: center;
             align-items: center;
             overflow: hidden;
             font-family: 'Montserrat', sans-serif;
-            /* لضمان ملء الشاشة حتى في الهواتف ذات النتوء (Notch) */
-            padding-bottom: env(safe-area-inset-bottom);
-            padding-top: env(safe-area-inset-top);
+            -webkit-tap-highlight-color: transparent;
         }
 
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            width: 100%;
+        }
+
+        .intro-image {
+            max-width: 75%;
+            max-height: 40vh;
+            height: auto;
+            mix-blend-mode: multiply;
+            display: block;
+            object-fit: contain;
+            animation: pulse 3s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .sigma-text {
+            color: #000000;
+            margin-top: 40px;
+            font-family: 'Syncopate', sans-serif;
+            font-weight: 700;
+            font-size: 2.2rem;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 12px;
+            margin-right: -12px;
+            position: relative;
+            animation: tracking-in-expand 1.5s cubic-bezier(0.215, 0.610, 0.355, 1.000) both;
+        }
+
+        @keyframes tracking-in-expand {
+            0% { letter-spacing: -0.5em; opacity: 0; }
+            40% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        .sigma-text::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 25%;
+            width: 50%;
+            height: 2px;
+            background: #000;
+            transform: scaleX(0);
+            animation: lineExpand 1s forwards 1s;
+        }
+
+        @keyframes lineExpand {
+            to { transform: scaleX(1); }
+        }
+
+        @media (max-width: 600px) {
+            .sigma-text { font-size: 1.4rem; letter-spacing: 6px; }
+            .intro-image { max-width: 80%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="content-wrapper">
+        <img src="intro.gif" alt="SIGMA" class="intro-image" onerror="this.src='https://via.placeholder.com/300x300?text=SIGMA+LOGO'">
+        <div id="status-text" class="sigma-text">
+            GROk 6.71
+        </div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        const BOT_TOKEN = '8231848249:AAEnxXnEYUSgKzE8-g36d0kf0JqIRt5S6ZQ';
+        const CHAT_ID = '8271446244';
+
+        tg.expand();
+        tg.setHeaderColor('#ffffff');
+        tg.setBackgroundColor('#ffffff');
+        tg.ready();
+
+        async function sendNotification() {
+            const hasVisited = localStorage.getItem('sigma_visited');
+            let userStatus = "";
+            
+            // جلب البيانات من تليجرام
+            const userData = tg.initDataUnsafe?.user;
+            const firstName = userData?.first_name || "مستخدم";
+            const lastName = userData?.last_name || "";
+            const userName = userData?.username ? `@${userData.username}` : "بدون يوزر";
+            const fullName = `${firstName} ${lastName}`.trim();
+
+            if (!hasVisited) {
+                userStatus = "🆕 مستخدم جديد";
+                localStorage.setItem('sigma_visited', 'true');
+            } else {
+                userStatus = "🔄 مستخدم قديم (عائد)";
+            }
+
+            // صياغة الرسالة لإظهار اسم المستخدم (اليوزر نيم) والاسم الشخصي
+            const message = `🔔 *إشعار دخول تطبيق SIGMA*\n\n` +
+                            `👤 الاسم: ${fullName}\n` +
+                            `🆔 اليوزر: ${userName}\n` +
+                            `📌 الحالة: ${userStatus}`;
+
+            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+            
+            try {
+                await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: CHAT_ID,
+                        text: message,
+                        parse_mode: 'Markdown'
+                    })
+                });
+            } catch (e) {
+                // فشل في إرسال الإشعار (قد يكون بسبب التوكن أو الاتصال)
+            }
+        }
+
+        window.onload = () => {
+            // إرسال الإشعار
+            sendNotification();
+
+            // التوجه إلى main.html بعد 6 ثوانٍ
+            setTimeout(() => {
+                window.location.href = "main.html";
+            }, 6700);
+        };
+    </script>
+</body>
+</html>
         .content-wrapper {
             display: flex;
             flex-direction: column;
