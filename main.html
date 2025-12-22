@@ -92,6 +92,7 @@
             object-fit: contain;
         }
 
+        /* Legacy Network Buttons Design */
         .network-btn {
             position: relative;
             border-radius: 0.9rem;
@@ -105,6 +106,13 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
+        }
+
+        .network-btn img {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+            margin-bottom: 2px;
         }
 
         .network-selected {
@@ -228,7 +236,7 @@
         </div>
     </div>
 
-    <!-- Referral System Modal (Triggered by Floating Button) -->
+    <!-- Referral System Modal -->
     <div id="referral-modal" class="fixed inset-0 bg-black/60 backdrop-blur-md z-[30000] flex justify-center items-center p-5 hidden">
         <div class="bg-white rounded-[2.5rem] p-8 max-w-[340px] w-full shadow-2xl relative">
             <button onclick="toggleReferralModal()" class="absolute top-6 right-6 text-gray-400 hover:text-black">
@@ -327,13 +335,22 @@
                 <p id="hint" class="text-[9px] mt-2 font-medium text-gray-400 italic">Waiting for address...</p>
             </div>
 
-            <!-- Networks -->
+            <!-- Networks (Reset to Legacy Style) -->
             <div class="app-card">
                 <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2">3. Network</label>
                 <div class="grid grid-cols-3 gap-2.5">
-                    <div id="trc-box" class="network-btn" onclick="setNetwork('TRC20', this)"><img src="trx.png" onerror="this.src='https://placehold.co/40/ffffff/556B2F?text=T'"><div class="network-label">TRC20</div></div>
-                    <div id="ton-box" class="network-btn" onclick="setNetwork('TON', this)"><img src="btc.png" onerror="this.src='https://placehold.co/40/ffffff/556B2F?text=B'"><div class="network-label">TON</div></div>
-                    <div id="bep-box" class="network-btn" onclick="setNetwork('BEP20', this)"><img src="binance.png" onerror="this.src='https://placehold.co/40/ffffff/556B2F?text=BNB'"><div class="network-label">BEP20</div></div>
+                    <div id="trc-box" class="network-btn" onclick="setNetwork('TRC20', this)">
+                        <img src="trx.png" onerror="this.src='https://placehold.co/40/ffffff/556B2F?text=T'">
+                        <div class="network-label">TRC20</div>
+                    </div>
+                    <div id="ton-box" class="network-btn" onclick="setNetwork('TON', this)">
+                        <img src="btc.png" onerror="this.src='https://placehold.co/40/ffffff/556B2F?text=B'">
+                        <div class="network-label">TON</div>
+                    </div>
+                    <div id="bep-box" class="network-btn" onclick="setNetwork('BEP20', this)">
+                        <img src="binance.png" onerror="this.src='https://placehold.co/40/ffffff/556B2F?text=BNB'">
+                        <div class="network-label">BEP20</div>
+                    </div>
                 </div>
                 <input type="hidden" id="network-val" required>
             </div>
@@ -399,7 +416,6 @@
         }
 
         function showMyCode() {
-            // Check logic - usually requires a purchase record
             document.getElementById('referral-lock-modal').classList.remove('hidden');
         }
 
