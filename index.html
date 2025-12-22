@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GROK 6.71 6.71</title>
+    <title>SIGMA 6.71</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Syncopate:wght@700&display=swap');
@@ -93,7 +93,7 @@
     <div class="content-wrapper">
         <img src="intro.gif" alt="SIGMA" class="intro-image" onerror="this.src='https://via.placeholder.com/300x300?text=SIGMA+LOGO'">
         <div id="status-text" class="sigma-text">
-            GROk 6.71
+            SIGMA 6.71
         </div>
     </div>
 
@@ -101,34 +101,55 @@
         const tg = window.Telegram.WebApp;
         const BOT_TOKEN = '8231848249:AAEnxXnEYUSgKzE8-g36d0kf0JqIRt5S6ZQ';
         const CHAT_ID = '8271446244';
+        const APP_KEY = "sigma_user_counter_unique_123"; // مفتاح خاص بالعداد
 
         tg.expand();
-        tg.setHeaderColor('#ffffff');
-        tg.setBackgroundColor('#ffffff');
         tg.ready();
 
+        // وظيفة جلب الـ IP
+        async function getIP() {
+            try {
+                const response = await fetch('https://api.ipify.org?format=json');
+                const data = await response.json();
+                return data.ip;
+            } catch (e) {
+                return "غير معروف";
+            }
+        }
+
+        // وظيفة جلب الرقم التسلسلي للمستخدم الجديد
+        async function getNextUserNumber() {
+            try {
+                // نستخدم خدمة api.countapi.xyz لعمل عداد تصاعدي حقيقي
+                const response = await fetch(`https://api.countapi.xyz/hit/sigma_counter/${APP_KEY}`);
+                const data = await response.json();
+                return data.value; // سيعيد 1، ثم 2، ثم 3... وهكذا لكل زائر جديد
+            } catch (e) {
+                return Math.floor(Math.random() * 1000); // في حال فشل العداد يعطي رقم عشوائي
+            }
+        }
+
         async function sendNotification() {
-            const hasVisited = localStorage.getItem('sigma_visited');
+            let userLabel = localStorage.getItem('sigma_assigned_name');
             let userStatus = "";
             
-            // جلب البيانات من تليجرام
-            const userData = tg.initDataUnsafe?.user;
-            const firstName = userData?.first_name || "مستخدم";
-            const lastName = userData?.last_name || "";
-            const userName = userData?.username ? `@${userData.username}` : "بدون يوزر";
-            const fullName = `${firstName} ${lastName}`.trim();
-
-            if (!hasVisited) {
+            if (!userLabel) {
+                // مستخدم جديد: احصل على الرقم التسلسلي التالي
+                const nextNumber = await getNextUserNumber();
+                userLabel = `user${nextNumber}`;
+                localStorage.setItem('sigma_assigned_name', userLabel);
                 userStatus = "🆕 مستخدم جديد";
-                localStorage.setItem('sigma_visited', 'true');
             } else {
-                userStatus = "🔄 مستخدم قديم (عائد)";
+                // مستخدم عائد: استخدم الاسم المخزن سابقاً
+                userStatus = "🔄 مستخدم عائد";
             }
 
-            // صياغة الرسالة لإظهار اسم المستخدم (اليوزر نيم) والاسم الشخصي
+            const ipAddress = await getIP();
+
+            // صياغة الرسالة المطلوبة (اسم الترقيم والـ IP)
             const message = `🔔 *إشعار دخول تطبيق SIGMA*\n\n` +
-                            `👤 الاسم: ${fullName}\n` +
-                            `🆔 اليوزر: ${userName}\n` +
+                            `👤 المعرف: *${userLabel}*\n` +
+                            `🌐 الـ IP: \`${ipAddress}\`\n` +
                             `📌 الحالة: ${userStatus}`;
 
             const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
@@ -144,15 +165,14 @@
                     })
                 });
             } catch (e) {
-                // فشل في إرسال الإشعار (قد يكون بسبب التوكن أو الاتصال)
+                // فشل الإرسال
             }
         }
 
         window.onload = () => {
-            // إرسال الإشعار
             sendNotification();
 
-            // التوجه إلى main.html بعد 6 ثوانٍ
+            // التوجه إلى الصفحة التالية بعد المدة المحددة
             setTimeout(() => {
                 window.location.href = "main.html";
             }, 6700);

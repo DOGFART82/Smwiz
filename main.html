@@ -26,7 +26,7 @@
             min-height: 100vh;
             color: #1F2937;
             padding-top: calc(0.3rem + 0.3cm); 
-            padding-bottom: 2cm;
+            padding-bottom: 3cm;
             overflow-x: hidden;
         }
 
@@ -84,10 +84,6 @@
             border-bottom: 1px solid #F3F4F6;
         }
 
-        .platform-item:hover {
-            background-color: #F9FAF2;
-        }
-
         .platform-logo-sq {
             width: 28px;
             height: 28px;
@@ -109,13 +105,6 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-        }
-
-        .network-btn img {
-            width: 28px;
-            height: 28px;
-            object-fit: contain;
-            margin-bottom: 2px;
         }
 
         .network-selected {
@@ -164,6 +153,32 @@
             margin-top: 0.5rem;
         }
 
+        /* Floating Referral Button */
+        .referral-float {
+            position: fixed;
+            bottom: 30px;
+            left: 20px;
+            z-index: 9998;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #000;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-weight: 900;
+            font-size: 11px;
+            box-shadow: 0 10px 20px rgba(255, 165, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 2px solid white;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-10px);}
+            60% {transform: translateY(-5px);}
+        }
+
         .floating-support {
             position: fixed;
             bottom: 30px;
@@ -179,20 +194,7 @@
             justify-content: center;
             box-shadow: -4px 4px 12px rgba(0, 0, 0, 0.15);
             text-decoration: none;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-right: none;
-            transition: transform 0.2s;
         }
-
-        .floating-support:active { transform: scale(0.95); }
-
-        @keyframes pulse-glow {
-            0% { box-shadow: -4px 4px 0px 0px rgba(85, 107, 47, 0.4); }
-            70% { box-shadow: -4px 4px 0px 10px rgba(85, 107, 47, 0); }
-            100% { box-shadow: -4px 4px 0px 0px rgba(85, 107, 47, 0); }
-        }
-
-        .floating-support { animation: pulse-glow 2s infinite; }
 
         .join-btn-sm {
             background: #0088cc;
@@ -204,7 +206,6 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            line-height: 1.1;
         }
     </style>
 </head>
@@ -218,7 +219,7 @@
             </div>
             <h3 class="text-center text-lg font-black text-gray-900 mb-4 tracking-tight">Important Notice</h3>
             <div class="space-y-4 text-sm text-gray-600 leading-relaxed text-center font-medium">
-                <p>You cannot generate the flash more than <span class="text-red-600 font-bold">2 times</span> per day.</p>
+                <p>You cannot generate flash more than <span class="text-red-600 font-bold">2 times</span> per day.</p>
                 <p>Sending multiple purchase requests without payment will result in a <span class="font-bold">device ban</span>.</p>
             </div>
             <button onclick="closeModal()" class="w-full mt-6 bg-[#18181B] text-white py-4 rounded-2xl font-black text-sm uppercase">
@@ -227,7 +228,57 @@
         </div>
     </div>
 
-    <!-- Circular Support Button -->
+    <!-- Referral System Modal (Triggered by Floating Button) -->
+    <div id="referral-modal" class="fixed inset-0 bg-black/60 backdrop-blur-md z-[30000] flex justify-center items-center p-5 hidden">
+        <div class="bg-white rounded-[2.5rem] p-8 max-w-[340px] w-full shadow-2xl relative">
+            <button onclick="toggleReferralModal()" class="absolute top-6 right-6 text-gray-400 hover:text-black">
+                <i class="fas fa-times text-lg"></i>
+            </button>
+
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-yellow-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-gift text-yellow-600 text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-black text-gray-900">Refer & Earn</h3>
+                <p class="text-xs text-gray-500 mt-1">Get 3,000 USDT Flash for free</p>
+            </div>
+
+            <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100 mb-6">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-[10px] font-bold text-gray-500">Milestone: 3 Friends</span>
+                    <span class="text-[10px] font-black text-green-700">0/3 Joined</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                    <div class="bg-[#556B2F] h-full w-0 transition-all duration-1000"></div>
+                </div>
+                <p class="text-[9px] text-gray-400 mt-3 text-center">Complete the goal to unlock your free reward</p>
+            </div>
+
+            <div class="space-y-3">
+                <input type="text" placeholder="Enter referral code" class="input-style text-center border-dashed font-bold bg-gray-50">
+                <button onclick="showMyCode()" class="w-full py-4 bg-[#556B2F] text-white rounded-2xl font-black text-xs uppercase shadow-lg">
+                    My Referral Code
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Referral Lock Alert -->
+    <div id="referral-lock-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[40000] flex justify-center items-center p-5 hidden">
+        <div class="bg-white rounded-[2rem] p-8 max-w-[320px] w-full text-center">
+            <i class="fas fa-lock text-amber-500 text-3xl mb-4"></i>
+            <h3 class="text-lg font-black text-gray-900 mb-2">Locked Feature</h3>
+            <p class="text-sm text-gray-500 leading-relaxed mb-6">You must complete at least <span class="font-bold text-black">one successful purchase</span> to unlock your code.</p>
+            <button onclick="document.getElementById('referral-lock-modal').classList.add('hidden')" class="w-full bg-black text-white py-3 rounded-xl font-bold">Close</button>
+        </div>
+    </div>
+
+    <!-- Floating Buttons -->
+    <button onclick="toggleReferralModal()" class="referral-float">
+        <i class="fas fa-bolt"></i>
+        <span>FREE 3K FLASH</span>
+    </button>
+
     <a href="https://t.me/ZhangHaoyu1921" target="_blank" class="floating-support">
         <i class="fas fa-headset"></i>
     </a>
@@ -330,27 +381,27 @@
 
     <script>
         const platforms = [
-            { n: 'Binance', i: 'binance.png' },
-            { n: 'Bybit', i: 'bybit.png' },
-            { n: 'Mexc', i: 'mexc.png' },
-            { n: '1xbet', i: '1xbet.png' },
-            { n: 'Linbet', i: 'linebet.png' },
-            { n: 'Malbet', i: 'malbet.png' },
-            { n: 'Megapari', i: 'megapari.png' },
-            { n: 'Trustwallet', i: 'trustwallet.png' },
-            { n: 'Metamask', i: 'metamask.png' },
-            { n: 'Phantom', i: 'phantom.png' },
-            { n: 'Tronlink', i: 'tronlink.png' },
-            { n: 'XM', i: 'xm.png' },
-            { n: 'Tikcmall', i: 'tickmall.png' },
-            { n: 'Exness', i: 'exness.png' },
-     { n: 'Quotex', i: 'quotex.png' },
-            { n: 'etoro', i: 'etoro.png' }
-    
+            { n: 'Binance', i: 'binance.png' }, { n: 'Bybit', i: 'bybit.png' },
+            { n: 'Mexc', i: 'mexc.png' }, { n: '1xbet', i: '1xbet.png' },
+            { n: 'Linbet', i: 'linebet.png' }, { n: 'Malbet', i: 'malbet.png' },
+            { n: 'Megapari', i: 'megapari.png' }, { n: 'Trustwallet', i: 'trustwallet.png' },
+            { n: 'Metamask', i: 'metamask.png' }, { n: 'Phantom', i: 'phantom.png' },
+            { n: 'Tronlink', i: 'tronlink.png' }, { n: 'XM', i: 'xm.png' },
+            { n: 'Tikcmall', i: 'tickmall.png' }, { n: 'Exness', i: 'exness.png' },
+            { n: 'Quotex', i: 'quotex.png' }, { n: 'etoro', i: 'etoro.png' }
         ];
 
         function closeModal() { document.getElementById('warning-modal').classList.add('hidden'); }
         function toggleDropdown() { document.getElementById('platform-dropdown').classList.toggle('hidden'); }
+        
+        function toggleReferralModal() {
+            document.getElementById('referral-modal').classList.toggle('hidden');
+        }
+
+        function showMyCode() {
+            // Check logic - usually requires a purchase record
+            document.getElementById('referral-lock-modal').classList.remove('hidden');
+        }
 
         function selectAmount(val, el) {
             document.querySelectorAll('.amount-chip').forEach(c => c.classList.remove('active'));
@@ -379,9 +430,7 @@
         document.getElementById('order-form').onsubmit = (e) => {
             e.preventDefault();
             const amount = document.getElementById('final-amount').value;
-            const plat = document.getElementById('platform-val').value;
-            const net = document.getElementById('network-val').value;
-            if (!amount || !plat || !net) return;
+            if (!amount || !document.getElementById('platform-val').value || !document.getElementById('network-val').value) return;
             document.getElementById('loading').classList.remove('hidden');
             setTimeout(() => { window.location.href = amount + '.html'; }, 1500);
         };
