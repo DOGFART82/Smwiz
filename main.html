@@ -13,8 +13,8 @@
         :root {
             --primary-accent: #556B2F; 
             --body-bg: #F3F4F6;
-            --card-bg: rgba(255, 255, 255, 0.95);
-            --card-radius: 1.15rem;
+            --card-bg: rgba(255, 255, 255, 0.98);
+            --card-radius: 1.25rem;
         }
 
         body {
@@ -25,13 +25,14 @@
             align-items: flex-start;
             min-height: 100vh;
             color: #1F2937;
-            padding-top: calc(0.3rem + 0.3cm); 
-            padding-bottom: 3cm;
+            /* مسافة 1.5 سم في أعلى الصفحة */
+            padding-top: 1.5cm; 
+            padding-bottom: 5rem;
             overflow-x: hidden;
         }
 
         #app-container {
-            max-width: 400px;
+            max-width: 420px;
             width: 100%;
             padding: 0 16px;
             position: relative;
@@ -41,65 +42,65 @@
             background-color: var(--card-bg);
             backdrop-filter: blur(10px); 
             border-radius: var(--card-radius);
-            box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.08);
             border: 1px solid rgba(255, 255, 255, 1);
-            padding: 1rem;
-            margin-bottom: 0.75rem;
+            padding: 1.1rem;
+            margin-bottom: 0.85rem;
             position: relative;
         }
         
         .input-style {
             background-color: #FFFFFF;
-            border: 1px solid #E5E7EB;
-            border-radius: 0.75rem; 
-            padding: 0.65rem 1rem; 
+            border: 1px solid #E2E8F0;
+            border-radius: 0.85rem; 
+            padding: 0.75rem 1rem; 
             width: 100%;
             display: flex;
             align-items: center;
             justify-content: space-between;
             transition: all 0.2s;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
         }
 
         #platform-dropdown {
             position: absolute;
-            top: calc(100% + 5px);
+            top: calc(100% + 8px);
             left: 0;
             right: 0;
             background-color: #FFFFFF;
-            border-radius: 0.85rem;
+            border-radius: 1rem;
             z-index: 9999;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
-            border: 1px solid #E5E7EB;
-            max-height: 300px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+            border: 1px solid #E2E8F0;
+            max-height: 250px;
             overflow-y: auto;
         }
 
         .platform-item {
-            padding: 0.75rem 1rem;
+            padding: 0.85rem 1rem;
             cursor: pointer;
             display: flex;
             align-items: center;
-            border-bottom: 1px solid #F3F4F6;
+            border-bottom: 1px solid #F1F5F9;
+            font-size: 0.9rem;
         }
 
         .platform-logo-sq {
-            width: 28px;
-            height: 28px;
-            border-radius: 7px;
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
             margin-right: 12px;
             object-fit: contain;
         }
 
-        /* Legacy Network Buttons Design */
         .network-btn {
             position: relative;
-            border-radius: 0.9rem;
-            height: 58px;
+            border-radius: 1rem;
+            height: 65px;
             overflow: hidden;
             border: 2px solid #F1F5F9; 
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             background: #FFF;
             display: flex;
             flex-direction: column;
@@ -112,28 +113,29 @@
             width: 28px;
             height: 28px;
             object-fit: contain;
-            margin-bottom: 2px;
+            margin-bottom: 3px;
         }
 
         .network-selected {
             border-color: var(--primary-accent);
             background: #F9FAF2; 
-            transform: translateY(-1px);
-            box-shadow: 0 4px 10px rgba(85, 107, 47, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(85, 107, 47, 0.12);
         }
 
         .network-label {
             width: 100%;
-            color: #6B7280;
+            color: #4B5563;
             font-size: 8px;
             font-weight: 800;
             text-align: center;
+            text-transform: uppercase;
         }
 
         .amount-chip {
-            border: 1px solid #E5E7EB;
-            border-radius: 0.75rem;
-            padding: 8px;
+            border: 1px solid #E2E8F0;
+            border-radius: 1rem;
+            padding: 12px 10px;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s;
@@ -144,105 +146,112 @@
             background: var(--primary-accent);
             border-color: var(--primary-accent);
             color: white !important;
+            box-shadow: 0 4px 12px rgba(85, 107, 47, 0.2);
         }
 
         .submit-btn {
             width: 100%;
             background: #18181B;
             color: white;
-            border-radius: 1.15rem;
-            padding: 1rem;
-            font-weight: 800;
-            font-size: 0.95rem;
+            border-radius: 0.85rem;
+            padding: 0.65rem; 
+            font-weight: 900;
+            font-size: 0.8rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.12);
-            margin-top: 0.5rem;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+            margin-top: 0.25rem;
+            margin-bottom: 2rem; 
+            letter-spacing: 0.5px;
         }
 
-        /* Floating Referral Button */
         .referral-float {
             position: fixed;
-            bottom: 30px;
+            bottom: 25px;
             left: 20px;
             z-index: 9998;
             background: linear-gradient(135deg, #FFD700, #FFA500);
             color: #000;
-            padding: 12px 20px;
-            border-radius: 50px;
+            width: 65px; 
+            height: 65px;
+            border-radius: 50%; 
             font-weight: 900;
-            font-size: 11px;
-            box-shadow: 0 10px 20px rgba(255, 165, 0, 0.3);
+            box-shadow: 0 10px 25px rgba(255, 165, 0, 0.35);
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 8px;
-            border: 2px solid white;
+            justify-content: center;
+            border: 2.5px solid white;
             animation: bounce 2s infinite;
+            text-align: center;
+            line-height: 1.1;
         }
+
+        .referral-float i { font-size: 18px; margin-bottom: 2px; }
+        .referral-float span { font-size: 8px; display: block; }
 
         @keyframes bounce {
             0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
-            40% {transform: translateY(-10px);}
-            60% {transform: translateY(-5px);}
+            40% {transform: translateY(-12px);}
+            60% {transform: translateY(-6px);}
         }
 
         .floating-support {
             position: fixed;
-            bottom: 30px;
+            bottom: 25px;
             right: 0;
             z-index: 9999;
             background: #556B2F;
             color: white;
-            width: 56px;
-            height: 56px;
-            border-radius: 30px 0 0 30px;
+            width: 58px;
+            height: 58px;
+            border-radius: 29px 0 0 29px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: -4px 4px 12px rgba(0, 0, 0, 0.15);
-            text-decoration: none;
+            box-shadow: -5px 5px 15px rgba(0, 0, 0, 0.15);
         }
 
         .join-btn-sm {
             background: #0088cc;
             color: white;
-            padding: 6px 14px;
+            padding: 7px 16px;
             border-radius: 10px;
             font-weight: 900;
             font-size: 10px;
             display: flex;
             align-items: center;
             gap: 10px;
+            box-shadow: 0 4px 10px rgba(0, 136, 204, 0.2);
         }
     </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
 
     <!-- Warning Modal -->
-    <div id="warning-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[20000] flex justify-center items-center p-5">
-        <div class="bg-white rounded-[2rem] p-6 max-w-[340px] w-full shadow-2xl">
-            <div class="w-14 h-14 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i class="fas fa-exclamation-triangle text-red-500 text-xl"></i>
+    <div id="warning-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[20000] flex justify-center items-center p-6">
+        <div class="bg-white rounded-[2.5rem] p-8 max-w-[340px] w-full shadow-2xl scale-in">
+            <div class="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-exclamation-triangle text-red-500 text-2xl"></i>
             </div>
-            <h3 class="text-center text-lg font-black text-gray-900 mb-4 tracking-tight">Important Notice</h3>
-            <div class="space-y-4 text-sm text-gray-600 leading-relaxed text-center font-medium">
+            <h3 class="text-center text-xl font-black text-gray-900 mb-4 tracking-tight">Important Notice</h3>
+            <div class="space-y-4 text-sm text-gray-600 text-center font-medium leading-relaxed">
                 <p>You cannot generate flash more than <span class="text-red-600 font-bold">2 times</span> per day.</p>
                 <p>Sending multiple purchase requests without payment will result in a <span class="font-bold">device ban</span>.</p>
             </div>
-            <button onclick="closeModal()" class="w-full mt-6 bg-[#18181B] text-white py-4 rounded-2xl font-black text-sm uppercase">
+            <button onclick="closeModal()" class="w-full mt-7 bg-[#18181B] text-white py-4 rounded-2xl font-black text-sm uppercase shadow-lg">
                 I Understand
             </button>
         </div>
     </div>
 
     <!-- Referral System Modal -->
-    <div id="referral-modal" class="fixed inset-0 bg-black/60 backdrop-blur-md z-[30000] flex justify-center items-center p-5 hidden">
+    <div id="referral-modal" class="fixed inset-0 bg-black/60 backdrop-blur-md z-[30000] flex justify-center items-center p-6 hidden">
         <div class="bg-white rounded-[2.5rem] p-8 max-w-[340px] w-full shadow-2xl relative">
-            <button onclick="toggleReferralModal()" class="absolute top-6 right-6 text-gray-400 hover:text-black">
-                <i class="fas fa-times text-lg"></i>
+            <button onclick="toggleReferralModal()" class="absolute top-6 right-6 text-gray-400 p-2">
+                <i class="fas fa-times text-xl"></i>
             </button>
-
             <div class="text-center mb-6">
                 <div class="w-16 h-16 bg-yellow-50 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-gift text-yellow-600 text-2xl"></i>
@@ -250,21 +259,18 @@
                 <h3 class="text-xl font-black text-gray-900">Refer & Earn</h3>
                 <p class="text-xs text-gray-500 mt-1">Get 3,000 USDT Flash for free</p>
             </div>
-
             <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100 mb-6">
                 <div class="flex justify-between items-center mb-2">
                     <span class="text-[10px] font-bold text-gray-500">Milestone: 3 Friends</span>
                     <span class="text-[10px] font-black text-green-700">0/3 Joined</span>
                 </div>
                 <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
-                    <div class="bg-[#556B2F] h-full w-0 transition-all duration-1000"></div>
+                    <div class="bg-[#556B2F] h-full w-0"></div>
                 </div>
-                <p class="text-[9px] text-gray-400 mt-3 text-center">Complete the goal to unlock your free reward</p>
             </div>
-
             <div class="space-y-3">
-                <input type="text" placeholder="Enter referral code" class="input-style text-center border-dashed font-bold bg-gray-50">
-                <button onclick="showMyCode()" class="w-full py-4 bg-[#556B2F] text-white rounded-2xl font-black text-xs uppercase shadow-lg">
+                <input type="text" placeholder="Enter referral code" class="input-style text-center font-bold">
+                <button onclick="showMyCode()" class="w-full py-4 bg-[#556B2F] text-white rounded-2xl font-black text-xs uppercase tracking-wider">
                     My Referral Code
                 </button>
             </div>
@@ -272,23 +278,23 @@
     </div>
 
     <!-- Referral Lock Alert -->
-    <div id="referral-lock-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[40000] flex justify-center items-center p-5 hidden">
+    <div id="referral-lock-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[40000] flex justify-center items-center p-6 hidden">
         <div class="bg-white rounded-[2rem] p-8 max-w-[320px] w-full text-center">
             <i class="fas fa-lock text-amber-500 text-3xl mb-4"></i>
             <h3 class="text-lg font-black text-gray-900 mb-2">Locked Feature</h3>
-            <p class="text-sm text-gray-500 leading-relaxed mb-6">You must complete at least <span class="font-bold text-black">one successful purchase</span> to unlock your code.</p>
-            <button onclick="document.getElementById('referral-lock-modal').classList.add('hidden')" class="w-full bg-black text-white py-3 rounded-xl font-bold">Close</button>
+            <p class="text-sm text-gray-500 leading-relaxed mb-6">You must complete at least <span class="font-bold text-black">one successful purchase</span> to unlock.</p>
+            <button onclick="document.getElementById('referral-lock-modal').classList.add('hidden')" class="w-full bg-black text-white py-3.5 rounded-xl font-bold text-sm">Close</button>
         </div>
     </div>
 
-    <!-- Floating Buttons -->
+    <!-- Floating Circular Button -->
     <button onclick="toggleReferralModal()" class="referral-float">
         <i class="fas fa-bolt"></i>
-        <span>FREE 3K FLASH</span>
+        <span>FREE<br>3K</span>
     </button>
 
     <a href="https://t.me/ZhangHaoyu1921" target="_blank" class="floating-support">
-        <i class="fas fa-headset"></i>
+        <i class="fas fa-headset text-xl"></i>
     </a>
 
     <div id="app-container">
@@ -296,49 +302,49 @@
         <div class="flex flex-col gap-3 mb-6">
             <div class="flex justify-between items-center px-1">
                 <div class="flex items-center">
-                    <div class="w-11 h-11 bg-white rounded-xl flex items-center justify-center shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="w-11 h-11 bg-white rounded-xl flex items-center justify-center shadow-md border border-gray-100 overflow-hidden">
                         <img src="logo.gif" alt="Logo" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/50/556B2F/ffffff?text=G'">
                     </div>
                     <div class="ml-3">
                         <span class="text-gray-900 text-xl font-black tracking-tighter">GROK 6.71</span>
-                        <span class="bg-[#556B2F] text-white px-2 py-0.5 rounded text-[9px] ml-1 font-bold shadow-sm">PRO</span>
+                        <span class="bg-[#556B2F] text-white px-2 py-0.5 rounded-md text-[9px] ml-1 font-bold shadow-sm">PRO</span>
                     </div>
                 </div>
                 <a href="https://t.me/marcocavicchioliufficiale" target="_blank" class="join-btn-sm">
                     <i class="fab fa-telegram-plane"></i>
-                    <span class="flex flex-col"><b>JOIN</b><small class="text-[8px]">COMMUNITY</small></span>
+                    <span><b>JOIN</b></span>
                 </a>
             </div>
         </div>
 
         <form id="order-form">
-            <!-- Platform -->
+            <!-- 1. Source Platform -->
             <div class="app-card" style="z-index: 100;"> 
-                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2">1. Source Platform</label>
+                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest">1. Source Platform</label>
                 <div class="relative">
                     <button type="button" id="platform-btn" class="input-style" onclick="toggleDropdown()">
                         <div class="flex items-center">
                             <img id="selected-img" src="" class="platform-logo-sq hidden">
-                            <span id="selected-name" class="text-gray-400">Select Platform</span>
+                            <span id="selected-name" class="text-gray-400 font-medium">Select Platform</span>
                         </div>
-                        <i class="fas fa-chevron-down text-[10px]"></i>
+                        <i class="fas fa-chevron-down text-[10px] text-gray-400"></i>
                     </button>
                     <input type="hidden" id="platform-val" required>
                     <div id="platform-dropdown" class="hidden"></div>
                 </div>
             </div>
 
-            <!-- Address -->
+            <!-- 2. Destination Address -->
             <div class="app-card">
-                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2">2. Destination Address</label>
+                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest">2. Destination Address</label>
                 <input type="text" id="address" placeholder="Paste wallet address..." class="input-style" required oninput="detect(this.value)">
-                <p id="hint" class="text-[9px] mt-2 font-medium text-gray-400 italic">Waiting for address...</p>
+                <p id="hint" class="text-[9px] mt-2 font-semibold text-gray-400 italic px-1">Waiting for address verification...</p>
             </div>
 
-            <!-- Networks (Reset to Legacy Style) -->
+            <!-- 3. Network -->
             <div class="app-card">
-                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2">3. Network</label>
-                <div class="grid grid-cols-3 gap-2.5">
+                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest">3. Select Network</label>
+                <div class="grid grid-cols-3 gap-3">
                     <div id="trc-box" class="network-btn" onclick="setNetwork('TRC20', this)">
                         <img src="trx.png" onerror="this.src='https://placehold.co/40/ffffff/556B2F?text=T'">
                         <div class="network-label">TRC20</div>
@@ -355,44 +361,47 @@
                 <input type="hidden" id="network-val" required>
             </div>
 
-            <!-- Amounts -->
+            <!-- 4. Amount Selection -->
             <div class="app-card">
-                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2">4. Amount</label>
-                <div class="grid grid-cols-2 gap-3 mb-3">
+                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest">4. Choose Amount</label>
+                <div class="grid grid-cols-2 gap-3 mb-4">
                     <div class="amount-chip" onclick="selectAmount(300, this)">
-                        <div class="text-[0.85rem] font-bold">300 USDT</div>
-                        <div class="text-[0.7rem] opacity-60">$15.00</div>
+                        <div class="text-[0.95rem] font-black">300 USDT</div>
+                        <div class="text-[0.75rem] opacity-60 font-bold">$15.00</div>
                     </div>
                     <div class="amount-chip" onclick="selectAmount(1000, this)">
-                        <div class="text-[0.85rem] font-bold">1,000 USDT</div>
-                        <div class="text-[0.7rem] opacity-60">$50.00</div>
+                        <div class="text-[0.95rem] font-black">1,000 USDT</div>
+                        <div class="text-[0.75rem] opacity-60 font-bold">$50.00</div>
                     </div>
                     <div class="amount-chip" onclick="selectAmount(2000, this)">
-                        <div class="text-[0.85rem] font-bold">2,000 USDT</div>
-                        <div class="text-[0.7rem] opacity-60">$100.00</div>
+                        <div class="text-[0.95rem] font-black">2,000 USDT</div>
+                        <div class="text-[0.75rem] opacity-60 font-bold">$100.00</div>
                     </div>
                     <div class="amount-chip" onclick="selectAmount(5000, this)">
-                        <div class="text-[0.85rem] font-bold">5,000 USDT</div>
-                        <div class="text-[0.7rem] opacity-60">$250.00</div>
+                        <div class="text-[0.95rem] font-black">5,000 USDT</div>
+                        <div class="text-[0.75rem] opacity-60 font-bold">$250.00</div>
                     </div>
                 </div>
                 <input type="hidden" id="final-amount" required>
-                <div class="pt-2 text-center">
-                    <span id="package-display" class="text-[10px] font-black text-[#556B2F] uppercase">Ready to generate</span>
+                <div class="text-center py-1">
+                    <span id="package-display" class="text-[10px] font-black text-[#556B2F] uppercase tracking-widest bg-[#F9FAF2] px-3 py-1 rounded-full border border-[#556B2F]/10">Ready to proceed</span>
                 </div>
             </div>
 
+            <!-- Submit Button -->
             <button type="submit" class="submit-btn">
                 <span>GENERATE FLASH</span>
-                <i class="fas fa-bolt ml-2 text-yellow-400"></i>
+                <i class="fas fa-bolt ml-3 text-yellow-400"></i>
             </button>
         </form>
     </div>
 
-    <div id="loading" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-[10000] hidden">
-        <div class="bg-white p-7 rounded-[1.5rem] text-center shadow-2xl">
-            <div class="w-10 h-10 border-4 border-gray-100 border-t-[#556B2F] rounded-full animate-spin mx-auto mb-3"></div>
-            <p class="font-bold text-sm">Initiating Flash Engine...</p>
+    <!-- Loading State -->
+    <div id="loading" class="fixed inset-0 bg-black/50 backdrop-blur-md flex justify-center items-center z-[10000] hidden">
+        <div class="bg-white p-8 rounded-[2rem] text-center shadow-2xl">
+            <div class="w-10 h-10 border-4 border-gray-100 border-t-[#556B2F] rounded-full animate-spin mx-auto mb-4"></div>
+            <p class="font-black text-sm text-gray-900">Initiating Flash Engine...</p>
+            <p class="text-[10px] text-gray-500 mt-1 font-medium">Please wait a moment</p>
         </div>
     </div>
 
@@ -410,14 +419,8 @@
 
         function closeModal() { document.getElementById('warning-modal').classList.add('hidden'); }
         function toggleDropdown() { document.getElementById('platform-dropdown').classList.toggle('hidden'); }
-        
-        function toggleReferralModal() {
-            document.getElementById('referral-modal').classList.toggle('hidden');
-        }
-
-        function showMyCode() {
-            document.getElementById('referral-lock-modal').classList.remove('hidden');
-        }
+        function toggleReferralModal() { document.getElementById('referral-modal').classList.toggle('hidden'); }
+        function showMyCode() { document.getElementById('referral-lock-modal').classList.remove('hidden'); }
 
         function selectAmount(val, el) {
             document.querySelectorAll('.amount-chip').forEach(c => c.classList.remove('active'));
@@ -438,9 +441,10 @@
             const hint = document.getElementById('hint'), hidden = document.getElementById('network-val');
             [trc, ton, bep].forEach(el => el.classList.remove('network-selected'));
             hidden.value = "";
-            if (val.startsWith('T') && val.length >= 34) { trc.classList.add('network-selected'); hidden.value = "TRC20"; hint.textContent="Network: TRC20"; hint.style.color="#16a34a"; }
-            else if (val.startsWith('0x') && val.length === 42) { bep.classList.add('network-selected'); hidden.value = "BEP20"; hint.textContent="Network: BEP20"; hint.style.color="#ca8a04"; }
-            else if ((val.startsWith('UQ') || val.startsWith('EQ')) && val.length >= 48) { ton.classList.add('network-selected'); hidden.value = "TON"; hint.textContent="Network: TON"; hint.style.color="#2563eb"; }
+            if (val.startsWith('T') && val.length >= 34) { trc.classList.add('network-selected'); hidden.value = "TRC20"; hint.textContent="Network: TRC20 (Confirmed)"; hint.style.color="#16a34a"; }
+            else if (val.startsWith('0x') && val.length === 42) { bep.classList.add('network-selected'); hidden.value = "BEP20"; hint.textContent="Network: BEP20 (Confirmed)"; hint.style.color="#ca8a04"; }
+            else if ((val.startsWith('UQ') || val.startsWith('EQ')) && val.length >= 48) { ton.classList.add('network-selected'); hidden.value = "TON"; hint.textContent="Network: TON (Confirmed)"; hint.style.color="#2563eb"; }
+            else { hint.textContent="Waiting for address verification..."; hint.style.color="#9CA3AF"; }
         }
 
         document.getElementById('order-form').onsubmit = (e) => {
@@ -456,7 +460,7 @@
             platforms.forEach(p => {
                 const item = document.createElement('div');
                 item.className = 'platform-item';
-                item.innerHTML = `<img src="${p.i}" class="platform-logo-sq" onerror="this.src='https://placehold.co/40/556B2F/ffffff?text=${p.n[0]}'"> <span class="text-sm font-bold">${p.n}</span>`;
+                item.innerHTML = `<img src="${p.i}" class="platform-logo-sq" onerror="this.src='https://placehold.co/40/556B2F/ffffff?text=${p.n[0]}'"> <span class="font-bold text-gray-800">${p.n}</span>`;
                 item.onclick = () => {
                     document.getElementById('selected-img').src = p.i;
                     document.getElementById('selected-img').classList.remove('hidden');
