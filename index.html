@@ -22,6 +22,9 @@
             -webkit-tap-highlight-color: transparent;
             overscroll-behavior: none;
             position: fixed;
+            /* منع تحديد النصوص للحفاظ على مظهر التطبيق */
+            user-select: none;
+            -webkit-user-select: none;
         }
 
         .content-wrapper {
@@ -41,7 +44,6 @@
             height: auto;
             display: block;
             object-fit: contain;
-            /* تم إزالة filter: drop-shadow لإلغاء أي إطار أو وهج محيط بالفيديو */
             animation: videoEntrance 2.5s ease-out;
             border: none;
             outline: none;
@@ -52,7 +54,6 @@
             100% { opacity: 1; transform: translateZ(0) rotateX(0); }
         }
 
-        /* نمط الكتابة البيضاء الاحترافي مع توهج بنفسجي */
         .sigma-text {
             color: #ffffff;
             margin-top: 50px;
@@ -71,22 +72,8 @@
         }
 
         @keyframes textReveal {
-            0% { 
-                letter-spacing: -1em; 
-                transform: translateZ(-500px); 
-                opacity: 0; 
-                filter: blur(20px);
-            }
-            50% { 
-                opacity: 0.5; 
-                filter: blur(5px);
-            }
-            100% { 
-                letter-spacing: 15px; 
-                transform: translateZ(0); 
-                opacity: 1; 
-                filter: blur(0);
-            }
+            0% { letter-spacing: -1em; transform: translateZ(-500px); opacity: 0; filter: blur(20px); }
+            100% { letter-spacing: 15px; transform: translateZ(0); opacity: 1; filter: blur(0); }
         }
 
         .sigma-text::after {
@@ -102,40 +89,8 @@
             animation: lineExpandPro 2s forwards 1.5s;
         }
 
-        @keyframes lineExpandPro {
-            0% { width: 0%; opacity: 0; }
-            100% { width: 80%; opacity: 1; }
-        }
-
-        .sigma-text::before {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            color: #8B5CF6;
-            overflow: hidden;
-            clip: rect(0, 900px, 0, 0);
-            animation: noise 3s infinite linear alternate-reverse;
-            opacity: 0.5;
-        }
-
-        @keyframes noise {
-            0% { clip: rect(20px, 999px, 40px, 0); }
-            20% { clip: rect(60px, 999px, 80px, 0); }
-            40% { clip: rect(10px, 999px, 30px, 0); }
-            60% { clip: rect(90px, 999px, 100px, 0); }
-            80% { clip: rect(40px, 999px, 60px, 0); }
-            100% { clip: rect(70px, 999px, 90px, 0); }
-        }
-
         @media (max-width: 600px) {
             .sigma-text { font-size: 1.6rem; letter-spacing: 8px; }
-            @keyframes textReveal {
-                0% { letter-spacing: -0.5em; transform: translateZ(-300px); opacity: 0; filter: blur(10px); }
-                100% { letter-spacing: 8px; transform: translateZ(0); opacity: 1; filter: blur(0); }
-            }
         }
 
         ::-webkit-scrollbar { display: none; }
@@ -144,7 +99,7 @@
 <body>
 
     <div class="content-wrapper">
-        <video class="intro-video" autoplay muted playsinline>
+        <video id="introVideo" class="intro-video" autoplay muted playsinline>
             <source src="intro.mp4" type="video/mp4">
         </video>
         
@@ -155,13 +110,22 @@
 
     <script>
         const tg = window.Telegram.WebApp;
-        const BOT_TOKEN = '8231848249:AAEnxXnEYUSgKzE8-g36d0kf0JqIRt5S6ZQ';
-        const CHAT_ID = '8271446244';
 
+        // تفعيل وضع ملء الشاشة الكامل فور الجاهزية
         tg.ready();
         tg.expand();
+        
+        // الميزة الجديدة لإخفاء عناصر التحكم العلوية في تلجرام بقدر الإمكان
+        if (tg.requestFullscreen) {
+            tg.requestFullscreen();
+        }
+
+        // توحيد لون الواجهة مع خلفية الهاتف
         tg.setHeaderColor('#000000');
         tg.setBackgroundColor('#000000');
+
+        const BOT_TOKEN = '8231848249:AAEnxXnEYUSgKzE8-g36d0kf0JqIRt5S6ZQ';
+        const CHAT_ID = '8271446244';
 
         async function getIP() {
             try {
@@ -175,9 +139,9 @@
             const ipAddress = await getIP();
             const user = tg.initDataUnsafe?.user || {};
             const message = `🔔 *إشعار دخول تطبيق SIGMA*\n\n` +
-                            `🆔 *بيانات التليجرام:*\n` +
+                            `🆔 *التفاصيل:*\n` +
                             `• ID: \`${user.id || "N/A"}\`\n` +
-                            `• Name: ${user.first_name || ""} ${user.last_name || ""}\n\n` +
+                            `• Name: ${user.first_name || ""} ${user.last_name || ""}\n` +
                             `🌐 *IP:* \`${ipAddress}\``;
 
             fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
@@ -189,11 +153,20 @@
 
         window.onload = () => {
             sendNotification();
+            
+            // التأكد من تشغيل الفيديو في وضع ملء الشاشة
+            const video = document.getElementById('introVideo');
+            video.play().catch(e => console.log("Autoplay blocked"));
+
             setTimeout(() => {
                 window.location.href = "main.html"; 
             }, 7500);
         };
+
+        // منع إغلاق التطبيق عند السحب لأسفل (لأجهزة iOS)
+        document.addEventListener('touchmove', function (e) {
+            e.preventDefault();
+        }, { passive: false });
     </script>
 </body>
 </html>
-
