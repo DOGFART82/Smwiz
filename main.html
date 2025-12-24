@@ -2,417 +2,506 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GROK 6.71 PRO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GROK 6.71 PRO | Futuristic UI</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
             --primary-accent: #556B2F;
-            --card-bg: rgba(255, 255, 255, 0.95);
-            --card-radius: 1.5rem;
+            --grok-purple: #8B5CF6;
+            --tg-blue: #2481cc;
+            --card-bg: rgba(255, 255, 255, 0.9);
         }
 
         body {
-            background-color: #F8FAFC;
+            background: #0f172a;
             font-family: 'Inter', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-            overflow-x: hidden;
+            overflow: hidden; 
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+        }
+
+        /* --- Animated Background --- */
+        .bg-animate {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: linear-gradient(125deg, #0f172a 0%, #1e1b4b 50%, #020617 100%);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .bg-dots {
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(#ffffff0a 1px, transparent 1px);
+            background-size: 30px 30px;
         }
 
         #app-container {
             max-width: 480px;
             margin: 0 auto;
-            padding: 0 16px;
+            padding: 2.2cm 14px 10px 14px; 
+            height: 100%;
+            display: flex;
+            flex-direction: column;
             position: relative;
-            /* تم تعديل المسافة العلوية لتصبح 2 سم تقريباً */
-            padding-top: 2cm;
+            z-index: 1;
         }
-        
-        .app-card {
-            background-color: var(--card-bg);
-            backdrop-filter: blur(10px); 
-            border-radius: var(--card-radius);
-            box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.08);
-            border: 1px solid rgba(255, 255, 255, 1);
-            padding: 1.1rem;
-            margin-bottom: 0.85rem;
-            position: relative;
+
+        /* --- Profile Section --- */
+        .profile-compact {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            margin-bottom: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 1.2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
         }
-        
-        .input-style {
-            background-color: #FFFFFF;
-            border: 1px solid #E2E8F0;
-            border-radius: 0.85rem; 
-            padding: 0.75rem 1rem; 
+
+        .avatar-glow {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            padding: 2px;
+            background: linear-gradient(135deg, var(--grok-purple), var(--tg-blue));
+        }
+
+        .user-avatar {
             width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid #0f172a;
+            object-fit: cover;
+        }
+
+        .logo-badge-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100px;
+        }
+
+        .main-logo-circle {
+            width: 42px;
+            height: 42px;
+            background: #000;
+            border-radius: 50%;
+            border: 2px solid var(--grok-purple);
+            z-index: 10;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: -12px;
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+        }
+
+        .brand-badge {
+            background: #000;
+            color: #fff;
+            padding: 12px 6px 4px 6px;
+            border-radius: 6px 6px 10px 10px;
+            font-size: 8px;
+            font-weight: 900;
+            font-style: italic;
+            text-transform: uppercase;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* --- Cards UI --- */
+        .app-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 1.2rem;
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(5px);
+            position: relative;
+        }
+
+        .section-label {
+            font-size: 9px;
+            font-weight: 800;
+            color: #94a3b8;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .input-style {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.8rem;
+            padding: 10px 14px;
+            width: 100%;
+            color: white;
+            font-size: 0.9rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            transition: all 0.2s;
+            outline: none;
             cursor: pointer;
-            font-size: 0.95rem;
         }
 
+        /* --- Fixed Dropdown Styles --- */
         #platform-dropdown {
             position: absolute;
-            top: calc(100% + 8px);
+            top: 105%; 
             left: 0;
             right: 0;
-            background-color: #FFFFFF;
-            border-radius: 1rem;
-            z-index: 9999;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
-            border: 1px solid #E2E8F0;
-            max-height: 250px;
+            background: #1e293b;
+            border: 1px solid rgba(139, 92, 246, 0.5);
+            border-radius: 0.8rem;
+            z-index: 9999; 
+            overflow: hidden;
+            max-height: 200px; /* Reduced height */
             overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            display: none;
+            flex-direction: column;
+            margin-top: 2px;
         }
 
         .platform-item {
-            padding: 0.85rem 1rem;
+            padding: 10px 14px; /* Slightly tighter padding */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: white;
+            font-weight: 600;
+            font-size: 12px; /* Smaller font */
             cursor: pointer;
+            transition: background 0.2s;
             display: flex;
             align-items: center;
-            border-bottom: 1px solid #F1F5F9;
-            font-size: 0.9rem;
+            gap: 10px;
         }
 
-        .platform-logo-sq {
-            width: 30px;
-            height: 30px;
-            border-radius: 8px;
-            margin-right: 12px;
-            object-fit: contain;
+        .platform-item:hover { background: var(--grok-purple); }
+        .platform-item img { width: 18px; height: 18px; border-radius: 4px; }
+
+        /* --- Network Grid --- */
+        .network-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
         }
 
         .network-btn {
-            position: relative;
-            border-radius: 1rem;
-            height: 65px;
-            overflow: hidden;
-            border: 2px solid #F1F5F9; 
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: #FFF;
+            height: 70px;
+            border-radius: 0.8rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
+            background: rgba(255, 255, 255, 0.02);
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
         }
 
         .network-btn img {
-            width: 28px;
-            height: 28px;
+            width: 30px;
+            height: 30px;
             object-fit: contain;
-            margin-bottom: 3px;
+            filter: grayscale(100%) opacity(0.6);
+            transition: 0.3s;
         }
 
-        .network-selected {
-            border-color: var(--primary-accent);
-            background: #F9FAF2; 
-            transform: translateY(-2px);
-            box-shadow: 0 5px 12px rgba(85, 107, 47, 0.12);
-        }
-
-        .network-label {
-            width: 100%;
-            color: #4B5563;
+        .network-btn span {
             font-size: 8px;
-            font-weight: 800;
-            text-align: center;
+            font-weight: 900;
+            color: #64748b;
+            margin-top: 6px;
             text-transform: uppercase;
         }
 
+        .network-selected {
+            border-color: var(--grok-purple);
+            background: rgba(139, 92, 246, 0.15);
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+        }
+
+        .network-selected img { filter: grayscale(0%) opacity(1); transform: scale(1.1); }
+        .network-selected span { color: var(--grok-purple); }
+
         .amount-chip {
-            border: 1px solid #E2E8F0;
-            border-radius: 1rem;
-            padding: 12px 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.8rem;
+            padding: 10px;
             text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            background: white;
+            background: rgba(255, 255, 255, 0.02);
+            color: #94a3b8;
+            font-weight: 700;
+            font-size: 12px;
         }
 
         .amount-chip.active {
-            background: var(--primary-accent);
-            border-color: var(--primary-accent);
-            color: white !important;
-            box-shadow: 0 4px 12px rgba(85, 107, 47, 0.2);
+            background: var(--grok-purple);
+            color: white;
+            border-color: var(--grok-purple);
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
         }
 
-        .submit-btn {
+        .start-groking-btn {
             width: 100%;
-            background: linear-gradient(135deg, #18181b 0%, #3f3f46 100%);
+            background: linear-gradient(90deg, #7c3aed, #a855f7, #7c3aed);
+            background-size: 200% auto;
             color: white;
-            border-radius: 1rem;
-            padding: 0.85rem 1.2rem; 
+            border-radius: 1.1rem;
+            padding: 16px;
             font-weight: 900;
-            font-size: 0.85rem;
+            font-size: 1rem;
+            text-transform: uppercase;
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+            cursor: pointer;
+            border: none;
+            animation: shine 3s linear infinite, grow 2s ease-in-out infinite;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
-            letter-spacing: 0.5px;
-            transition: all 0.3s ease;
-            position: relative;
-            animation: pulse-animation 2s infinite;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            gap: 10px;
+            letter-spacing: 1px;
         }
 
-        .submit-btn:active {
-            transform: scale(0.98);
-        }
+        @keyframes shine { to { background-position: 200% center; } }
+        @keyframes grow { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
 
-        @keyframes pulse-animation {
-            0% {
-                box-shadow: 0 0 0 0 rgba(85, 107, 47, 0.6);
-            }
-            70% {
-                box-shadow: 0 0 0 12px rgba(85, 107, 47, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(85, 107, 47, 0);
-            }
-        }
-
-        .referral-float {
+        /* --- Modals --- */
+        #entry-modal {
             position: fixed;
-            bottom: 25px;
-            left: 20px;
-            z-index: 9998;
-            background: linear-gradient(135deg, #FFD700, #FFA500);
-            color: #000;
-            width: 65px; 
-            height: 65px;
-            border-radius: 50%; 
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(15px);
+            z-index: 99999999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .warning-card {
+            background: rgba(30, 41, 59, 0.9);
+            border: 1px solid #ef4444;
+            border-radius: 1.5rem;
+            padding: 24px;
+            max-width: 360px;
+            text-align: center;
+        }
+
+        .warning-icon { font-size: 3rem; color: #ef4444; margin-bottom: 16px; animation: pulse-red 2s infinite; }
+        @keyframes pulse-red { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.8; } }
+
+        .agree-btn {
+            background: #ef4444;
+            color: white;
             font-weight: 900;
-            box-shadow: 0 10px 25px rgba(255, 165, 0, 0.35);
+            width: 100%;
+            padding: 14px;
+            border-radius: 0.8rem;
+            text-transform: uppercase;
+            font-size: 12px;
+            cursor: pointer;
+            border: none;
+        }
+
+        /* FAB Menu */
+        .for-you-menu {
+            position: absolute;
+            bottom: 75px; 
+            right: 0;
+            display: none;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            width: 220px;
+            z-index: 2000;
+            transform-origin: bottom right;
+            animation: gridIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes gridIn {
+            from { opacity: 0; transform: scale(0.5) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .menu-square {
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            border: 2.5px solid white;
-            animation: bounce 2s infinite;
-            text-align: center;
-            line-height: 1.1;
-        }
-
-        .referral-float i { font-size: 18px; margin-bottom: 2px; }
-        .referral-float span { font-size: 8px; display: block; }
-
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
-            40% {transform: translateY(-12px);}
-            60% {transform: translateY(-6px);}
-        }
-
-        .floating-support {
-            position: fixed;
-            bottom: 25px;
-            right: 0;
-            z-index: 9999;
-            background: #556B2F;
+            gap: 8px;
             color: white;
-            width: 58px;
-            height: 58px;
-            border-radius: 29px 0 0 29px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: -5px 5px 15px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
         }
 
-        .join-btn-sm {
-            background: #0088cc;
+        .menu-square i { font-size: 1.3rem; }
+        .menu-square span { font-size: 9px; font-weight: 800; text-transform: uppercase; }
+
+        .for-you-fab {
+            background: #000;
             color: white;
-            padding: 7px 16px;
-            border-radius: 10px;
+            padding: 10px 20px;
+            border-radius: 50px;
             font-weight: 900;
             font-size: 10px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            box-shadow: 0 4px 10px rgba(0, 136, 204, 0.2);
+            gap: 8px;
+            border: 1px solid var(--grok-purple);
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+            cursor: pointer;
+            width: fit-content;
+            align-self: flex-end;
         }
+
+        .for-you-fab.active { background: var(--grok-purple); }
+
     </style>
 </head>
-<body oncontextmenu="return false;">
+<body>
 
-    <!-- Warning Modal -->
-    <div id="warning-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[20000] flex justify-center items-center p-6">
-        <div class="bg-white rounded-[2.5rem] p-8 max-w-[340px] w-full shadow-2xl scale-in">
-            <div class="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i class="fas fa-exclamation-triangle text-red-500 text-2xl"></i>
+    <div class="bg-animate"></div>
+    <div class="bg-dots"></div>
+
+    <!-- Entry Warning Modal -->
+    <div id="entry-modal">
+        <div class="warning-card">
+            <i class="fas fa-exclamation-triangle warning-icon"></i>
+            <h2 class="text-white font-black text-lg mb-4 uppercase">System Notice</h2>
+            <div class="text-[10px] text-white font-bold leading-relaxed mb-6 uppercase">
+                Purchases from this bot are limited to <span class="text-red-500">once per day</span>.<br><br>
+                Maximum limit per transaction is <span class="text-red-500">300k USDT</span>.<br><br>
+                Fake transactions result in a <span class="text-red-500">PERMANENT DEVICE BAN</span>.
             </div>
-            <h3 class="text-center text-xl font-black text-gray-900 mb-4 tracking-tight">Important Notice</h3>
-            <div class="space-y-4 text-sm text-gray-600 text-center font-medium leading-relaxed">
-                <p>You cannot generate flash more than <span class="text-red-600 font-bold">2 times</span> per day.</p>
-                <p>Sending multiple purchase requests without payment will result in a <span class="font-bold">device ban</span>.</p>
-            </div>
-            <button onclick="closeModal()" class="w-full mt-7 bg-[#18181B] text-white py-4 rounded-2xl font-black text-sm uppercase shadow-lg">
-                I Understand
-            </button>
+            <button onclick="acceptTerms()" class="agree-btn">I Understand & Accept</button>
         </div>
     </div>
 
-    <!-- Referral System Modal -->
-    <div id="referral-modal" class="fixed inset-0 bg-black/60 backdrop-blur-md z-[30000] flex justify-center items-center p-6 hidden">
-        <div class="bg-white rounded-[2.5rem] p-8 max-w-[340px] w-full shadow-2xl relative">
-            <button onclick="toggleReferralModal()" class="absolute top-6 right-6 text-gray-400 p-2">
-                <i class="fas fa-times text-xl"></i>
-            </button>
-            <div class="text-center mb-6">
-                <div class="w-16 h-16 bg-yellow-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-gift text-yellow-600 text-2xl"></i>
-                </div>
-                <h3 class="text-xl font-black text-gray-900">Refer & Earn</h3>
-                <p class="text-xs text-gray-500 mt-1">Get 3,000 USDT Flash for free</p>
-            </div>
-            <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100 mb-6">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-[10px] font-bold text-gray-500">Milestone: 3 Friends</span>
-                    <span class="text-[10px] font-black text-green-700">0/3 Joined</span>
-                </div>
-                <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
-                    <div class="bg-[#556B2F] h-full w-0"></div>
-                </div>
-            </div>
-            <div class="space-y-3">
-                <input type="text" placeholder="Enter referral code" class="input-style text-center font-bold">
-                <button onclick="showMyCode()" class="w-full py-4 bg-[#556B2F] text-white rounded-2xl font-black text-xs uppercase tracking-wider">
-                    My Referral Code
-                </button>
-            </div>
+    <!-- Referral Modal -->
+    <div id="referral-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden items-center justify-center z-[100000] p-6">
+        <div class="bg-slate-900 border border-white/10 p-6 rounded-3xl w-full max-w-[320px] text-center relative">
+            <i class="fas fa-gift text-purple-500 text-5xl mb-4"></i>
+            <h3 class="text-white font-black uppercase text-xs mb-2">Exclusive Reward</h3>
+            <p class="text-slate-400 text-[10px] mb-6">Enter code to unlock 3,000 USDT Flash.</p>
+            <input type="text" id="ref-input" placeholder="ENTER CODE..." class="w-full bg-black/50 border border-white/10 p-3 rounded-xl text-white text-center text-xs mb-4 outline-none">
+            <div id="ref-status" class="hidden text-[10px] font-bold mb-4 italic"></div>
+            <button onclick="checkReferral()" class="w-full bg-purple-600 text-white font-black py-3 rounded-xl mb-3 text-xs uppercase">Confirm</button>
+            <button onclick="showReferralNotice()" class="w-full bg-transparent border border-purple-500/50 text-purple-400 font-black py-2 rounded-xl mb-4 text-[10px] uppercase">GET 3K FREE</button>
+            <button onclick="closeModal()" class="text-slate-500 text-[10px] font-bold uppercase">Back</button>
         </div>
     </div>
 
-    <!-- Referral Lock Alert -->
-    <div id="referral-lock-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[40000] flex justify-center items-center p-6 hidden">
-        <div class="bg-white rounded-[2rem] p-8 max-w-[320px] w-full text-center">
-            <i class="fas fa-lock text-amber-500 text-3xl mb-4"></i>
-            <h3 class="text-lg font-black text-gray-900 mb-2">Locked Feature</h3>
-            <p class="text-sm text-gray-500 leading-relaxed mb-6">You must complete at least <span class="font-bold text-black">one successful purchase</span> to unlock.</p>
-            <button onclick="document.getElementById('referral-lock-modal').classList.add('hidden')" class="w-full bg-black text-white py-3.5 rounded-xl font-bold text-sm">Close</button>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="fixed inset-0 bg-slate-950 z-[9999999] hidden flex-col items-center justify-center">
+        <div class="relative"><i class="fas fa-atom text-5xl text-purple-500 animate-spin"></i></div>
+        <div class="w-64 h-1 bg-white/5 rounded-full mt-8 overflow-hidden">
+            <div id="loader-fill" class="h-full w-0 bg-purple-500 transition-all duration-300"></div>
         </div>
+        <div class="text-purple-400 font-black text-[10px] mt-4 uppercase tracking-[2px]">Quantum Syncing...</div>
     </div>
-
-    <!-- Floating Circular Button -->
-    <button onclick="toggleReferralModal()" class="referral-float">
-        <i class="fas fa-bolt"></i>
-        <span>FREE<br>3K</span>
-    </button>
-
-    <a href="https://t.me/ZhangHaoyu1921" target="_blank" class="floating-support">
-        <i class="fas fa-headset text-xl"></i>
-    </a>
 
     <div id="app-container">
         <!-- Header -->
-        <div class="flex flex-col gap-3 mb-6">
-            <div class="flex justify-between items-center px-1">
-                <div class="flex items-center">
-                    <div class="w-11 h-11 bg-white rounded-xl flex items-center justify-center shadow-md border border-gray-100 overflow-hidden">
-                        <img src="logo.gif" alt="Logo" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/50/556B2F/ffffff?text=G'">
-                    </div>
-                    <div class="ml-3">
-                        <span class="text-gray-900 text-xl font-black tracking-tighter">GROK 6.71</span>
-                        <span class="bg-[#556B2F] text-white px-2 py-0.5 rounded-md text-[9px] ml-1 font-bold shadow-sm">PRO</span>
-                    </div>
-                </div>
-                <a href="https://t.me/marcocavicchioliufficiale" target="_blank" class="join-btn-sm">
-                    <i class="fab fa-telegram-plane"></i>
-                    <span><b>JOIN</b></span>
-                </a>
+        <div class="profile-compact">
+            <div class="avatar-glow"><img src="https://via.placeholder.com/100" id="user-img" class="user-avatar"></div>
+            <div class="flex-1">
+                <h2 id="user-name" class="text-white text-sm font-black leading-none">Quantum User</h2>
+                <span id="user-id" class="text-[10px] font-bold text-purple-400">NODE: 00000000</span>
+            </div>
+            <div class="logo-badge-container">
+                <div class="main-logo-circle"><img src="logo.gif" alt="G" onerror="this.src='https://via.placeholder.com/40/000000/FFFFFF?text=G'"></div>
+                <div class="brand-badge">GROK 6.71 <span class="text-purple-500">PRO</span></div>
             </div>
         </div>
 
-        <form id="order-form">
-            <!-- 1. Source Platform -->
-            <div class="app-card" style="z-index: 100;"> 
-                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest">1. Source Platform</label>
-                <div class="relative">
-                    <button type="button" id="platform-btn" class="input-style" onclick="toggleDropdown()">
-                        <div class="flex items-center">
-                            <img id="selected-img" src="" class="platform-logo-sq hidden">
-                            <span id="selected-name" class="text-gray-400 font-medium">Select Platform</span>
-                        </div>
-                        <i class="fas fa-chevron-down text-[10px] text-gray-400"></i>
-                    </button>
-                    <input type="hidden" id="platform-val" required>
-                    <div id="platform-dropdown" class="hidden"></div>
+        <form id="order-form" class="flex flex-col flex-1 pb-44 overflow-y-auto space-y-2">
+            <!-- Exchange Section -->
+            <div class="app-card" style="z-index: 100;">
+                <span class="section-label">Source Node</span>
+                <div id="platform-trigger" class="input-style" onclick="toggleDropdown(event)">
+                    <div class="flex items-center gap-2">
+                        <img id="p-icon" src="" class="hidden w-5 h-5 object-contain">
+                        <span id="p-name" class="opacity-40">Choose Exchange...</span>
+                    </div>
+                    <i class="fas fa-chevron-down text-[8px]"></i>
                 </div>
+                <div id="platform-dropdown"></div>
+                <input type="hidden" id="val-p" required>
             </div>
 
-            <!-- 2. Destination Address -->
             <div class="app-card">
-                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest">2. Destination Address</label>
-                <input type="text" id="address" placeholder="Paste wallet address..." class="input-style" required oninput="detect(this.value)">
-                <p id="hint" class="text-[9px] mt-2 font-semibold text-gray-400 italic px-1">Waiting for address verification...</p>
+                <span class="section-label">Target Address</span>
+                <input type="text" id="address" placeholder="Destination Hash..." class="input-style" required oninput="detect(this.value)">
             </div>
 
-            <!-- 3. Network -->
             <div class="app-card">
-                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest">3. Select Network</label>
-                <div class="grid grid-cols-3 gap-3">
-                    <div id="trc-box" class="network-btn" onclick="setNetwork('TRC20', this)">
-                        <img src="trx.png" onerror="this.src='https://placehold.co/40/ffffff/556B2F?text=T'">
-                        <div class="network-label">TRC20</div>
+                <span class="section-label">Quantum Protocol</span>
+                <div class="network-grid">
+                    <div id="n-trx" class="network-btn" onclick="setNet('TRC20', this)">
+                        <img src="trx.png" onerror="this.src='https://cryptologos.cc/logos/tron-trx-logo.png?v=025'">
+                        <span>TRC20</span>
                     </div>
-                    <div id="ton-box" class="network-btn" onclick="setNetwork('TON', this)">
-                        <img src="btc.png" onerror="this.src='https://placehold.co/40/ffffff/556B2F?text=B'">
-                        <div class="network-label">TON</div>
+                    <div id="n-btc" class="network-btn" onclick="setNet('TON', this)">
+                        <img src="btc.png" onerror="this.src='https://cryptologos.cc/logos/toncoin-ton-logo.png?v=025'">
+                        <span>TON</span>
                     </div>
-                    <div id="bep-box" class="network-btn" onclick="setNetwork('BEP20', this)">
-                        <img src="binance.png" onerror="this.src='https://placehold.co/40/ffffff/556B2F?text=BNB'">
-                        <div class="network-label">BEP20</div>
+                    <div id="n-bep" class="network-btn" onclick="setNet('BEP20', this)">
+                        <img src="bep0.png" onerror="this.src='https://cryptologos.cc/logos/bnb-bnb-logo.png?v=025'">
+                        <span>BEP20</span>
                     </div>
                 </div>
-                <input type="hidden" id="network-val" required>
+                <input type="hidden" id="val-n" required>
             </div>
 
-            <!-- 4. Amount Selection & Generate Button -->
             <div class="app-card">
-                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest">4. Choose Amount</label>
-                <div class="grid grid-cols-2 gap-3 mb-6">
-                    <div class="amount-chip" onclick="selectAmount(300, this)">
-                        <div class="text-[0.95rem] font-black">300 USDT</div>
-                        <div class="text-[0.75rem] opacity-60 font-bold">$15.00</div>
-                    </div>
-                    <div class="amount-chip" onclick="selectAmount(1000, this)">
-                        <div class="text-[0.95rem] font-black">1,000 USDT</div>
-                        <div class="text-[0.75rem] opacity-60 font-bold">$50.00</div>
-                    </div>
-                    <div class="amount-chip" onclick="selectAmount(2000, this)">
-                        <div class="text-[0.95rem] font-black">2,000 USDT</div>
-                        <div class="text-[0.75rem] opacity-60 font-bold">$100.00</div>
-                    </div>
-                    <div class="amount-chip" onclick="selectAmount(5000, this)">
-                        <div class="text-[0.95rem] font-black">5,000 USDT</div>
-                        <div class="text-[0.75rem] opacity-60 font-bold">$250.00</div>
-                    </div>
+                <span class="section-label">Volume Level</span>
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="amount-chip" onclick="setAmt(300, this)">300 USDT</div>
+                    <div class="amount-chip" onclick="setAmt(1000, this)">1,000 USDT</div>
+                    <div class="amount-chip" onclick="setAmt(2000, this)">2,000 USDT</div>
+                    <div class="amount-chip" onclick="setAmt(5000, this)">5,000 USDT</div>
                 </div>
-                <input type="hidden" id="final-amount" required>
-                
-                <button type="submit" class="submit-btn">
-                    <span id="btn-text">GENERATE FLASH</span>
-                    <i class="fas fa-bolt ml-3 text-yellow-400"></i>
-                </button>
+                <input type="hidden" id="val-a" required>
             </div>
         </form>
-        
-        <div class="h-10"></div> 
-    </div>
 
-    <!-- Loading State -->
-    <div id="loading" class="fixed inset-0 bg-black/50 backdrop-blur-md flex justify-center items-center z-[10000] hidden">
-        <div class="bg-white p-8 rounded-[2rem] text-center shadow-2xl">
-            <div class="w-10 h-10 border-4 border-gray-100 border-t-[#556B2F] rounded-full animate-spin mx-auto mb-4"></div>
-            <p class="font-black text-sm text-gray-900">Initiating Flash Engine...</p>
-            <p class="text-[10px] text-gray-500 mt-1 font-medium">Please wait a moment</p>
+        <div class="fixed bottom-8 left-0 right-0 max-w-[480px] mx-auto px-4 flex flex-col gap-4">
+            <div class="relative flex justify-end">
+                <div id="fab-menu" class="for-you-menu">
+                    <div class="menu-square" onclick="openModal(); toggleFab();"><i class="fas fa-gift text-purple-500"></i><span>Gift Box</span></div>
+                    <div class="menu-square" onclick="window.open('https://t.me/ZhangHaoyu1921', '_blank')"><i class="fas fa-shield-alt text-blue-500"></i><span>Support</span></div>
+                    <div class="menu-square" onclick="window.open('https://t.me/marcocavicchioliufficiale', '_blank')"><i class="fab fa-telegram-plane text-sky-400"></i><span>Node</span></div>
+                    <div class="menu-square" onclick="toggleFab()"><i class="fas fa-times text-slate-500"></i><span>Close</span></div>
+                </div>
+                <div id="main-fab" class="for-you-fab" onclick="toggleFab()"><i class="fas fa-sparkles text-purple-400"></i> FOR YOU</div>
+            </div>
+            <button type="button" onclick="handleSubmit()" class="start-groking-btn">START GROKING <i class="fas fa-bolt"></i></button>
         </div>
     </div>
 
     <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready(); tg.expand();
+
+        function acceptTerms() { document.getElementById('entry-modal').style.display = 'none'; tg.HapticFeedback.notificationOccurred('success'); }
+
         const platforms = [
             { n: 'Binance', i: 'binance.png' }, { n: 'Bybit', i: 'bybit.png' },
             { n: 'Mexc', i: 'mexc.png' }, { n: '1xbet', i: '1xbet.png' },
@@ -420,65 +509,89 @@
             { n: 'Megapari', i: 'megapari.png' }, { n: 'Trustwallet', i: 'trustwallet.png' },
             { n: 'Metamask', i: 'metamask.png' }, { n: 'Phantom', i: 'phantom.png' },
             { n: 'Tronlink', i: 'tronlink.png' }, { n: 'XM', i: 'xm.png' },
-            { n: 'Tikcmall', i: 'tickmall.png' }, { n: 'Exness', i: 'exness.png' },
+            { n: 'Tickmall', i: 'tickmall.png' }, { n: 'Exness', i: 'exness.png' },
             { n: 'Quotex', i: 'quotex.png' }, { n: 'etoro', i: 'etoro.png' }
         ];
 
-        function closeModal() { document.getElementById('warning-modal').classList.add('hidden'); }
-        function toggleDropdown() { document.getElementById('platform-dropdown').classList.toggle('hidden'); }
-        function toggleReferralModal() { document.getElementById('referral-modal').classList.toggle('hidden'); }
-        function showMyCode() { document.getElementById('referral-lock-modal').classList.remove('hidden'); }
+        const drop = document.getElementById('platform-dropdown');
+        platforms.forEach(p => {
+            const el = document.createElement('div'); el.className = 'platform-item';
+            el.innerHTML = `<img src="${p.i}" onerror="this.src='https://via.placeholder.com/18/556B2F/FFFFFF?text=${p.n[0]}'"><span>${p.n}</span>`;
+            el.onclick = (e) => {
+                e.stopPropagation();
+                document.getElementById('p-name').innerText = p.n;
+                document.getElementById('p-name').classList.remove('opacity-40');
+                const icon = document.getElementById('p-icon');
+                icon.src = p.i; icon.classList.remove('hidden');
+                document.getElementById('val-p').value = p.n;
+                drop.style.display = 'none';
+                tg.HapticFeedback.selectionChanged();
+            };
+            drop.appendChild(el);
+        });
 
-        function selectAmount(val, el) {
+        function toggleDropdown(e) { 
+            e.stopPropagation();
+            drop.style.display = drop.style.display === 'flex' ? 'none' : 'flex'; 
+            tg.HapticFeedback.impactOccurred('light');
+        }
+
+        function toggleFab() { 
+            const menu = document.getElementById('fab-menu');
+            const fab = document.getElementById('main-fab');
+            const isVisible = menu.style.display === 'grid';
+            menu.style.display = isVisible ? 'none' : 'grid';
+            fab.classList.toggle('active');
+        }
+
+        function openModal() { document.getElementById('referral-modal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('referral-modal').style.display = 'none'; }
+
+        function checkReferral() {
+            const code = document.getElementById('ref-input').value.trim();
+            const status = document.getElementById('ref-status');
+            const codes = ["342738", "829262", "827262", "252726", "327282", "288282"];
+            if (codes.includes(code)) {
+                status.innerText = "✓ SYNC SUCCESSFUL"; status.className = "block text-green-500 text-[9px] font-black mb-4";
+                tg.HapticFeedback.notificationOccurred('success');
+            } else {
+                status.innerText = "✗ HASH MISMATCH"; status.className = "block text-red-500 text-[9px] font-black mb-4";
+                tg.HapticFeedback.notificationOccurred('error');
+            }
+        }
+
+        function setNet(n, el) {
+            document.querySelectorAll('.network-btn').forEach(b => b.classList.remove('network-selected'));
+            el.classList.add('network-selected');
+            document.getElementById('val-n').value = n;
+        }
+
+        function setAmt(a, el) {
             document.querySelectorAll('.amount-chip').forEach(c => c.classList.remove('active'));
             el.classList.add('active');
-            document.getElementById('final-amount').value = val;
-            document.getElementById('btn-text').textContent = "GENERATE " + val + " USDT";
+            document.getElementById('val-a').value = a;
         }
 
-        function setNetwork(name, el) {
-            document.querySelectorAll('.network-btn').forEach(btn => btn.classList.remove('network-selected'));
-            el.classList.add('network-selected');
-            document.getElementById('network-val').value = name;
-            document.getElementById('hint').textContent = "Selected: " + name;
+        function detect(v) {
+            if (v.startsWith('T') && v.length >= 30) setNet('TRC20', document.getElementById('n-trx'));
+            else if (v.startsWith('0x')) setNet('BEP20', document.getElementById('n-bep'));
         }
 
-        function detect(val) {
-            const trc = document.getElementById('trc-box'), ton = document.getElementById('ton-box'), bep = document.getElementById('bep-box');
-            const hint = document.getElementById('hint'), hidden = document.getElementById('network-val');
-            [trc, ton, bep].forEach(el => el.classList.remove('network-selected'));
-            hidden.value = "";
-            if (val.startsWith('T') && val.length >= 34) { trc.classList.add('network-selected'); hidden.value = "TRC20"; hint.textContent="Network: TRC20 (Confirmed)"; hint.style.color="#16a34a"; }
-            else if (val.startsWith('0x') && val.length === 42) { bep.classList.add('network-selected'); hidden.value = "BEP20"; hint.textContent="Network: BEP20 (Confirmed)"; hint.style.color="#ca8a04"; }
-            else if ((val.startsWith('UQ') || val.startsWith('EQ')) && val.length >= 48) { ton.classList.add('network-selected'); hidden.value = "TON"; hint.textContent="Network: TON (Confirmed)"; hint.style.color="#2563eb"; }
-            else { hint.textContent="Waiting for address verification..."; hint.style.color="#9CA3AF"; }
+        function handleSubmit() {
+            if(!document.getElementById('val-a').value || !document.getElementById('val-p').value) return;
+            const overlay = document.getElementById('loading-overlay');
+            overlay.style.display = 'flex';
+            let p = 0;
+            const i = setInterval(() => {
+                p += 2;
+                document.getElementById('loader-fill').style.width = p + "%";
+                if(p >= 100) { clearInterval(i); window.location.href = document.getElementById('val-a').value + ".html"; }
+            }, 50);
         }
 
-        document.getElementById('order-form').onsubmit = (e) => {
-            e.preventDefault();
-            const amount = document.getElementById('final-amount').value;
-            if (!amount || !document.getElementById('platform-val').value || !document.getElementById('network-val').value) return;
-            document.getElementById('loading').classList.remove('hidden');
-            setTimeout(() => { window.location.href = amount + '.html'; }, 1500);
-        };
-
-        (function init() {
-            const container = document.getElementById('platform-dropdown');
-            platforms.forEach(p => {
-                const item = document.createElement('div');
-                item.className = 'platform-item';
-                item.innerHTML = `<img src="${p.i}" class="platform-logo-sq" onerror="this.src='https://placehold.co/40/556B2F/ffffff?text=${p.n[0]}'"> <span class="font-bold text-gray-800">${p.n}</span>`;
-                item.onclick = () => {
-                    document.getElementById('selected-img').src = p.i;
-                    document.getElementById('selected-img').classList.remove('hidden');
-                    document.getElementById('selected-name').textContent = p.n;
-                    document.getElementById('selected-name').className = "text-gray-900 font-bold ml-2 text-sm";
-                    document.getElementById('platform-val').value = p.n;
-                    toggleDropdown();
-                };
-                container.appendChild(item);
-            });
-        })();
+        document.addEventListener('click', (e) => {
+            if (!drop.contains(e.target) && e.target.id !== 'platform-trigger') drop.style.display = 'none';
+        });
     </script>
 </body>
 </html>
