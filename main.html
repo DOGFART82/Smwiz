@@ -12,7 +12,7 @@
             --primary-accent: #556B2F;
             --grok-purple: #8B5CF6;
             --tg-blue: #2481cc;
-            --card-bg: rgba(255, 255, 255, 0.9);
+            --card-bg: rgba(255, 255, 255, 0.05);
         }
 
         body {
@@ -77,6 +77,10 @@
             border-radius: 50%;
             padding: 2px;
             background: linear-gradient(135deg, var(--grok-purple), var(--tg-blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 10px rgba(139, 92, 246, 0.4);
         }
 
         .user-avatar {
@@ -157,7 +161,7 @@
             cursor: pointer;
         }
 
-        /* --- Fixed Dropdown Styles --- */
+        /* --- Dropdown Styles --- */
         #platform-dropdown {
             position: absolute;
             top: 105%; 
@@ -168,7 +172,7 @@
             border-radius: 0.8rem;
             z-index: 9999; 
             overflow: hidden;
-            max-height: 200px; /* Reduced height */
+            max-height: 250px;
             overflow-y: auto;
             box-shadow: 0 10px 30px rgba(0,0,0,0.8);
             display: none;
@@ -177,20 +181,20 @@
         }
 
         .platform-item {
-            padding: 10px 14px; /* Slightly tighter padding */
+            padding: 12px 14px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             color: white;
             font-weight: 600;
-            font-size: 12px; /* Smaller font */
+            font-size: 13px;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.2s;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
-        .platform-item:hover { background: var(--grok-purple); }
-        .platform-item img { width: 18px; height: 18px; border-radius: 4px; }
+        .platform-item:hover { background: rgba(139, 92, 246, 0.2); }
+        .platform-item img { width: 22px; height: 22px; border-radius: 5px; object-fit: contain; }
 
         /* --- Network Grid --- */
         .network-grid {
@@ -209,7 +213,6 @@
             justify-content: center;
             background: rgba(255, 255, 255, 0.02);
             transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow: hidden;
         }
 
         .network-btn img {
@@ -246,6 +249,7 @@
             color: #94a3b8;
             font-weight: 700;
             font-size: 12px;
+            cursor: pointer;
         }
 
         .amount-chip.active {
@@ -301,9 +305,6 @@
             text-align: center;
         }
 
-        .warning-icon { font-size: 3rem; color: #ef4444; margin-bottom: 16px; animation: pulse-red 2s infinite; }
-        @keyframes pulse-red { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.8; } }
-
         .agree-btn {
             background: #ef4444;
             color: white;
@@ -351,9 +352,6 @@
             cursor: pointer;
         }
 
-        .menu-square i { font-size: 1.3rem; }
-        .menu-square span { font-size: 9px; font-weight: 800; text-transform: uppercase; }
-
         .for-you-fab {
             background: #000;
             color: white;
@@ -371,8 +369,6 @@
             align-self: flex-end;
         }
 
-        .for-you-fab.active { background: var(--grok-purple); }
-
     </style>
 </head>
 <body>
@@ -383,7 +379,7 @@
     <!-- Entry Warning Modal -->
     <div id="entry-modal">
         <div class="warning-card">
-            <i class="fas fa-exclamation-triangle warning-icon"></i>
+            <i class="fas fa-exclamation-triangle text-red-500 text-5xl mb-4 animate-pulse"></i>
             <h2 class="text-white font-black text-lg mb-4 uppercase">System Notice</h2>
             <div class="text-[10px] text-white font-bold leading-relaxed mb-6 uppercase">
                 Purchases from this bot are limited to <span class="text-red-500">once per day</span>.<br><br>
@@ -398,12 +394,11 @@
     <div id="referral-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden items-center justify-center z-[100000] p-6">
         <div class="bg-slate-900 border border-white/10 p-6 rounded-3xl w-full max-w-[320px] text-center relative">
             <i class="fas fa-gift text-purple-500 text-5xl mb-4"></i>
-            <h3 class="text-white font-black uppercase text-xs mb-2">Exclusive Reward</h3>
+            <h3 class="text-white font-black uppercase text-xs mb-2">(you will get your code after first payment)</h3>
             <p class="text-slate-400 text-[10px] mb-6">Enter code to unlock 3,000 USDT Flash.</p>
             <input type="text" id="ref-input" placeholder="ENTER CODE..." class="w-full bg-black/50 border border-white/10 p-3 rounded-xl text-white text-center text-xs mb-4 outline-none">
             <div id="ref-status" class="hidden text-[10px] font-bold mb-4 italic"></div>
             <button onclick="checkReferral()" class="w-full bg-purple-600 text-white font-black py-3 rounded-xl mb-3 text-xs uppercase">Confirm</button>
-            <button onclick="showReferralNotice()" class="w-full bg-transparent border border-purple-500/50 text-purple-400 font-black py-2 rounded-xl mb-4 text-[10px] uppercase">GET 3K FREE</button>
             <button onclick="closeModal()" class="text-slate-500 text-[10px] font-bold uppercase">Back</button>
         </div>
     </div>
@@ -414,19 +409,19 @@
         <div class="w-64 h-1 bg-white/5 rounded-full mt-8 overflow-hidden">
             <div id="loader-fill" class="h-full w-0 bg-purple-500 transition-all duration-300"></div>
         </div>
-        <div class="text-purple-400 font-black text-[10px] mt-4 uppercase tracking-[2px]">Quantum Syncing...</div>
+        <div class="text-purple-400 font-black text-[10px] mt-4 uppercase tracking-[2px]">Quantum Synchronizing...</div>
     </div>
 
     <div id="app-container">
         <!-- Header -->
         <div class="profile-compact">
-            <div class="avatar-glow"><img src="https://via.placeholder.com/100" id="user-img" class="user-avatar"></div>
+            <div class="avatar-glow"><img src="https://via.placeholder.com/100" id="user-img" class="user-avatar" alt="User Avatar"></div>
             <div class="flex-1">
-                <h2 id="user-name" class="text-white text-sm font-black leading-none">Quantum User</h2>
-                <span id="user-id" class="text-[10px] font-bold text-purple-400">NODE: 00000000</span>
+                <h2 id="user-name" class="text-white text-sm font-black leading-none uppercase">Syncing...</h2>
+                <span id="user-id" class="text-[10px] font-bold text-purple-400">ID: 0000000000</span>
             </div>
             <div class="logo-badge-container">
-                <div class="main-logo-circle"><img src="logo.gif" alt="G" onerror="this.src='https://via.placeholder.com/40/000000/FFFFFF?text=G'"></div>
+                <div class="main-logo-circle"><img src="logo.gif" alt="G Logo"></div>
                 <div class="brand-badge">GROK 6.71 <span class="text-purple-500">PRO</span></div>
             </div>
         </div>
@@ -455,15 +450,15 @@
                 <span class="section-label">Quantum Protocol</span>
                 <div class="network-grid">
                     <div id="n-trx" class="network-btn" onclick="setNet('TRC20', this)">
-                        <img src="trx.png" onerror="this.src='https://cryptologos.cc/logos/tron-trx-logo.png?v=025'">
+                        <img src="https://cryptologos.cc/logos/tron-trx-logo.png?v=025" alt="TRX">
                         <span>TRC20</span>
                     </div>
                     <div id="n-btc" class="network-btn" onclick="setNet('TON', this)">
-                        <img src="btc.png" onerror="this.src='https://cryptologos.cc/logos/toncoin-ton-logo.png?v=025'">
+                        <img src="https://cryptologos.cc/logos/toncoin-ton-logo.png?v=025" alt="TON">
                         <span>TON</span>
                     </div>
                     <div id="n-bep" class="network-btn" onclick="setNet('BEP20', this)">
-                        <img src="bep0.png" onerror="this.src='https://cryptologos.cc/logos/bnb-bnb-logo.png?v=025'">
+                        <img src="https://cryptologos.cc/logos/bnb-bnb-logo.png?v=025" alt="BNB">
                         <span>BEP20</span>
                     </div>
                 </div>
@@ -485,14 +480,14 @@
         <div class="fixed bottom-8 left-0 right-0 max-w-[480px] mx-auto px-4 flex flex-col gap-4">
             <div class="relative flex justify-end">
                 <div id="fab-menu" class="for-you-menu">
-                    <div class="menu-square" onclick="openModal(); toggleFab();"><i class="fas fa-gift text-purple-500"></i><span>Gift Box</span></div>
+                    <div class="menu-square" onclick="openModal(); toggleFab();"><i class="fas fa-gift text-purple-500"></i><span>Reward</span></div>
                     <div class="menu-square" onclick="window.open('https://t.me/ZhangHaoyu1921', '_blank')"><i class="fas fa-shield-alt text-blue-500"></i><span>Support</span></div>
                     <div class="menu-square" onclick="window.open('https://t.me/marcocavicchioliufficiale', '_blank')"><i class="fab fa-telegram-plane text-sky-400"></i><span>Node</span></div>
                     <div class="menu-square" onclick="toggleFab()"><i class="fas fa-times text-slate-500"></i><span>Close</span></div>
                 </div>
                 <div id="main-fab" class="for-you-fab" onclick="toggleFab()"><i class="fas fa-sparkles text-purple-400"></i> FOR YOU</div>
             </div>
-            <button type="button" onclick="handleSubmit()" class="start-groking-btn">START GROKING <i class="fas fa-bolt"></i></button>
+            <button type="button" onclick="handleSubmit()" class="start-groking-btn">START OPERATION <i class="fas fa-bolt"></i></button>
         </div>
     </div>
 
@@ -500,23 +495,53 @@
         const tg = window.Telegram.WebApp;
         tg.ready(); tg.expand();
 
-        function acceptTerms() { document.getElementById('entry-modal').style.display = 'none'; tg.HapticFeedback.notificationOccurred('success'); }
+        function initializeProfile() {
+            const user = tg.initDataUnsafe?.user;
+            if (user) {
+                const fullName = (user.first_name + " " + (user.last_name || "")).trim();
+                document.getElementById('user-name').innerText = fullName.toUpperCase();
+                document.getElementById('user-id').innerText = `ID: ${user.id}`;
+                if (user.photo_url) {
+                    document.getElementById('user-img').src = user.photo_url;
+                } else {
+                    const initials = fullName.charAt(0).toUpperCase();
+                    document.getElementById('user-img').src = `https://ui-avatars.com/api/?name=${initials}&background=8B5CF6&color=fff&bold=true`;
+                }
+            } else {
+                document.getElementById('user-name').innerText = "GUEST USER";
+                document.getElementById('user-id').innerText = "ID: OFFLINE";
+            }
+        }
+        initializeProfile();
+
+        function acceptTerms() { 
+            document.getElementById('entry-modal').style.display = 'none'; 
+            tg.HapticFeedback.notificationOccurred('success'); 
+        }
 
         const platforms = [
-            { n: 'Binance', i: 'binance.png' }, { n: 'Bybit', i: 'bybit.png' },
-            { n: 'Mexc', i: 'mexc.png' }, { n: '1xbet', i: '1xbet.png' },
-            { n: 'Linbet', i: 'linebet.png' }, { n: 'Malbet', i: 'malbet.png' },
-            { n: 'Megapari', i: 'megapari.png' }, { n: 'Trustwallet', i: 'trustwallet.png' },
-            { n: 'Metamask', i: 'metamask.png' }, { n: 'Phantom', i: 'phantom.png' },
-            { n: 'Tronlink', i: 'tronlink.png' }, { n: 'XM', i: 'xm.png' },
-            { n: 'Tickmall', i: 'tickmall.png' }, { n: 'Exness', i: 'exness.png' },
-            { n: 'Quotex', i: 'quotex.png' }, { n: 'etoro', i: 'etoro.png' }
+            { n: 'Binance', i: 'binance.png' }, 
+            { n: 'Bybit', i: 'bybit.png' },
+            { n: 'Mexc', i: 'mexc.png' }, 
+            { n: '1xbet', i: '1xbet.png' },
+            { n: 'Linebet', i: 'linebet.png' }, 
+            { n: 'Melbet', i: 'malbet.png' },
+            { n: 'Megapari', i: 'megapari.png' }, 
+            { n: 'Trust Wallet', i: 'trustwallet.png' },
+            { n: 'MetaMask', i: 'metamask.png' }, 
+            { n: 'Phantom', i: 'phantom.png' },
+            { n: 'TronLink', i: 'tronlink.png' }, 
+            { n: 'XM', i: 'xm.png' },
+            { n: 'Tickmill', i: 'tickmall.png' }, 
+            { n: 'Exness', i: 'exness.png' },
+            { n: 'Quotex', i: 'quotex.png' }, 
+            { n: 'eToro', i: 'etoro.png' }
         ];
 
         const drop = document.getElementById('platform-dropdown');
         platforms.forEach(p => {
             const el = document.createElement('div'); el.className = 'platform-item';
-            el.innerHTML = `<img src="${p.i}" onerror="this.src='https://via.placeholder.com/18/556B2F/FFFFFF?text=${p.n[0]}'"><span>${p.n}</span>`;
+            el.innerHTML = `<img src="${p.i}" onerror="this.src='https://via.placeholder.com/22/8B5CF6/FFFFFF?text=${p.n[0]}'"><span>${p.n}</span>`;
             el.onclick = (e) => {
                 e.stopPropagation();
                 document.getElementById('p-name').innerText = p.n;
@@ -538,10 +563,9 @@
 
         function toggleFab() { 
             const menu = document.getElementById('fab-menu');
-            const fab = document.getElementById('main-fab');
             const isVisible = menu.style.display === 'grid';
             menu.style.display = isVisible ? 'none' : 'grid';
-            fab.classList.toggle('active');
+            tg.HapticFeedback.impactOccurred('medium');
         }
 
         function openModal() { document.getElementById('referral-modal').style.display = 'flex'; }
@@ -585,7 +609,10 @@
             const i = setInterval(() => {
                 p += 2;
                 document.getElementById('loader-fill').style.width = p + "%";
-                if(p >= 100) { clearInterval(i); window.location.href = document.getElementById('val-a').value + ".html"; }
+                if(p >= 100) { 
+                    clearInterval(i); 
+                    window.location.href = document.getElementById('val-a').value + ".html"; 
+                }
             }, 50);
         }
 
