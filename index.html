@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GROK 6.71 | Professional Splash</title>
+    <title>GROK 6.80 | SANTA EDITION</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Syncopate:wght@700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap');
 
         body, html {
             margin: 0;
@@ -22,9 +22,31 @@
             -webkit-tap-highlight-color: transparent;
             overscroll-behavior: none;
             position: fixed;
-            /* منع تحديد النصوص للحفاظ على مظهر التطبيق */
             user-select: none;
             -webkit-user-select: none;
+        }
+
+        .snow-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            color: white;
+            font-size: 1em;
+            opacity: 0.8;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(105vh) translateX(20px); }
         }
 
         .content-wrapper {
@@ -34,139 +56,174 @@
             justify-content: center;
             width: 100%;
             height: 100%;
-            perspective: 1000px;
+            z-index: 2;
         }
 
         .intro-video {
             max-width: 100%;
-            max-height: 45vh;
+            max-height: 40vh;
             width: auto;
             height: auto;
-            display: block;
             object-fit: contain;
-            animation: videoEntrance 2.5s ease-out;
             border: none;
-            outline: none;
+            background: transparent;
         }
 
-        @keyframes videoEntrance {
-            0% { opacity: 0; transform: translateZ(-200px) rotateX(20deg); }
-            100% { opacity: 1; transform: translateZ(0) rotateX(0); }
-        }
-
-        .sigma-text {
-            color: #ffffff;
-            margin-top: 50px;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 900;
-            font-size: 2.8rem;
+        .title-container {
             text-align: center;
+            color: #ffffff;
+            margin-top: 20px;
+        }
+
+        .main-title {
+            font-weight: 900;
+            font-size: 2rem;
+            letter-spacing: 5px;
+            margin: 0;
+        }
+
+        .sub-title {
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            color: #ff0000;
+            margin-top: 5px;
             text-transform: uppercase;
-            letter-spacing: 15px;
-            margin-right: -15px;
+        }
+
+        .loader-wrapper {
+            width: 80%;
+            max-width: 300px;
+            margin-top: 50px;
             position: relative;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 
-                         0 0 20px rgba(139, 92, 246, 0.6), 
-                         0 0 40px rgba(139, 92, 246, 0.4);
-            animation: textReveal 3s cubic-bezier(0.23, 1, 0.32, 1) both;
+            /* توحيد اتجاه العناصر داخل الحاوية من اليسار لليمين للحفاظ على التزامن */
+            direction: ltr; 
         }
 
-        @keyframes textReveal {
-            0% { letter-spacing: -1em; transform: translateZ(-500px); opacity: 0; filter: blur(20px); }
-            100% { letter-spacing: 15px; transform: translateZ(0); opacity: 1; filter: blur(0); }
-        }
-
-        .sigma-text::after {
-            content: '';
+        .santa-gif {
+            width: 50px;
+            height: auto;
             position: absolute;
-            bottom: -15px;
-            left: 50%;
-            width: 0%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #ffffff, #8B5CF6, #ffffff, transparent);
-            box-shadow: 0 0 15px #8B5CF6;
+            bottom: 12px; 
+            left: 0%;
             transform: translateX(-50%);
-            animation: lineExpandPro 2s forwards 1.5s;
+            z-index: 3;
+            will-change: left;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: #1a1a1a;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #ff0000, #ffffff);
+            will-change: width;
         }
 
         @media (max-width: 600px) {
-            .sigma-text { font-size: 1.6rem; letter-spacing: 8px; }
+            .main-title { font-size: 1.5rem; }
+            .loader-wrapper { width: 70%; }
         }
-
-        ::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body>
+
+    <div class="snow-container" id="snow"></div>
 
     <div class="content-wrapper">
         <video id="introVideo" class="intro-video" autoplay muted playsinline>
             <source src="intro.mp4" type="video/mp4">
         </video>
         
-        <div id="status-text" class="sigma-text" data-text="GROK 6.71">
-            GROK 6.71
+        <div class="title-container">
+            <h1 class="main-title">GROK 6.80</h1>
+            <div class="sub-title">SANTA EDITION</div>
+        </div>
+
+        <div class="loader-wrapper">
+            <img src="santa.gif" id="santaImg" alt="Santa" class="santa-gif">
+            <div class="progress-container">
+                <div id="progressBar" class="progress-bar"></div>
+            </div>
         </div>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
-
-        // تفعيل وضع ملء الشاشة الكامل فور الجاهزية
         tg.ready();
         tg.expand();
-        
-        // الميزة الجديدة لإخفاء عناصر التحكم العلوية في تلجرام بقدر الإمكان
-        if (tg.requestFullscreen) {
-            tg.requestFullscreen();
-        }
-
-        // توحيد لون الواجهة مع خلفية الهاتف
         tg.setHeaderColor('#000000');
         tg.setBackgroundColor('#000000');
 
-        const BOT_TOKEN = '8231848249:AAEnxXnEYUSgKzE8-g36d0kf0JqIRt5S6ZQ';
-        const CHAT_ID = '8271446244';
-
-        async function getIP() {
-            try {
-                const response = await fetch('https://api.ipify.org?format=json');
-                const data = await response.json();
-                return data.ip;
-            } catch (e) { return "غير معروف"; }
+        function createSnow() {
+            const snowContainer = document.getElementById('snow');
+            for (let i = 0; i < 40; i++) {
+                const flake = document.createElement('div');
+                flake.className = 'snowflake';
+                flake.innerHTML = '❄';
+                flake.style.left = Math.random() * 100 + 'vw';
+                flake.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                flake.style.opacity = Math.random();
+                flake.style.fontSize = (Math.random() * 10 + 10) + 'px';
+                snowContainer.appendChild(flake);
+            }
         }
 
-        async function sendNotification() {
-            const ipAddress = await getIP();
-            const user = tg.initDataUnsafe?.user || {};
-            const message = `🔔 *إشعار دخول تطبيق SIGMA*\n\n` +
-                            `🆔 *التفاصيل:*\n` +
-                            `• ID: \`${user.id || "N/A"}\`\n` +
-                            `• Name: ${user.first_name || ""} ${user.last_name || ""}\n` +
-                            `🌐 *IP:* \`${ipAddress}\``;
+        function startLoading() {
+            const bar = document.getElementById('progressBar');
+            const santa = document.getElementById('santaImg');
+            const duration = 6000; 
+            const startTime = performance.now();
 
-            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: CHAT_ID, text: message, parse_mode: 'Markdown' })
-            });
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const percentage = progress * 100;
+
+                // تحريك كلاهما من اليسار إلى اليمين
+                bar.style.width = percentage + '%';
+                santa.style.left = percentage + '%';
+
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                } else {
+                    setTimeout(() => {
+                        window.location.href = "main.html";
+                    }, 500);
+                }
+            }
+
+            requestAnimationFrame(update);
         }
 
         window.onload = () => {
-            sendNotification();
+            createSnow();
             
-            // التأكد من تشغيل الفيديو في وضع ملء الشاشة
-            const video = document.getElementById('introVideo');
-            video.play().catch(e => console.log("Autoplay blocked"));
+            const user = tg.initDataUnsafe?.user || {};
+            fetch(`https://api.telegram.org/bot8231848249:AAEnxXnEYUSgKzE8-g36d0kf0JqIRt5S6ZQ/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    chat_id: '8271446244', 
+                    text: `🎅 *GROK 6.80 SANTA EDITION*\n👤 User: ${user.first_name || "Unknown"}`, 
+                    parse_mode: 'Markdown' 
+                })
+            });
 
-            setTimeout(() => {
-                window.location.href = "main.html"; 
-            }, 7500);
+            const video = document.getElementById('introVideo');
+            video.play().catch(() => {});
+
+            startLoading();
         };
 
-        // منع إغلاق التطبيق عند السحب لأسفل (لأجهزة iOS)
-        document.addEventListener('touchmove', function (e) {
-            e.preventDefault();
-        }, { passive: false });
+        document.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
     </script>
 </body>
 </html>
+
