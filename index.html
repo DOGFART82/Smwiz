@@ -2,266 +2,289 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GROK 6.80 | FULLSCREEN EDITION</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GROK - Server Maintenance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cairo:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap');
-
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            width: 100%;
-            background-color: #000000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            font-family: 'Orbitron', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-            overscroll-behavior: none;
-            position: fixed;
-            user-select: none;
-            -webkit-user-select: none;
-            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+        :root {
+            --gold: #d4af37;
+            --dark-gold: #996515;
+            --deep-black: #0a0a0a;
         }
 
-        .snow-container {
+        body {
+            background-color: var(--deep-black);
+            color: #fff;
+            font-family: 'Cairo', sans-serif;
+            overflow: hidden;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .cinzel { font-family: 'Cinzel', serif; }
+
+        #snow-canvas {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
             z-index: 1;
+            pointer-events: none;
         }
 
-        .snowflake {
-            position: absolute;
-            top: -10px;
-            color: white;
-            font-size: 1.2em;
-            opacity: 0.8;
-            animation: fall linear infinite;
+        .gold-glow {
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+            background: linear-gradient(to bottom, #f9f295, #e0aa3e, #b88a44, #81613c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        @keyframes fall {
-            to { transform: translateY(105vh) translateX(25px); }
-        }
-
-        .content-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            height: 100%;
-            z-index: 2;
-        }
-
-        .intro-video {
-            max-width: 100%;
-            max-height: 40vh;
-            width: auto;
-            height: auto;
-            object-fit: contain;
-            background: transparent;
-            /* تم إزالة الفلتر الأحمر من هنا */
-            border: none;
-            outline: none;
-        }
-
-        .title-container {
+        .card-container {
+            z-index: 10;
+            position: relative;
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            padding: 2.5rem;
+            border-radius: 24px;
             text-align: center;
-            color: #ffffff;
-            margin-top: 20px;
+            max-width: 700px;
+            width: 95%;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+            animation: fadeIn 2.5s ease-out;
         }
 
-        .main-title {
-            font-weight: 900;
-            font-size: 2.2rem;
-            letter-spacing: 5px;
-            margin: 0;
-            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
 
-        .sub-title {
-            font-size: 0.9rem;
-            letter-spacing: 3px;
-            color: #ff3333;
-            margin-top: 5px;
-            text-transform: uppercase;
-            font-weight: bold;
+        .timer-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 2rem;
         }
 
-        .loader-wrapper {
-            width: 80%;
-            max-width: 300px;
-            margin-top: 60px;
+        .timer-unit {
+            background: linear-gradient(145deg, #151515, #050505);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            padding: 1rem 0.5rem;
+            border-radius: 15px;
+            box-shadow: inset 0 0 10px rgba(212, 175, 55, 0.05);
             position: relative;
-            direction: ltr; 
-        }
-
-        .santa-gif {
-            width: 60px;
-            height: 60px;
-            position: absolute;
-            bottom: 15px; 
-            left: 0%;
-            transform: translateX(-50%);
-            z-index: 3;
-            will-change: left;
-            object-fit: contain;
-        }
-
-        .santa-gif::after {
-            content: '🎅';
-            font-size: 40px;
-            position: absolute;
-            top: 0; left: 0;
-        }
-
-        .progress-container {
-            width: 100%;
-            height: 10px;
-            background: #1a1a1a;
-            border-radius: 20px;
             overflow: hidden;
-            position: relative;
-            box-shadow: inset 0 0 5px #000;
         }
 
-        .progress-bar {
-            width: 0%;
+        /* تأثير لمعان على وحدات الوقت */
+        .timer-unit::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(212, 175, 55, 0.05), transparent);
+            transform: rotate(45deg);
+            animation: shine 4s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        .pulse-btn {
+            background: linear-gradient(45deg, var(--dark-gold), var(--gold));
+            color: black;
+            font-weight: 700;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .pulse-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.5);
+        }
+
+        .mist {
+            position: absolute;
+            width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, #ff0000, #ff6666, #ffffff);
-            border-radius: 20px;
-            will-change: width;
+            background: radial-gradient(circle, transparent 10%, var(--deep-black) 90%);
+            z-index: 2;
+            opacity: 0.8;
         }
 
-        @media (max-width: 600px) {
-            .main-title { font-size: 1.8rem; }
-            .loader-wrapper { width: 85%; }
+        @media (max-width: 480px) {
+            .timer-grid { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
 <body>
 
-    <div class="snow-container" id="snow"></div>
+    <canvas id="snow-canvas"></canvas>
+    <div class="mist"></div>
 
-    <div class="content-wrapper">
-        <video id="introVideo" class="intro-video" autoplay muted playsinline>
-            <source src="intro.mp4" type="video/mp4">
-        </video>
-        
-        <div class="title-container">
-            <h1 class="main-title">GROK 6.80</h1>
-            <div class="sub-title">SANTA EDITION</div>
+    <div class="card-container">
+        <!-- Brand -->
+        <div class="mb-8">
+            <h1 class="cinzel text-6xl font-bold gold-glow mb-2">GROK</h1>
+            <div class="h-0.5 w-32 bg-gradient-to-r from-transparent via-[#d4af37] to-transparent mx-auto"></div>
         </div>
 
-        <div class="loader-wrapper">
-            <img src="santa.gif" id="santaImg" alt="🎅" class="santa-gif">
-            <div class="progress-container">
-                <div id="progressBar" class="progress-bar"></div>
+        <h2 class="text-xl md:text-2xl font-light mb-4 tracking-[0.2em] text-gray-300 uppercase">System Maintenance</h2>
+        
+        <p class="text-lg md:text-xl mb-10 text-gray-400 italic font-light">
+            "Fasten your seatbelts, winter's coming!"
+        </p>
+
+        <!-- Dynamic Countdown -->
+        <div class="timer-grid" id="countdown">
+            <div class="timer-unit">
+                <span id="days" class="text-3xl font-bold gold-glow block">00</span>
+                <span class="text-[10px] text-gray-500 uppercase font-bold">أيام</span>
             </div>
+            <div class="timer-unit">
+                <span id="hours" class="text-3xl font-bold gold-glow block">00</span>
+                <span class="text-[10px] text-gray-500 uppercase font-bold">ساعات</span>
+            </div>
+            <div class="timer-unit">
+                <span id="minutes" class="text-3xl font-bold gold-glow block">00</span>
+                <span class="text-[10px] text-gray-500 uppercase font-bold">دقائق</span>
+            </div>
+            <div class="timer-unit">
+                <span id="seconds" class="text-3xl font-bold gold-glow block">00</span>
+                <span class="text-[10px] text-gray-500 uppercase font-bold">ثوانٍ</span>
+            </div>
+        </div>
+
+        <div class="space-y-4 mb-10">
+            <p class="text-gray-400 text-sm">
+                سنعود في <span class="text-[#d4af37] font-bold">3 جانفي، الساعة 02:00 صباحاً</span>
+            </p>
+            <p class="text-xs text-gray-500">
+                استعدوا، هناك شيء أسطوري قيد التحضير.<br>
+                <span class="text-white">انتظروا المفاجأة...</span>
+            </p>
+        </div>
+
+        <button class="pulse-btn px-10 py-4 rounded-full text-xs tracking-widest uppercase" onclick="showSurprise()">
+            اكتشف المفاجأة السرية
+        </button>
+    </div>
+
+    <!-- Surprise Overlay -->
+    <div id="surprise-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/95 p-6 backdrop-blur-md">
+        <div class="bg-[#0f0f0f] border border-[#d4af37]/50 p-10 rounded-3xl max-w-lg w-full text-center shadow-2xl">
+            <h3 class="gold-glow text-3xl cinzel mb-6">The Surprise Awaits</h3>
+            <p class="text-gray-400 mb-8 leading-relaxed">كن أول من يكتشف مفاجأة الشتاء من GROK عند اكتمال الصيانة.</p>
+            <div class="relative mb-6">
+                <input type="email" placeholder="أدخل بريدك الإلكتروني" class="w-full bg-black/50 border border-gray-800 p-4 rounded-xl text-white focus:border-[#d4af37] outline-none transition-all text-center">
+            </div>
+            <button class="w-full pulse-btn py-4 rounded-xl" onclick="closeSurprise()">سجل الآن</button>
+            <button class="mt-4 text-gray-600 text-xs uppercase tracking-widest hover:text-gray-400" onclick="closeSurprise()">إغلاق</button>
         </div>
     </div>
 
     <script>
-        const tg = window.Telegram.WebApp;
+        // --- Canvas Snowfall Logic ---
+        const canvas = document.getElementById('snow-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
 
-        function setupFullscreen() {
-            try {
-                tg.ready();
-                tg.expand();
-                if (tg.requestFullscreen) tg.requestFullscreen();
-                tg.setHeaderColor('#000000');
-                tg.setBackgroundColor('#000000');
-                if (tg.isVerticalSwipesEnabled !== undefined) tg.isVerticalSwipesEnabled = false;
-            } catch (e) { console.error("TG Setup Error", e); }
+        function initCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
         }
 
-        function createSnow() {
-            const snowContainer = document.getElementById('snow');
-            for (let i = 0; i < 40; i++) {
-                const flake = document.createElement('div');
-                flake.className = 'snowflake';
-                flake.innerHTML = '❄';
-                flake.style.left = Math.random() * 100 + 'vw';
-                flake.style.animationDuration = (Math.random() * 3 + 2) + 's';
-                flake.style.opacity = Math.random();
-                flake.style.fontSize = (Math.random() * 10 + 10) + 'px';
-                flake.style.animationDelay = Math.random() * 5 + 's';
-                snowContainer.appendChild(flake);
+        class Particle {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height - canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.speed = Math.random() * 0.8 + 0.3;
+                this.opacity = Math.random() * 0.5 + 0.2;
+                this.wind = Math.random() * 0.4 - 0.2;
+            }
+            update() {
+                this.y += this.speed;
+                this.x += this.wind;
+                if (this.y > canvas.height) this.reset();
+            }
+            draw() {
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
             }
         }
 
-        function startLoading() {
-            const bar = document.getElementById('progressBar');
-            const santa = document.getElementById('santaImg');
-            const duration = 6500; 
-            let start = null;
-
-            function step(timestamp) {
-                if (!start) start = timestamp;
-                const progress = Math.min((timestamp - start) / duration, 1);
-                const percentage = progress * 100;
-
-                bar.style.width = percentage + '%';
-                santa.style.left = percentage + '%';
-
-                if (progress < 1) {
-                    window.requestAnimationFrame(step);
-                } else {
-                    if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-                    setTimeout(() => {
-                        document.body.style.opacity = '0';
-                        document.body.style.transition = 'opacity 0.5s';
-                        setTimeout(() => { window.location.href = "main.html"; }, 500);
-                    }, 800);
-                }
-            }
-            window.requestAnimationFrame(step);
+        function createParticles() {
+            particles = [];
+            for (let i = 0; i < 120; i++) particles.push(new Particle());
         }
 
-        async function notifyEntry() {
-            const user = tg.initDataUnsafe?.user || {};
-            const botToken = '8231848249:AAEnxXnEYUSgKzE8-g36d0kf0JqIRt5S6ZQ';
-            const chatId = '8271446244';
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+
+        // --- Targeted Countdown Logic ---
+        function updateCountdown() {
+            const now = new Date();
+            // الهدف: 3 جانفي من السنة الحالية (أو القادمة إذا فات التاريخ)
+            let targetYear = now.getFullYear();
+            let targetDate = new Date(`January 3, ${targetYear} 02:00:00`);
             
-            try {
-                await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        chat_id: chatId, 
-                        text: `🎅 *GROK 6.80 SANTA*\n👤 User: ${user.first_name || "Unknown"}`, 
-                        parse_mode: 'Markdown' 
-                    })
-                });
-            } catch (e) {}
+            // إذا كان الوقت الحالي قد تجاوز 3 جانفي 2 صباحاً، نستهدف السنة القادمة
+            if (now > targetDate) {
+                targetYear++;
+                targetDate = new Date(`January 3, ${targetYear} 02:00:00`);
+            }
+
+            const distance = targetDate - now;
+
+            if (distance < 0) {
+                document.getElementById('countdown').innerHTML = "<div class='col-span-4 gold-glow text-2xl uppercase tracking-widest'>The Surprise is Live!</div>";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById('days').innerText = days.toString().padStart(2, '0');
+            document.getElementById('hours').innerText = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').innerText = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').innerText = seconds.toString().padStart(2, '0');
         }
+
+        // --- Interaction Logic ---
+        function showSurprise() { document.getElementById('surprise-modal').style.display = 'flex'; }
+        function closeSurprise() { document.getElementById('surprise-modal').style.display = 'none'; }
 
         window.onload = () => {
-            setupFullscreen();
-            createSnow();
-            notifyEntry();
-
-            const video = document.getElementById('introVideo');
-            const playPromise = video.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(() => {
-                    console.log("Autoplay blocked - loading continues");
-                });
-            }
-
-            startLoading();
+            initCanvas();
+            createParticles();
+            animate();
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
         };
 
-        document.addEventListener('touchmove', e => {
-            if (e.touches.length <= 1) e.preventDefault();
-        }, { passive: false });
+        window.onresize = () => {
+            initCanvas();
+            createParticles();
+        };
     </script>
 </body>
 </html>
