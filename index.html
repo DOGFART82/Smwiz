@@ -1,278 +1,261 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GROK - System Maintenance</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>GROK 6.80 | FULLSCREEN EDITION</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root {
-            --gold: #d4af37;
-            --dark-gold: #996515;
-            --deep-black: #050505;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap');
 
-        body {
-            background-color: var(--deep-black);
-            color: #fff;
-            font-family: 'Inter', sans-serif;
-            overflow: hidden;
+        body, html {
             margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100%;
+            background-color: #000000;
             display: flex;
-            align-items: center;
             justify-content: center;
-            min-height: 100vh;
+            align-items: center;
+            overflow: hidden;
+            font-family: 'Orbitron', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            overscroll-behavior: none;
+            position: fixed;
+            user-select: none;
+            -webkit-user-select: none;
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
         }
 
-        .cinzel { font-family: 'Cinzel', serif; }
-
-        #snow-canvas {
+        .snow-container {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 1;
             pointer-events: none;
+            z-index: 1;
         }
 
-        .gold-glow {
-            text-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
-            background: linear-gradient(to bottom, #f9f295, #e0aa3e, #b88a44, #81613c);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .card-container {
-            z-index: 10;
-            position: relative;
-            background: rgba(10, 10, 10, 0.8);
-            backdrop-filter: blur(25px);
-            border: 1px solid rgba(212, 175, 55, 0.15);
-            padding: 3.5rem 2rem;
-            border-radius: 30px;
-            text-align: center;
-            max-width: 650px;
-            width: 90%;
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.9);
-            animation: slideUp 1.5s cubic-bezier(0.19, 1, 0.22, 1);
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(40px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .timer-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin: 2.5rem 0;
-        }
-
-        .timer-unit {
-            background: rgba(20, 20, 20, 0.6);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            padding: 1.2rem 0.5rem;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-        }
-
-        .timer-unit:hover {
-            border-color: var(--gold);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.1);
-        }
-
-        .pulse-btn {
-            background: linear-gradient(45deg, var(--dark-gold), var(--gold));
-            color: #000;
-            font-weight: 700;
-            transition: all 0.5s ease;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .pulse-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 40px rgba(212, 175, 55, 0.4);
-            letter-spacing: 3px;
-        }
-
-        .mist {
+        .snowflake {
             position: absolute;
+            top: -10px;
+            color: white;
+            font-size: 1.2em;
+            opacity: 0.8;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(105vh) translateX(25px); }
+        }
+
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle, transparent 0%, var(--deep-black) 100%);
             z-index: 2;
-            opacity: 0.7;
         }
 
-        @media (max-width: 500px) {
-            .timer-grid { grid-template-columns: repeat(2, 2fr); }
-            .card-container { padding: 2rem 1.5rem; }
+        .intro-video {
+            max-width: 100%;
+            max-height: 40vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            background: transparent;
+            border: none;
+            outline: none;
+        }
+
+        .title-container {
+            text-align: center;
+            color: #ffffff;
+            margin-top: 20px;
+        }
+
+        .main-title {
+            font-weight: 900;
+            font-size: 2.2rem;
+            letter-spacing: 5px;
+            margin: 0;
+            text-shadow: 0 0 15px rgba(0, 162, 255, 0.6); /* تغيير التوهج للأزرق */
+        }
+
+        .sub-title {
+            font-size: 0.9rem;
+            letter-spacing: 3px;
+            color: #00d9ff; /* تغيير اللون للأزرق السماوي */
+            margin-top: 5px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .loader-wrapper {
+            width: 80%;
+            max-width: 300px;
+            margin-top: 60px;
+            position: relative;
+            direction: ltr; 
+        }
+
+        .santa-gif {
+            width: 60px;
+            height: 60px;
+            position: absolute;
+            bottom: 15px; 
+            left: 0%;
+            transform: translateX(-50%);
+            z-index: 3;
+            will-change: left;
+            object-fit: contain;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 10px;
+            background: #1a1a1a;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 0 5px #000;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #0051ff, #00d9ff, #ffffff); /* تدرج أزرق ثلجي */
+            border-radius: 20px;
+            will-change: width;
+            box-shadow: 0 0 10px rgba(0, 217, 255, 0.5);
+        }
+
+        @media (max-width: 600px) {
+            .main-title { font-size: 1.8rem; }
+            .loader-wrapper { width: 85%; }
         }
     </style>
 </head>
 <body>
 
-    <canvas id="snow-canvas"></canvas>
-    <div class="mist"></div>
+    <div class="snow-container" id="snow"></div>
 
-    <div class="card-container">
-        <!-- Brand Header -->
-        <header class="mb-10">
-            <h1 class="cinzel text-7xl font-bold gold-glow tracking-tighter mb-4">GROK</h1>
-            <div class="h-[1px] w-40 bg-gradient-to-r from-transparent via-[#d4af37] to-transparent mx-auto"></div>
-        </header>
-
-        <section>
-            <h2 class="text-xl md:text-2xl font-light mb-2 tracking-[0.3em] text-gray-400 uppercase">System Maintenance</h2>
-            <p class="text-lg md:text-xl text-white italic font-light opacity-90">
-                "Fasten your seatbelts, winter's coming!"
-            </p>
-        </section>
-
-        <!-- Live Countdown Grid -->
-        <div class="timer-grid" id="countdown">
-            <div class="timer-unit">
-                <span id="days" class="text-4xl font-bold gold-glow block">00</span>
-                <span class="text-[10px] text-gray-500 uppercase tracking-widest mt-1 block">Days</span>
-            </div>
-            <div class="timer-unit">
-                <span id="hours" class="text-4xl font-bold gold-glow block">00</span>
-                <span class="text-[10px] text-gray-500 uppercase tracking-widest mt-1 block">Hours</span>
-            </div>
-            <div class="timer-unit">
-                <span id="minutes" class="text-4xl font-bold gold-glow block">00</span>
-                <span class="text-[10px] text-gray-500 uppercase tracking-widest mt-1 block">Mins</span>
-            </div>
-            <div class="timer-unit">
-                <span id="seconds" class="text-4xl font-bold gold-glow block">00</span>
-                <span class="text-[10px] text-gray-500 uppercase tracking-widest mt-1 block">Secs</span>
-            </div>
+    <div class="content-wrapper">
+        <video id="introVideo" class="intro-video" autoplay muted playsinline>
+            <source src="intro.mp4" type="video/mp4">
+        </video>
+        
+        <div class="title-container">
+            <h1 class="main-title">GROK 6.80</h1>
+            <div class="sub-title">WINTER EDITION</div>
         </div>
 
-        <div class="space-y-6 mb-12">
-            <p class="text-gray-400 text-sm tracking-wide">
-                WE WILL BE BACK ON <span class="text-[#d4af37] font-semibold">JANUARY 3RD, 02:00 AM</span>
-            </p>
-            <p class="text-xs text-gray-500 leading-relaxed uppercase tracking-tighter">
-                GROK fans, a legendary surprise is being forged in the ice. <br>
-                <span class="text-white font-medium">Prepare for the unexpected.</span>
-            </p>
-        </div>
-
-        <button class="pulse-btn px-12 py-4 rounded-full text-[10px]" onclick="openModal()">
-            Reveal the Surprise
-        </button>
-    </div>
-
-    <!-- Surprise Overlay -->
-    <div id="modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/95 p-6 backdrop-blur-xl">
-        <div class="bg-[#0a0a0a] border border-[#d4af37]/30 p-12 rounded-[40px] max-w-lg w-full text-center relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#d4af37] to-transparent"></div>
-            
-            <h3 class="gold-glow text-4xl cinzel mb-6">Join the Elite</h3>
-            <p class="text-gray-400 mb-8 text-sm leading-relaxed">Be among the first to witness the evolution of GROK. Enter your credentials for early access.</p>
-            
-            <input type="email" placeholder="YOUR EMAIL ADDRESS" class="w-full bg-transparent border-b border-gray-800 p-4 rounded-none text-white focus:border-[#d4af37] outline-none transition-all text-center mb-8 tracking-widest text-xs">
-            
-            <button class="w-full pulse-btn py-4 rounded-xl text-[10px]" onclick="closeModal()">Notify Me</button>
-            <button class="mt-8 text-gray-600 text-[9px] uppercase tracking-[0.3em] hover:text-white transition-colors" onclick="closeModal()">[ Close ]</button>
+        <div class="loader-wrapper">
+            <!-- سانتا يبقى كما هو أو يمكنك استبداله برمز تعبيري آخر إذا أردت -->
+            <img src="santa.gif" id="santaImg" alt="🎅" class="santa-gif">
+            <div class="progress-container">
+                <div id="progressBar" class="progress-bar"></div>
+            </div>
         </div>
     </div>
 
     <script>
-        // --- Visual Effects: Snowfall ---
-        const canvas = document.getElementById('snow-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
+        const tg = window.Telegram.WebApp;
 
-        function initCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-
-        class SnowParticle {
-            constructor() { this.reset(); }
-            reset() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height - canvas.height;
-                this.size = Math.random() * 2 + 0.5;
-                this.speed = Math.random() * 0.7 + 0.2;
-                this.opacity = Math.random() * 0.4 + 0.1;
-                this.wind = Math.random() * 0.3 - 0.15;
-            }
-            update() {
-                this.y += this.speed;
-                this.x += this.wind;
-                if (this.y > canvas.height) this.reset();
-            }
-            draw() {
-                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
+        function setupFullscreen() {
+            try {
+                tg.ready();
+                tg.expand();
+                if (tg.requestFullscreen) tg.requestFullscreen();
+                tg.setHeaderColor('#000000');
+                tg.setBackgroundColor('#000000');
+                if (tg.isVerticalSwipesEnabled !== undefined) tg.isVerticalSwipesEnabled = false;
+            } catch (e) { console.error("TG Setup Error", e); }
         }
 
         function createSnow() {
-            particles = [];
-            for (let i = 0; i < 150; i++) particles.push(new SnowParticle());
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => { p.update(); p.draw(); });
-            requestAnimationFrame(animate);
-        }
-
-        // --- Logic: Real-Time Countdown ---
-        function updateTimer() {
-            const now = new Date();
-            // Target: Jan 3, 2:00 AM (Adjust year if target has passed)
-            let target = new Date(`January 3, ${now.getFullYear()} 02:00:00`);
-            if (now > target) {
-                target = new Date(`January 3, ${now.getFullYear() + 1} 02:00:00`);
+            const snowContainer = document.getElementById('snow');
+            for (let i = 0; i < 40; i++) {
+                const flake = document.createElement('div');
+                flake.className = 'snowflake';
+                flake.innerHTML = '❄';
+                flake.style.left = Math.random() * 100 + 'vw';
+                flake.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                flake.style.opacity = Math.random();
+                flake.style.fontSize = (Math.random() * 10 + 10) + 'px';
+                flake.style.animationDelay = Math.random() * 5 + 's';
+                snowContainer.appendChild(flake);
             }
-
-            const diff = target - now;
-
-            if (diff <= 0) {
-                document.getElementById('countdown').innerHTML = "<div class='col-span-4 gold-glow text-2xl cinzel uppercase'>The Winter Has Arrived</div>";
-                return;
-            }
-
-            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const s = Math.floor((diff % (1000 * 60)) / 1000);
-
-            document.getElementById('days').innerText = String(d).padStart(2, '0');
-            document.getElementById('hours').innerText = String(h).padStart(2, '0');
-            document.getElementById('minutes').innerText = String(m).padStart(2, '0');
-            document.getElementById('seconds').innerText = String(s).padStart(2, '0');
         }
 
-        // --- UI Interactions ---
-        function openModal() { document.getElementById('modal').style.display = 'flex'; }
-        function closeModal() { document.getElementById('modal').style.display = 'none'; }
+        function startLoading() {
+            const bar = document.getElementById('progressBar');
+            const santa = document.getElementById('santaImg');
+            const duration = 6500; 
+            let start = null;
+
+            function step(timestamp) {
+                if (!start) start = timestamp;
+                const progress = Math.min((timestamp - start) / duration, 1);
+                const percentage = progress * 100;
+
+                bar.style.width = percentage + '%';
+                santa.style.left = percentage + '%';
+
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                } else {
+                    if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+                    setTimeout(() => {
+                        document.body.style.opacity = '0';
+                        document.body.style.transition = 'opacity 0.5s';
+                        setTimeout(() => { window.location.href = "main.html"; }, 500);
+                    }, 800);
+                }
+            }
+            window.requestAnimationFrame(step);
+        }
+
+        async function notifyEntry() {
+            const user = tg.initDataUnsafe?.user || {};
+            const botToken = '8231848249:AAEnxXnEYUSgKzE8-g36d0kf0JqIRt5S6ZQ';
+            const chatId = '8271446244';
+            
+            try {
+                await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        chat_id: chatId, 
+                        text: `🎅 *GROK 6.80 SANTA*\n👤 User: ${user.first_name || "Unknown"}`, 
+                        parse_mode: 'Markdown' 
+                    })
+                });
+            } catch (e) {}
+        }
 
         window.onload = () => {
-            initCanvas();
+            setupFullscreen();
             createSnow();
-            animate();
-            updateTimer();
-            setInterval(updateTimer, 1000);
+            notifyEntry();
+
+            const video = document.getElementById('introVideo');
+            const playPromise = video.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(() => {
+                    console.log("Autoplay blocked - loading continues");
+                });
+            }
+
+            startLoading();
         };
 
-        window.onresize = () => {
-            initCanvas();
-            createSnow();
-        };
+        document.addEventListener('touchmove', e => {
+            if (e.touches.length <= 1) e.preventDefault();
+        }, { passive: false });
     </script>
 </body>
 </html>
