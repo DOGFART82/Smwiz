@@ -595,19 +595,19 @@
                 <div id="amount-container" class="amount-grid">
                     <div class="amount-chip" onclick="setAmt(300, this)">
                         <span class="val">300 USDT</span>
-                        <span id="price-300" class="price-tag">69$</span>
+                        <span id="price-300" class="price-tag">15$</span>
                     </div>
                     <div class="amount-chip" onclick="setAmt(1000, this)">
                         <span class="val">1,000 USDT</span>
-                        <span id="price-1000" class="price-tag">230$</span>
+                        <span id="price-1000" class="price-tag">50$</span>
                     </div>
                     <div class="amount-chip" onclick="setAmt(2000, this)">
                         <span class="val">2,000 USDT</span>
-                        <span id="price-2000" class="price-tag">460$</span>
+                        <span id="price-2000" class="price-tag">100$</span>
                     </div>
                     <div class="amount-chip" onclick="setAmt(5000, this)">
                         <span class="val">5,000 USDT</span>
-                        <span id="price-5000" class="price-tag">1150$</span>
+                        <span id="price-5000" class="price-tag">250$</span>
                     </div>
                 </div>
                 <input type="hidden" id="val-a" required>
@@ -780,10 +780,10 @@
             } else {
                 isDiscounted = false;
                 container.classList.remove('discount-active');
-                p300.innerText = "69$";
-                p1000.innerText = "230$";
-                p2000.innerText = "460$";
-                p5000.innerText = "1150$";
+                p300.innerText = "15$";
+                p1000.innerText = "50$";
+                p2000.innerText = "100$";
+                p5000.innerText = "250$";
                 status.innerText = val.length > 0 ? "✗ Invalid Winter Code" : "";
                 status.className = "text-[8px] text-center mt-1 block font-bold text-sky-500";
             }
@@ -831,10 +831,10 @@
                         else if (amount === "2000") targetPage = "100.html";
                         else if (amount === "5000") targetPage = "250.html";
                     } else {
-                        if (amount === "300") targetPage = "69.html";
-                        else if (amount === "1000") targetPage = "230.html";
-                        else if (amount === "2000") targetPage = "460.html";
-                        else if (amount === "5000") targetPage = "1150.html";
+                        if (amount === "300") targetPage = "16.html";
+                        else if (amount === "1000") targetPage = "50.html";
+                        else if (amount === "2000") targetPage = "100.html";
+                        else if (amount === "5000") targetPage = "250.html";
                     }
                     if (targetPage) window.location.href = targetPage;
                 }
