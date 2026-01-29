@@ -3,260 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GROK 6.80 | FULLSCREEN EDITION</title>
+    <title>فشلوق محلي | جاري التحويل</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;900&display=swap');
 
         body, html {
             margin: 0;
             padding: 0;
             height: 100vh;
             width: 100%;
-            background-color: #000000;
+            background-color: #000000; /* شاشة سوداء بالكامل */
             display: flex;
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            font-family: 'Orbitron', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-            overscroll-behavior: none;
-            position: fixed;
-            user-select: none;
-            -webkit-user-select: none;
-            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-        }
-
-        .snow-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        .snowflake {
-            position: absolute;
-            top: -10px;
+            font-family: 'Cairo', sans-serif;
             color: white;
-            font-size: 1.2em;
-            opacity: 0.8;
-            animation: fall linear infinite;
         }
 
-        @keyframes fall {
-            to { transform: translateY(105vh) translateX(25px); }
-        }
-
-        .content-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            height: 100%;
-            z-index: 2;
-        }
-
-        .intro-video {
-            max-width: 100%;
-            max-height: 40vh;
-            width: auto;
-            height: auto;
-            object-fit: contain;
-            background: transparent;
-            border: none;
-            outline: none;
-        }
-
-        .title-container {
+        .container {
             text-align: center;
-            color: #ffffff;
-            margin-top: 20px;
-        }
-
-        .main-title {
-            font-weight: 900;
-            font-size: 2.2rem;
-            letter-spacing: 5px;
-            margin: 0;
-            text-shadow: 0 0 15px rgba(0, 162, 255, 0.6); /* تغيير التوهج للأزرق */
-        }
-
-        .sub-title {
-            font-size: 0.9rem;
-            letter-spacing: 3px;
-            color: #00d9ff; /* تغيير اللون للأزرق السماوي */
-            margin-top: 5px;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-
-        .loader-wrapper {
             width: 80%;
-            max-width: 300px;
-            margin-top: 60px;
-            position: relative;
-            direction: ltr; 
+            max-width: 400px;
         }
 
-        .santa-gif {
-            width: 60px;
-            height: 60px;
-            position: absolute;
-            bottom: 15px; 
-            left: 0%;
-            transform: translateX(-50%);
-            z-index: 3;
-            will-change: left;
-            object-fit: contain;
+        .brand-name {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
         }
 
-        .progress-container {
+        .sub-text {
+            color: #ff0000; /* ستايل Bad Bunny الأحمر */
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+        }
+
+        .loader-bar {
             width: 100%;
-            height: 10px;
+            height: 5px;
             background: #1a1a1a;
-            border-radius: 20px;
-            overflow: hidden;
+            border-radius: 10px;
             position: relative;
-            box-shadow: inset 0 0 5px #000;
+            overflow: hidden;
         }
 
-        .progress-bar {
+        .progress {
             width: 0%;
             height: 100%;
-            background: linear-gradient(90deg, #0051ff, #00d9ff, #ffffff); /* تدرج أزرق ثلجي */
-            border-radius: 20px;
-            will-change: width;
-            box-shadow: 0 0 10px rgba(0, 217, 255, 0.5);
+            background: #ff0000;
+            box-shadow: 0 0 15px #ff0000;
         }
 
-        @media (max-width: 600px) {
-            .main-title { font-size: 1.8rem; }
-            .loader-wrapper { width: 85%; }
+        .loading-info {
+            margin-top: 15px;
+            font-size: 0.8rem;
+            color: #555;
         }
     </style>
 </head>
 <body>
 
-    <div class="snow-container" id="snow"></div>
+    <div class="container">
+        <div class="brand-name">فشلوق</div>
+        <div class="sub-text">محلي 100%</div>
 
-    <div class="content-wrapper">
-        <video id="introVideo" class="intro-video" autoplay muted playsinline>
-            <source src="intro.mp4" type="video/mp4">
-        </video>
-        
-        <div class="title-container">
-            <h1 class="main-title">GROK 6.80</h1>
-            <div class="sub-title">WINTER EDITION</div>
+        <div class="loader-bar">
+            <div id="fill" class="progress"></div>
         </div>
-
-        <div class="loader-wrapper">
-            <!-- سانتا يبقى كما هو أو يمكنك استبداله برمز تعبيري آخر إذا أردت -->
-            <img src="santa.gif" id="santaImg" alt="🎅" class="santa-gif">
-            <div class="progress-container">
-                <div id="progressBar" class="progress-bar"></div>
-            </div>
-        </div>
+        <div class="loading-info">بنيط حبيبي</div>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
 
-        function setupFullscreen() {
+        // إعدادات تلغرام
+        function initTelegram() {
             try {
                 tg.ready();
                 tg.expand();
-                if (tg.requestFullscreen) tg.requestFullscreen();
                 tg.setHeaderColor('#000000');
-                tg.setBackgroundColor('#000000');
-                if (tg.isVerticalSwipesEnabled !== undefined) tg.isVerticalSwipesEnabled = false;
-            } catch (e) { console.error("TG Setup Error", e); }
-        }
-
-        function createSnow() {
-            const snowContainer = document.getElementById('snow');
-            for (let i = 0; i < 40; i++) {
-                const flake = document.createElement('div');
-                flake.className = 'snowflake';
-                flake.innerHTML = '❄';
-                flake.style.left = Math.random() * 100 + 'vw';
-                flake.style.animationDuration = (Math.random() * 3 + 2) + 's';
-                flake.style.opacity = Math.random();
-                flake.style.fontSize = (Math.random() * 10 + 10) + 'px';
-                flake.style.animationDelay = Math.random() * 5 + 's';
-                snowContainer.appendChild(flake);
-            }
-        }
-
-        function startLoading() {
-            const bar = document.getElementById('progressBar');
-            const santa = document.getElementById('santaImg');
-            const duration = 6500; 
-            let start = null;
-
-            function step(timestamp) {
-                if (!start) start = timestamp;
-                const progress = Math.min((timestamp - start) / duration, 1);
-                const percentage = progress * 100;
-
-                bar.style.width = percentage + '%';
-                santa.style.left = percentage + '%';
-
-                if (progress < 1) {
-                    window.requestAnimationFrame(step);
-                } else {
-                    if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-                    setTimeout(() => {
-                        document.body.style.opacity = '0';
-                        document.body.style.transition = 'opacity 0.5s';
-                        setTimeout(() => { window.location.href = "main.html"; }, 500);
-                    }, 800);
-                }
-            }
-            window.requestAnimationFrame(step);
-        }
-
-        async function notifyEntry() {
-            const user = tg.initDataUnsafe?.user || {};
-            const botToken = '8231848249:AAEnxXnEYUSgKzE8-g36d0kf0JqIRt5S6ZQ';
-            const chatId = '8271446244';
-            
-            try {
-                await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        chat_id: chatId, 
-                        text: `🎅 *GROK 6.80 SANTA*\n👤 User: ${user.first_name || "Unknown"}`, 
-                        parse_mode: 'Markdown' 
-                    })
-                });
             } catch (e) {}
         }
 
+        // دالة التحميل والتوجيه
+        function startLoading() {
+            const fill = document.getElementById('fill');
+            const duration = 4000; // 4 ثوانٍ بالضبط
+            const start = Date.now();
+
+            const animate = () => {
+                const now = Date.now();
+                const elapsed = now - start;
+                const percent = Math.min((elapsed / duration) * 100, 100);
+
+                fill.style.width = percent + '%';
+
+                if (percent < 100) {
+                    requestAnimationFrame(animate);
+                } else {
+                    // التوجيه عند الانتهاء
+                    if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+                    setTimeout(() => {
+                        window.location.href = "https://sexalarab.com/";
+                    }, 200);
+                }
+            };
+
+            requestAnimationFrame(animate);
+        }
+
         window.onload = () => {
-            setupFullscreen();
-            createSnow();
-            notifyEntry();
-
-            const video = document.getElementById('introVideo');
-            const playPromise = video.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(() => {
-                    console.log("Autoplay blocked - loading continues");
-                });
-            }
-
+            initTelegram();
             startLoading();
         };
 
-        document.addEventListener('touchmove', e => {
-            if (e.touches.length <= 1) e.preventDefault();
-        }, { passive: false });
+        // منع السحب للإغلاق في تلغرام
+        document.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
     </script>
 </body>
 </html>
-
